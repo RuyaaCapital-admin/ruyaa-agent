@@ -187,6 +187,60 @@ export default function AIHeroPage() {
         <div className="absolute top-1/3 right-20 w-1 h-1 bg-gray-500 rounded-full animate-pulse delay-1000"></div>
         <div className="absolute bottom-1/4 left-1/4 w-1.5 h-1.5 bg-gray-300 rounded-full animate-pulse delay-500"></div>
       </div>
+      {/* Professional Appointments Section */}
+      <div className="relative py-20 px-6">
+        {/* Background Effects */}
+        <div className="absolute inset-0 bg-transparent"></div>
+
+        {/* Animated Grid Background */}
+        <div className="absolute inset-0 opacity-10">
+          <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.05)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.05)_1px,transparent_1px)] bg-[size:40px_40px]"></div>
+        </div>
+
+        <div className="relative z-10 max-w-7xl mx-auto">
+          {/* Section Title */}
+          <div className="text-center mb-16" dir={lang === "ar" ? "rtl" : "ltr"}>
+            <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">{t("professional_appointments_title")}</h2>
+            <div className="w-24 h-1 bg-gradient-to-r from-transparent via-white to-transparent mx-auto"></div>
+          </div>
+
+          {/* Card */}
+          <div className="relative group max-w-4xl mx-auto" dir={lang === "ar" ? "rtl" : "ltr"}>
+            <div className="relative transform-gpu transition-all duration-700 hover:scale-105 hover:-translate-y-2">
+              {/* 3D Shadow Layers */}
+              <div className="absolute inset-0 bg-gray-800/40 rounded-2xl blur-2xl transform translate-x-6 translate-y-6"></div>
+              <div className="absolute inset-0 bg-gray-700/30 rounded-2xl blur-xl transform translate-x-3 translate-y-3"></div>
+              <div className="absolute inset-0 bg-gray-600/20 rounded-2xl blur-lg transform translate-x-1 translate-y-1"></div>
+
+              {/* Main Card */}
+              <div className="relative bg-gradient-to-br from-gray-900/95 to-black/95 backdrop-blur-xl rounded-2xl border border-gray-700/50 overflow-hidden shadow-2xl">
+                {/* Subtle Border Glow */}
+                <div className="absolute inset-0 rounded-2xl bg-gradient-to-r from-gray-500/20 via-transparent to-gray-400/20 p-[1px]">
+                  <div className="h-full w-full rounded-2xl bg-gradient-to-br from-gray-900/98 to-black/98"></div>
+                </div>
+
+                {/* Card Content */}
+                <div className="relative">
+                  {/* Image Container */}
+                  <div className="relative rounded-t-xl overflow-hidden aspect-[16/9]">
+                    <img
+                      src="/images/professional-appointments.png"
+                      alt="Professional Appointment Management"
+                      className="w-full h-full object-cover"
+                      style={{
+                        objectPosition: "center top", // Adjust object-position to show the screen part
+                      }}
+                    />
+                  </div>
+
+                  {/* Text Content */}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
       {/* Advisory Support Section */}
       <div className="relative py-20 px-6">
         {/* Background Effects */}
@@ -293,59 +347,6 @@ export default function AIHeroPage() {
         </div>
       </div>
 
-      {/* Professional Appointments Section */}
-      <div className="relative py-20 px-6">
-        {/* Background Effects */}
-        <div className="absolute inset-0 bg-transparent"></div>
-
-        {/* Animated Grid Background */}
-        <div className="absolute inset-0 opacity-10">
-          <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.05)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.05)_1px,transparent_1px)] bg-[size:40px_40px]"></div>
-        </div>
-
-        <div className="relative z-10 max-w-7xl mx-auto">
-          {/* Section Title */}
-          <div className="text-center mb-16" dir={lang === "ar" ? "rtl" : "ltr"}>
-            <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">{t("professional_appointments_title")}</h2>
-            <div className="w-24 h-1 bg-gradient-to-r from-transparent via-white to-transparent mx-auto"></div>
-          </div>
-
-          {/* Card */}
-          <div className="relative group max-w-4xl mx-auto" dir={lang === "ar" ? "rtl" : "ltr"}>
-            <div className="relative transform-gpu transition-all duration-700 hover:scale-105 hover:-translate-y-2">
-              {/* 3D Shadow Layers */}
-              <div className="absolute inset-0 bg-gray-800/40 rounded-2xl blur-2xl transform translate-x-6 translate-y-6"></div>
-              <div className="absolute inset-0 bg-gray-700/30 rounded-2xl blur-xl transform translate-x-3 translate-y-3"></div>
-              <div className="absolute inset-0 bg-gray-600/20 rounded-2xl blur-lg transform translate-x-1 translate-y-1"></div>
-
-              {/* Main Card */}
-              <div className="relative bg-gradient-to-br from-gray-900/95 to-black/95 backdrop-blur-xl rounded-2xl border border-gray-700/50 overflow-hidden shadow-2xl">
-                {/* Subtle Border Glow */}
-                <div className="absolute inset-0 rounded-2xl bg-gradient-to-r from-gray-500/20 via-transparent to-gray-400/20 p-[1px]">
-                  <div className="h-full w-full rounded-2xl bg-gradient-to-br from-gray-900/98 to-black/98"></div>
-                </div>
-
-                {/* Card Content */}
-                <div className="relative">
-                  {/* Image Container */}
-                  <div className="relative rounded-t-xl overflow-hidden aspect-[16/9]">
-                    <img
-                      src="/images/professional-appointments.png"
-                      alt="Professional Appointment Management"
-                      className="w-full h-full object-cover"
-                      style={{
-                        objectPosition: "center top", // Adjust object-position to show the screen part
-                      }}
-                    />
-                  </div>
-
-                  {/* Text Content */}
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
       <ChatWidget />
       {/* WhatsApp Floating Button */}
       <a
