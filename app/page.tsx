@@ -4,9 +4,15 @@ import { useState } from "react"
 import { Menu, X, Zap, Shield } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import ChatWidget from "@/components/chat-widget"
+import { useLanguage } from "@/context/language-context" // Import useLanguage
 
 export default function AIHeroPage() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
+  const { lang, setLang, t } = useLanguage() // Use the language hook
+
+  const toggleLanguage = () => {
+    setLang(lang === "ar" ? "en" : "ar")
+  }
 
   return (
     <div
@@ -26,26 +32,44 @@ export default function AIHeroPage() {
           {/* Desktop Menu */}
           <div className="hidden md:flex items-center space-x-8 rtl:space-x-reverse">
             <a href="#" className="hover:text-gray-300 transition-colors text-gray-400">
-              الرئيسية
+              {t("home")}
             </a>
             <a href="#" className="hover:text-gray-300 transition-colors text-gray-400">
-              الخدمات
+              {t("services")}
             </a>
             <a href="#" className="hover:text-gray-300 transition-colors text-gray-400">
-              حول
+              {t("about")}
             </a>
             <a href="#" className="hover:text-gray-300 transition-colors text-gray-400">
-              اتصل بنا
+              {t("contact")}
             </a>
             <Button className="bg-gradient-to-r from-gray-700 to-gray-800 hover:from-gray-600 hover:to-gray-700 text-white border-0">
-              ابدأ الآن
+              {t("get_started")}
+            </Button>
+            {/* Language Switch Button */}
+            <Button
+              variant="outline"
+              className="border-gray-600/50 text-gray-300 hover:bg-gray-800/20 px-4 py-2 bg-transparent"
+              onClick={toggleLanguage}
+            >
+              {t("language_switch")}
             </Button>
           </div>
 
           {/* Mobile Menu Button */}
-          <button className="md:hidden text-gray-300" onClick={() => setIsMenuOpen(!isMenuOpen)}>
-            {isMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
-          </button>
+          <div className="flex items-center md:hidden">
+            {/* Language Switch Button for Mobile */}
+            <Button
+              variant="outline"
+              className="border-gray-600/50 text-gray-300 hover:bg-gray-800/20 px-3 py-1.5 bg-transparent mr-2"
+              onClick={toggleLanguage}
+            >
+              {t("language_switch")}
+            </Button>
+            <button className="text-gray-300" onClick={() => setIsMenuOpen(!isMenuOpen)}>
+              {isMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+            </button>
+          </div>
         </div>
 
         {/* Mobile Menu */}
@@ -53,19 +77,19 @@ export default function AIHeroPage() {
           <div className="md:hidden absolute top-full left-0 right-0 bg-black/95 backdrop-blur-md border-b border-gray-700/30 p-6">
             <div className="flex flex-col space-y-4">
               <a href="#" className="hover:text-gray-300 transition-colors text-gray-400">
-                الرئيسية
+                {t("home")}
               </a>
               <a href="#" className="hover:text-gray-300 transition-colors text-gray-400">
-                الخدمات
+                {t("services")}
               </a>
               <a href="#" className="hover:text-gray-300 transition-colors text-gray-400">
-                حول
+                {t("about")}
               </a>
               <a href="#" className="hover:text-gray-300 transition-colors text-gray-400">
-                اتصل بنا
+                {t("contact")}
               </a>
               <Button className="bg-gradient-to-r from-gray-700 to-gray-800 hover:from-gray-600 hover:to-gray-700 text-white border-0 w-full">
-                ابدأ الآن
+                {t("get_started")}
               </Button>
             </div>
           </div>
@@ -116,27 +140,25 @@ export default function AIHeroPage() {
           </div>
 
           {/* Right Side - Content */}
-          <div className="text-center lg:text-right order-1 lg:order-2" dir="rtl">
+          <div className="text-center lg:text-right order-1 lg:order-2" dir={lang === "ar" ? "rtl" : "ltr"}>
             <div className="space-y-8">
               {/* Main Heading */}
 
               {/* Subtitle */}
-              <p className="text-xl md:text-2xl text-gray-400 max-w-2xl mx-auto lg:mx-0">
-                حلول ذكية متطورة لتحويل تجربة العملاء المالية
-              </p>
+              <p className="text-xl md:text-2xl text-gray-400 max-w-2xl mx-auto lg:mx-0">{t("hero_subtitle")}</p>
 
               {/* Feature Cards */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-12">
                 <div className="bg-gradient-to-br from-gray-800/20 to-transparent p-6 rounded-xl border border-gray-700/30 backdrop-blur-sm">
                   <Zap className="h-8 w-8 text-gray-300 mb-3 mx-auto md:mx-0" />
-                  <h3 className="text-lg font-semibold text-gray-300 mb-2">معالجة فورية</h3>
-                  <p className="text-gray-500 text-sm">تحليل البيانات في الوقت الفعلي</p>
+                  <h3 className="text-lg font-semibold text-gray-300 mb-2">{t("instant_processing")}</h3>
+                  <p className="text-gray-500 text-sm">{t("realtime_data_analysis")}</p>
                 </div>
 
                 <div className="bg-gradient-to-br from-gray-800/20 to-transparent p-6 rounded-xl border border-gray-700/30 backdrop-blur-sm">
                   <Shield className="h-8 w-8 text-gray-300 mb-3 mx-auto md:mx-0" />
-                  <h3 className="text-lg font-semibold text-gray-300 mb-2">أمان متقدم</h3>
-                  <p className="text-gray-500 text-sm">حماية عالية المستوى للبيانات</p>
+                  <h3 className="text-lg font-semibold text-gray-300 mb-2">{t("advanced_security")}</h3>
+                  <p className="text-gray-500 text-sm">{t("high_level_data_protection")}</p>
                 </div>
               </div>
 
@@ -146,14 +168,14 @@ export default function AIHeroPage() {
                   size="lg"
                   className="bg-gradient-to-r from-gray-700 to-gray-800 hover:from-gray-600 hover:to-gray-700 text-white border-0 px-8 py-4 text-lg"
                 >
-                  ابدأ التجربة المجانية
+                  {t("start_free_trial")}
                 </Button>
                 <Button
                   size="lg"
                   variant="outline"
                   className="border-gray-600/50 text-gray-300 hover:bg-gray-800/20 px-8 py-4 text-lg bg-transparent"
                 >
-                  تعرف على المزيد
+                  {t("learn_more")}
                 </Button>
               </div>
             </div>
@@ -177,12 +199,13 @@ export default function AIHeroPage() {
 
         <div className="relative z-10 max-w-7xl mx-auto">
           {/* Section Title */}
-          <div className="text-center mb-16" dir="rtl">
+          <div className="text-center mb-16" dir={lang === "ar" ? "rtl" : "ltr"}>
+            <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">{t("advisory_support_title")}</h2>
             <div className="w-24 h-1 bg-gradient-to-r from-transparent via-white to-transparent mx-auto"></div>
           </div>
 
           {/* Single Card for Advisory Support */}
-          <div className="relative group max-w-4xl mx-auto" dir="rtl">
+          <div className="relative group max-w-4xl mx-auto" dir={lang === "ar" ? "rtl" : "ltr"}>
             <div className="relative transform-gpu transition-all duration-700 hover:scale-105 hover:-translate-y-2">
               {/* 3D Shadow Layers */}
               <div className="absolute inset-0 bg-gray-800/40 rounded-2xl blur-2xl transform translate-x-6 translate-y-6"></div>
@@ -229,12 +252,13 @@ export default function AIHeroPage() {
 
         <div className="relative z-10 max-w-7xl mx-auto">
           {/* Section Title */}
-          <div className="text-center mb-16" dir="rtl">
+          <div className="text-center mb-16" dir={lang === "ar" ? "rtl" : "ltr"}>
+            <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">{t("smart_communication_title")}</h2>
             <div className="w-24 h-1 bg-gradient-to-r from-transparent via-white to-transparent mx-auto"></div>
           </div>
 
           {/* Single Card for Smart Communication */}
-          <div className="relative group max-w-4xl mx-auto" dir="rtl">
+          <div className="relative group max-w-4xl mx-auto" dir={lang === "ar" ? "rtl" : "ltr"}>
             <div className="relative transform-gpu transition-all duration-700 hover:scale-105 hover:-translate-y-2">
               {/* 3D Shadow Layers */}
               <div className="absolute inset-0 bg-gray-800/40 rounded-2xl blur-2xl transform translate-x-6 translate-y-6"></div>
@@ -281,13 +305,13 @@ export default function AIHeroPage() {
 
         <div className="relative z-10 max-w-7xl mx-auto">
           {/* Section Title */}
-          <div className="text-center mb-16" dir="rtl">
-            <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">إدارة المواعيد الاحترافية</h2>
+          <div className="text-center mb-16" dir={lang === "ar" ? "rtl" : "ltr"}>
+            <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">{t("professional_appointments_title")}</h2>
             <div className="w-24 h-1 bg-gradient-to-r from-transparent via-white to-transparent mx-auto"></div>
           </div>
 
           {/* Card */}
-          <div className="relative group max-w-4xl mx-auto" dir="rtl">
+          <div className="relative group max-w-4xl mx-auto" dir={lang === "ar" ? "rtl" : "ltr"}>
             <div className="relative transform-gpu transition-all duration-700 hover:scale-105 hover:-translate-y-2">
               {/* 3D Shadow Layers */}
               <div className="absolute inset-0 bg-gray-800/40 rounded-2xl blur-2xl transform translate-x-6 translate-y-6"></div>

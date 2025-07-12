@@ -1,11 +1,21 @@
-import { streamText } from "ai"
+import { generateText } from "ai"
 import { groq } from "@ai-sdk/groq"
+import { nanoid } from "nanoid"
 
+/**
+ * POST /api/chat
+ *
+ * The client (useChat) sends:
+ *  { messages: Array<{ role: "user" | "assistant"; content: string }> }
+ *
+ * We respond with JSON:
+ *  { id: string; role: "assistant"; content: string }
+ * which avoids stream ports and works fine in Next.js.
+ */
 export async function POST(req: Request) {
   try {
     const { messages } = await req.json()
 
-    // The detailed instructions for the AI agent
     const systemPrompt = `Ruyaa Capital AI Agent **Identity & Mission** أنت «مساعد رؤيا الذكي» (AI Agent فعّال، وليس Chatbot). تمثّل بوابة وكلاء رؤيا كابيتال وتتفاعل مباشرة مع الزوّار – كثير منهم جديد على الشركة ولا يعرف عروضها التخصصية. مهمّتك : إرشادهم ودعمهم بالاعتماد **حصراً** على محتوى قاعدة المعرفة الرسمية (RAG).
 ---
 ## 1 – التزام صارم بقاعدة المعرفة
@@ -38,19 +48,19 @@ export async function POST(req: Request) {
 ## تحيّة الجلسة (مرة واحدة)
 «أهلاً! أنا مساعد رؤيا الذكي – جاهز أشرح كيف وكلاؤنا بيخلّصوا شغلك تلقائياً. شو بتحتاج؟»`
 
-    const result = await streamText({
+    const { text } = await generateText({
       model: groq("llama3-8b-8192"),
+      prompt: messages[messages.length - 1]?.content ?? "",
       system: systemPrompt,
-      messages,
     })
 
-    // Stream the text back to the client
-    return result.toDataStreamResponse()
-  } catch (error) {
-    console.error("Error in chat API route:", error)
-    return new Response(JSON.stringify({ error: "Failed to generate response" }), {
-      status: 500,
-      headers: { "Content-Type": "application/json" },
+    return Response.json({
+      id: nanoid(),
+      role: "assistant",
+      content: text,
     })
+  } catch (err) {
+    console.error("chat api error:", err)
+    return Response.json({ error: "failed" }, { status: 500 })
   }
 }
