@@ -326,7 +326,7 @@ export default function AIHeroPage() {
       {/* WhatsApp Floating Button */}
       <a
         href="https://api.whatsapp.com/send/?phone=963940632191&text&type=phone_number&app_absent=0"
-        className="fixed bottom-4 left-4 bg-green-500 hover:bg-green-600 text-white p-4 rounded-full shadow-lg z-50"
+        className="fixed bottom-6 left-6 bg-green-500 hover:bg-green-600 text-white p-4 rounded-full shadow-lg z-50"
         target="_blank"
         aria-label="Chat on WhatsApp"
         rel="noreferrer"
