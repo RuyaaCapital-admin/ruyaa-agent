@@ -1,7 +1,8 @@
-"use client"
+```typescriptreact file="app/page.tsx"
+[v0-no-op-code-block-prefix]"use client"
 
 import { useState } from "react"
-import { Menu, X, Zap, Shield } from "lucide-react"
+import { Menu, X, Zap, Shield } from 'lucide-react'
 import { Button } from "@/components/ui/button"
 import ChatWidget from "@/components/chat-widget"
 
@@ -9,13 +10,7 @@ export default function AIHeroPage() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
 
   return (
-    <div
-      className="min-h-screen text-white overflow-hidden bg-cover bg-center bg-no-repeat"
-      style={{
-        backgroundImage:
-          'url("https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-yqffaVPVc3zn939Dz3nCF475QQUNSQ.png")',
-      }}
-    >
+    <div className="min-h-screen text-white overflow-hidden bg-cover bg-center bg-no-repeat" style={{ backgroundImage: 'url("/images/Background.png")' }}>
       {/* Navigation Bar */}
       <nav className="relative z-50 px-6 py-4 bg-black/90 backdrop-blur-md border-b border-gray-700/30">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
