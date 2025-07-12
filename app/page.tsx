@@ -3,6 +3,7 @@
 import { useState } from "react"
 import { Menu, X, Zap, Shield } from "lucide-react"
 import { Button } from "@/components/ui/button"
+import ChatWidget from "@/components/chat-widget"
 
 export default function AIHeroPage() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
@@ -171,7 +172,6 @@ export default function AIHeroPage() {
         <div className="relative z-10 max-w-7xl mx-auto">
           {/* Section Title */}
           <div className="text-center mb-16" dir="rtl">
-            
             <div className="w-24 h-1 bg-gradient-to-r from-transparent via-white to-transparent mx-auto"></div>
           </div>
 
@@ -224,7 +224,6 @@ export default function AIHeroPage() {
         <div className="relative z-10 max-w-7xl mx-auto">
           {/* Section Title */}
           <div className="text-center mb-16" dir="rtl">
-            
             <div className="w-24 h-1 bg-gradient-to-r from-transparent via-white to-transparent mx-auto"></div>
           </div>
 
@@ -257,7 +256,6 @@ export default function AIHeroPage() {
                   </div>
 
                   {/* Text Content - Below the image */}
-                  
                 </div>
               </div>
             </div>
@@ -312,13 +310,13 @@ export default function AIHeroPage() {
                   </div>
 
                   {/* Text Content */}
-                  
                 </div>
               </div>
             </div>
           </div>
         </div>
       </div>
+      <ChatWidget />
     </div>
   )
 }
