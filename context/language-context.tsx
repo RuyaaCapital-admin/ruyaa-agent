@@ -67,41 +67,6 @@ const translations: Record<Language, Record<string, string>> = {
     type_your_message: "Type your message...",
     send: "Send",
     language_switch: "العربية", // Text for the button to switch to Arabic
-    smart_communication_description:
-      "Advanced Smart Communication Management System that transforms customer interaction experience",
-    smart_communication_main_benefit:
-      "Improve communication efficiency and increase customer satisfaction by up to 85%",
-    service_overview: "Service Overview",
-    key_benefits: "Key Benefits",
-    how_it_works: "How It Works",
-    smart_comm_overview:
-      "Smart Communication Management System uses advanced AI technologies to automatically analyze and route conversations, ensuring each customer reaches the right solution as quickly as possible.",
-    automated_routing: "Smart Automated Routing",
-    automated_routing_desc:
-      "Automatically route conversations to the appropriate team based on inquiry nature",
-    sentiment_analysis: "Sentiment Analysis",
-    sentiment_analysis_desc:
-      "Understand customer emotional state and provide appropriate responses",
-    response_optimization: "Response Optimization",
-    response_optimization_desc:
-      "Suggest best responses and solutions based on context and history",
-    multichannel_support: "Multi-channel Support",
-    multichannel_support_desc:
-      "Unified management of conversations across email, chat, and phone",
-    real_time_analytics: "Real-time Analytics",
-    real_time_analytics_desc:
-      "Monitor team performance and customer satisfaction metrics in real-time",
-    cost_reduction: "Cost Reduction",
-    cost_reduction_desc: "Reduce customer service costs by up to 40%",
-    step_1: "Step 1: Automatic Analysis",
-    step_1_desc:
-      "System analyzes message content and determines inquiry nature",
-    step_2: "Step 2: Smart Routing",
-    step_2_desc: "Routes conversation to the best available team or agent",
-    step_3: "Step 3: Smart Assistance",
-    step_3_desc: "Provides suggestions for appropriate solutions and responses",
-    step_4: "Step 4: Follow-up and Improvement",
-    step_4_desc: "Tracks results and continuously improves performance",
   },
 };
 
