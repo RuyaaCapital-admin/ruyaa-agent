@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Menu, X } from "lucide-react";
+import { Menu, X, Phone, Mail, MessageCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useLanguage } from "@/context/language-context";
 import Link from "next/link";
