@@ -45,7 +45,7 @@ export default function ChatWidget() {
     <div className="fixed bottom-4 right-4 z-50">
       {!isOpen && (
         <Button
-          className="rounded-full w-16 h-16 bg-zinc-950 hover:bg-zinc-800 text-gray-100 shadow-lg flex items-center justify-center border border-zinc-800 transition-colors duration-200"
+          className="rounded-full w-16 h-16 bg-gray-950 hover:bg-gray-900 text-gray-100 shadow-lg flex items-center justify-center border border-gray-800 transition-colors duration-200"
           onClick={() => setIsOpen(true)}
           aria-label="Open chat"
         >
@@ -54,20 +54,20 @@ export default function ChatWidget() {
       )}
 
       {isOpen && (
-        <Card className="mono-card w-80 max-w-[90vw] sm:max-w-sm md:max-w-md lg:max-w-lg h-[calc(100vh-8rem)] sm:h-[500px] flex flex-col text-gray-100 shadow-2xl overflow-hidden">
-          <CardHeader className="flex flex-row items-center justify-between p-4 border-b border-zinc-800 bg-zinc-950">
-            <CardTitle className="text-lg font-normal text-gray-200">{t("ruyaa_ai_assistant")}</CardTitle>
+        <Card className="w-80 max-w-[90vw] sm:max-w-sm md:max-w-md lg:max-w-lg h-[calc(100vh-8rem)] sm:h-[500px] flex flex-col bg-black text-gray-100 border border-gray-950 shadow-2xl rounded-xl overflow-hidden">
+          <CardHeader className="flex flex-row items-center justify-between p-4 border-b border-gray-900 bg-gray-950">
+            <CardTitle className="text-lg font-semibold text-gray-50">{t("ruyaa_ai_assistant")}</CardTitle>
             <Button
               variant="ghost"
               size="icon"
-              className="text-gray-400 hover:text-white hover:bg-zinc-800 rounded-full transition-colors duration-200"
+              className="text-gray-400 hover:text-white hover:bg-gray-800 rounded-full transition-colors duration-200"
               onClick={() => setIsOpen(false)}
               aria-label="Close chat"
             >
               <X className="w-5 h-5" />
             </Button>
           </CardHeader>
-          <CardContent className="flex-1 p-4 overflow-hidden bg-zinc-950">
+          <CardContent className="flex-1 p-4 overflow-hidden bg-gray-950">
             <ScrollArea className="h-full pr-4">
               <div className="space-y-4">
                 {messages.map((m: Message) => (
@@ -75,8 +75,8 @@ export default function ChatWidget() {
                     <div
                       className={`max-w-[80%] p-3 rounded-lg shadow-sm ${
                         m.role === "user"
-                          ? "bg-zinc-800 text-gray-50" // User message bubble
-                          : "bg-zinc-900 text-gray-200" // AI message bubble
+                          ? "bg-gray-800 text-gray-50" // User message bubble
+                          : "bg-gray-900 text-gray-200" // AI message bubble
                       }`}
                     >
                       <p className="text-sm leading-relaxed" dir={lang === "ar" ? "rtl" : "ltr"}>
@@ -89,13 +89,13 @@ export default function ChatWidget() {
               </div>
             </ScrollArea>
           </CardContent>
-          <CardFooter className="p-4 border-t border-zinc-800 bg-zinc-950">
+          <CardFooter className="p-4 border-t border-gray-900 bg-gray-950">
             <form
               onSubmit={handleFormSubmit}
               className={`flex w-full space-x-2 ${lang === "ar" ? "rtl:space-x-reverse" : ""}`}
             >
               <Input
-                className="flex-1 bg-zinc-900 border-zinc-800 text-gray-50 placeholder:text-gray-500 focus:ring-zinc-700 focus:border-zinc-700 rounded-md px-3 py-2 text-sm"
+                className="flex-1 bg-gray-900 border-gray-800 text-gray-50 placeholder:text-gray-600 focus:ring-gray-700 focus:border-gray-700 rounded-md px-3 py-2 text-sm"
                 placeholder={t("type_your_message")}
                 value={input}
                 onChange={handleInputChange}
@@ -105,7 +105,7 @@ export default function ChatWidget() {
               <Button
                 type="submit"
                 disabled={isLoading}
-                className="bg-zinc-800 hover:bg-zinc-700 text-gray-50 border border-zinc-800 rounded-md px-3 py-2 transition-colors duration-200"
+                className="bg-gray-800 hover:bg-gray-700 text-gray-50 border border-gray-800 rounded-md px-3 py-2 transition-colors duration-200"
               >
                 <Send className="w-5 h-5" />
                 <span className="sr-only">{t("send")}</span>
