@@ -195,22 +195,39 @@ export default function AIHeroPage() {
             <div className="w-24 h-1 bg-gradient-to-r from-transparent via-white to-transparent mx-auto"></div>
           </div>
 
-          {/* Smart Communication - 3 Images without background */}
+          {/* Single Card for Smart Communication */}
           <div
-            className="max-w-6xl mx-auto"
+            className="relative group max-w-4xl mx-auto"
             dir={lang === "ar" ? "rtl" : "ltr"}
           >
             <Link href="/services/smart-communication">
-              <div className="cursor-pointer">
-                <img
-                  src="https://cdn.builder.io/api/v1/image/assets%2F8d6e2ebe2191474fb5a6de98317d4278%2Fc64a4632a430497eb4c501d30ee5b454?format=webp&width=800"
-                  alt="Smart Communication Management"
-                  className="w-full h-auto"
-                  style={{
-                    filter: "none",
-                    background: "transparent",
-                  }}
-                />
+              <div className="relative transform-gpu transition-all duration-700 hover:scale-105 hover:-translate-y-2 cursor-pointer">
+                {/* 3D Shadow Layers */}
+                <div className="absolute inset-0 bg-gray-800/40 rounded-2xl blur-2xl transform translate-x-6 translate-y-6"></div>
+                <div className="absolute inset-0 bg-gray-700/30 rounded-2xl blur-xl transform translate-x-3 translate-y-3"></div>
+                <div className="absolute inset-0 bg-gray-600/20 rounded-2xl blur-lg transform translate-x-1 translate-y-1"></div>
+
+                {/* Main Card */}
+                <div className="relative bg-gradient-to-br from-gray-900/95 to-black/95 backdrop-blur-xl rounded-2xl border border-gray-700/50 overflow-hidden shadow-2xl">
+                  {/* Subtle Border Glow */}
+                  <div className="absolute inset-0 rounded-2xl bg-gradient-to-r from-gray-500/20 via-transparent to-gray-400/20 p-[1px]">
+                    <div className="h-full w-full rounded-2xl bg-gradient-to-br from-gray-900/98 to-black/98"></div>
+                  </div>
+
+                  {/* Card Content */}
+                  <div className="relative">
+                    {/* Image Container - Full Image */}
+                    <div className="relative rounded-t-xl overflow-hidden aspect-[3/1]">
+                      <img
+                        src="/images/smart-communication.png"
+                        alt="Smart Communication Management"
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
+
+                    {/* Text Content - Below the image */}
+                  </div>
+                </div>
               </div>
             </Link>
           </div>
