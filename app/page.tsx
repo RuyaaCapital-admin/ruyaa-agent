@@ -5,6 +5,7 @@ import { Menu, X, Zap, Shield } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import ChatWidget from "@/components/chat-widget"
 import { useLanguage } from "@/context/language-context" // Import useLanguage
+import Link from "next/link"
 
 export default function AIHeroPage() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
@@ -206,7 +207,8 @@ export default function AIHeroPage() {
 
           {/* Card */}
           <div className="relative group max-w-4xl mx-auto" dir={lang === "ar" ? "rtl" : "ltr"}>
-            <div className="relative transform-gpu transition-all duration-700 hover:scale-105 hover:-translate-y-2">
+            <Link href="/services/professional-appointments">
+              <div className="relative transform-gpu transition-all duration-700 hover:scale-105 hover:-translate-y-2 cursor-pointer">
               {/* 3D Shadow Layers */}
               <div className="absolute inset-0 bg-gray-800/40 rounded-2xl blur-2xl transform translate-x-6 translate-y-6"></div>
               <div className="absolute inset-0 bg-gray-700/30 rounded-2xl blur-xl transform translate-x-3 translate-y-3"></div>
@@ -236,7 +238,8 @@ export default function AIHeroPage() {
                   {/* Text Content */}
                 </div>
               </div>
-            </div>
+              </div>
+            </Link>
           </div>
         </div>
       </div>
@@ -260,7 +263,8 @@ export default function AIHeroPage() {
 
           {/* Single Card for Advisory Support */}
           <div className="relative group max-w-4xl mx-auto" dir={lang === "ar" ? "rtl" : "ltr"}>
-            <div className="relative transform-gpu transition-all duration-700 hover:scale-105 hover:-translate-y-2">
+            <Link href="/services/advisory-support">
+              <div className="relative transform-gpu transition-all duration-700 hover:scale-105 hover:-translate-y-2 cursor-pointer">
               {/* 3D Shadow Layers */}
               <div className="absolute inset-0 bg-gray-800/40 rounded-2xl blur-2xl transform translate-x-6 translate-y-6"></div>
               <div className="absolute inset-0 bg-gray-700/30 rounded-2xl blur-xl transform translate-x-3 translate-y-3"></div>
@@ -289,7 +293,8 @@ export default function AIHeroPage() {
                   {/* Text Content - Below the image */}
                 </div>
               </div>
-            </div>
+              </div>
+            </Link>
           </div>
         </div>
       </div>
@@ -313,7 +318,8 @@ export default function AIHeroPage() {
 
           {/* Single Card for Smart Communication */}
           <div className="relative group max-w-4xl mx-auto" dir={lang === "ar" ? "rtl" : "ltr"}>
-            <div className="relative transform-gpu transition-all duration-700 hover:scale-105 hover:-translate-y-2">
+            <Link href="/services/smart-communication">
+              <div className="relative transform-gpu transition-all duration-700 hover:scale-105 hover:-translate-y-2 cursor-pointer">
               {/* 3D Shadow Layers */}
               <div className="absolute inset-0 bg-gray-800/40 rounded-2xl blur-2xl transform translate-x-6 translate-y-6"></div>
               <div className="absolute inset-0 bg-gray-700/30 rounded-2xl blur-xl transform translate-x-3 translate-y-3"></div>
@@ -342,7 +348,8 @@ export default function AIHeroPage() {
                   {/* Text Content - Below the image */}
                 </div>
               </div>
-            </div>
+              </div>
+            </Link>
           </div>
         </div>
       </div>
