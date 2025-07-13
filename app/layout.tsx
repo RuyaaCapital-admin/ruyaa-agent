@@ -19,7 +19,10 @@ export default function RootLayout({
     <html lang="en">
       {/* lang attribute will be set dynamically by LanguageProvider */}
       <body>
-        <LanguageProvider>{children}</LanguageProvider>
+        <LanguageProvider>
+          <Navigation />
+          {children}
+        </LanguageProvider>
       </body>
     </html>
   );
