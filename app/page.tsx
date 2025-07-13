@@ -16,18 +16,21 @@ export default function AIHeroPage() {
   }
 
   return (
-    <div
-      className="min-h-screen text-white overflow-hidden bg-cover bg-center bg-no-repeat"
+    <div 
+      className="min-h-screen text-white overflow-hidden relative"
       style={{
-        backgroundImage:
-          'url("https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-yqffaVPVc3zn939Dz3nCF475QQUNSQ.png")',
+        backgroundImage: 'url("/dark-background-abstract-with-light-effect-vector.jpg")',
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        backgroundRepeat: 'no-repeat',
+        backgroundAttachment: 'fixed',
       }}
     >
       {/* Navigation Bar */}
       <nav className="relative z-50 px-6 py-4 bg-black/90 backdrop-blur-md border-b border-gray-700/30">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
           <div className="flex items-center space-x-2">
-            <img src="/images/ruyaa-logo.png" alt="Ruyaa Capital Logo" className="h-10 w-auto" />
+            <img src="/images/ruyaa-logo.png" alt="Ruyaa Capital Logo" className="h-12 md:h-16 w-auto transition-all duration-300" />
           </div>
 
           {/* Desktop Menu */}
@@ -205,9 +208,49 @@ export default function AIHeroPage() {
             <div className="w-24 h-1 bg-gradient-to-r from-transparent via-white to-transparent mx-auto"></div>
           </div>
 
-          {/* Card */}
-          <div className="relative group max-w-4xl mx-auto" dir={lang === "ar" ? "rtl" : "ltr"}>
+          {/* Card - Simplified */}
+          <div className="relative group max-w-4xl mx-auto overflow-hidden" dir={lang === "ar" ? "rtl" : "ltr"}>
             <Link href="/services/professional-appointments">
+              <div className="relative transform-gpu transition-transform duration-300 hover:scale-[1.02] cursor-pointer">
+                {/* Image Only - No Card Styling */}
+                <div className="relative w-full">
+                  <img
+                    src="/images/service-card.png"
+                    alt="Service Card"
+                    className="w-full h-auto block"
+                    style={{
+                      display: 'block',
+                      maxWidth: '100%',
+                      height: 'auto'
+                    }}
+                  />
+                </div>
+              </div>
+            </Link>
+          </div>
+        </div>
+      </div>
+
+      {/* Smart Communication Section */}
+      <div className="relative py-20 px-6">
+        {/* Background Effects */}
+        <div className="absolute inset-0 bg-transparent"></div>
+
+        {/* Animated Grid Background */}
+        <div className="absolute inset-0 opacity-10">
+          <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.05)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.05)_1px,transparent_1px)] bg-[size:40px_40px]"></div>
+        </div>
+
+        <div className="relative z-10 max-w-7xl mx-auto">
+          {/* Section Title */}
+          <div className="text-center mb-16" dir={lang === "ar" ? "rtl" : "ltr"}>
+            <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">{t("smart_communication_title")}</h2>
+            <div className="w-24 h-1 bg-gradient-to-r from-transparent via-white to-transparent mx-auto"></div>
+          </div>
+
+          {/* Single Card for Smart Communication */}
+          <div className="relative group max-w-4xl mx-auto" dir={lang === "ar" ? "rtl" : "ltr"}>
+            <Link href="/services/smart-communication">
               <div className="relative transform-gpu transition-all duration-700 hover:scale-105 hover:-translate-y-2 cursor-pointer">
               {/* 3D Shadow Layers */}
               <div className="absolute inset-0 bg-gray-800/40 rounded-2xl blur-2xl transform translate-x-6 translate-y-6"></div>
@@ -223,19 +266,18 @@ export default function AIHeroPage() {
 
                 {/* Card Content */}
                 <div className="relative">
-                  {/* Image Container */}
-                  <div className="relative rounded-t-xl overflow-hidden aspect-[16/9]">
+                  {/* Image Container - Full Image */}
+                  <div className="relative rounded-t-xl overflow-hidden aspect-[3/1]">
+                    {" "}
+                    {/* Adjusted aspect ratio to fit the full image */}
                     <img
-                      src="/images/professional-appointments.png"
-                      alt="Professional Appointment Management"
+                      src="/images/smart-communication.png"
+                      alt="Smart Communication Management"
                       className="w-full h-full object-cover"
-                      style={{
-                        objectPosition: "center top", // Adjust object-position to show the screen part
-                      }}
                     />
                   </div>
 
-                  {/* Text Content */}
+                  {/* Text Content - Below the image */}
                 </div>
               </div>
               </div>
@@ -286,61 +328,6 @@ export default function AIHeroPage() {
                     <img
                       src="/images/advisory-support.png"
                       alt="Advisory Support"
-                      className="w-full h-full object-cover"
-                    />
-                  </div>
-
-                  {/* Text Content - Below the image */}
-                </div>
-              </div>
-              </div>
-            </Link>
-          </div>
-        </div>
-      </div>
-
-      {/* Smart Communication Section */}
-      <div className="relative py-20 px-6">
-        {/* Background Effects */}
-        <div className="absolute inset-0 bg-transparent"></div>
-
-        {/* Animated Grid Background */}
-        <div className="absolute inset-0 opacity-10">
-          <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.05)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.05)_1px,transparent_1px)] bg-[size:40px_40px]"></div>
-        </div>
-
-        <div className="relative z-10 max-w-7xl mx-auto">
-          {/* Section Title */}
-          <div className="text-center mb-16" dir={lang === "ar" ? "rtl" : "ltr"}>
-            <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">{t("smart_communication_title")}</h2>
-            <div className="w-24 h-1 bg-gradient-to-r from-transparent via-white to-transparent mx-auto"></div>
-          </div>
-
-          {/* Single Card for Smart Communication */}
-          <div className="relative group max-w-4xl mx-auto" dir={lang === "ar" ? "rtl" : "ltr"}>
-            <Link href="/services/smart-communication">
-              <div className="relative transform-gpu transition-all duration-700 hover:scale-105 hover:-translate-y-2 cursor-pointer">
-              {/* 3D Shadow Layers */}
-              <div className="absolute inset-0 bg-gray-800/40 rounded-2xl blur-2xl transform translate-x-6 translate-y-6"></div>
-              <div className="absolute inset-0 bg-gray-700/30 rounded-2xl blur-xl transform translate-x-3 translate-y-3"></div>
-              <div className="absolute inset-0 bg-gray-600/20 rounded-2xl blur-lg transform translate-x-1 translate-y-1"></div>
-
-              {/* Main Card */}
-              <div className="relative bg-gradient-to-br from-gray-900/95 to-black/95 backdrop-blur-xl rounded-2xl border border-gray-700/50 overflow-hidden shadow-2xl">
-                {/* Subtle Border Glow */}
-                <div className="absolute inset-0 rounded-2xl bg-gradient-to-r from-gray-500/20 via-transparent to-gray-400/20 p-[1px]">
-                  <div className="h-full w-full rounded-2xl bg-gradient-to-br from-gray-900/98 to-black/98"></div>
-                </div>
-
-                {/* Card Content */}
-                <div className="relative">
-                  {/* Image Container - Full Image */}
-                  <div className="relative rounded-t-xl overflow-hidden aspect-[3/1]">
-                    {" "}
-                    {/* Adjusted aspect ratio to fit the full image */}
-                    <img
-                      src="/images/smart-communication.png"
-                      alt="Smart Communication Management"
                       className="w-full h-full object-cover"
                     />
                   </div>
