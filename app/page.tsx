@@ -22,7 +22,7 @@ export default function AIHeroPage() {
       }}
     >
       {/* Hero Section */}
-      <div className="relative min-h-screen flex items-center justify-center px-6 py-12">
+      <div className="relative min-h-screen flex items-center justify-center px-6 py-12 pt-24">
         {/* Background Effects */}
         <div className="absolute inset-0 bg-transparent"></div>
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(255,255,255,0.05),transparent_70%)]"></div>
