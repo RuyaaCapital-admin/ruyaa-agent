@@ -14,7 +14,7 @@ export default function SmartCommunicationPage() {
       }}
     >
       <div className="min-h-screen bg-black/60 backdrop-blur-sm">
-        <div className="container mx-auto px-4 py-12">
+        <div className="container mx-auto px-4 py-12 pt-24">
           <div className="text-center text-white">
             <h1 className="text-4xl md:text-5xl font-bold mb-6">
               Smart Communication Management
