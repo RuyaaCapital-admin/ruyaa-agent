@@ -1,19 +1,13 @@
 "use client";
 
-import { useState } from "react";
-import { Menu, X, Zap, Shield } from "lucide-react";
+import { Zap, Shield } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import ChatWidget from "@/components/chat-widget";
 import { useLanguage } from "@/context/language-context"; // Import useLanguage
 import Link from "next/link";
 
 export default function AIHeroPage() {
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const { lang, setLang, t } = useLanguage(); // Use the language hook
-
-  const toggleLanguage = () => {
-    setLang(lang === "ar" ? "en" : "ar");
-  };
+  const { lang, t } = useLanguage(); // Use the language hook
 
   return (
     <div
