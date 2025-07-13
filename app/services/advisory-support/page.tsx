@@ -52,18 +52,20 @@ export default function AdvisorySupportPage() {
   ]
 
   return (
-    <div className="min-h-screen text-white overflow-hidden bg-cover bg-center bg-no-repeat" 
-         style={{ backgroundImage: 'url("https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-yqffaVPVc3zn939Dz3nCF475QQUNSQ.png")' }}>
+    <div className="min-h-screen bg-black text-gray-200 overflow-hidden">
+      {/* Background Pattern */}
+      <div className="fixed inset-0 bg-gradient-to-br from-zinc-900/20 via-black to-zinc-900/20"></div>
+      <div className="fixed inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(255,255,255,0.02),transparent_70%)]"></div>
       
       {/* Navigation Bar */}
-      <nav className="relative z-50 px-6 py-4 bg-black/90 backdrop-blur-md border-b border-gray-700/30">
+      <nav className="relative z-50 px-6 py-4 bg-zinc-950/95 backdrop-blur-md border-b border-zinc-800">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
           <Link href="/" className="flex items-center space-x-2">
-            <img src="/images/ruyaa-logo.png" alt="Ruyaa Capital Logo" className="h-10 w-auto" />
+            <img src="/images/ruyaa-logo.png" alt="Ruyaa Capital Logo" className="h-10 w-auto mono-image" />
           </Link>
           
           <Link href="/">
-            <Button variant="outline" className="border-gray-600/50 text-gray-300 hover:bg-gray-800/20 bg-transparent">
+            <Button variant="outline" className="border-zinc-700 text-gray-300 hover:bg-zinc-800 bg-transparent">
               <ArrowRight className="h-4 w-4 ml-2" />
               العودة للرئيسية
             </Button>
@@ -73,19 +75,18 @@ export default function AdvisorySupportPage() {
 
       {/* Hero Section */}
       <div className="relative py-20 px-6">
-        <div className="absolute inset-0 bg-transparent"></div>
-        <div className="absolute inset-0 opacity-10">
-          <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.05)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.05)_1px,transparent_1px)] bg-[size:50px_50px]"></div>
+        <div className="absolute inset-0 opacity-3">
+          <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.1)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.1)_1px,transparent_1px)] bg-[size:50px_50px]"></div>
         </div>
 
         <div className="relative z-10 max-w-7xl mx-auto text-center" dir="rtl">
-          <h1 className="text-5xl md:text-7xl font-bold text-white mb-6">
+          <h1 className="text-5xl md:text-7xl font-light text-gray-200 mb-6">
             الاستشارات والدعم المالي
           </h1>
-          <p className="text-xl md:text-2xl text-gray-400 max-w-3xl mx-auto mb-8">
+          <p className="text-xl md:text-2xl text-gray-400 max-w-3xl mx-auto mb-8 leading-relaxed">
             خدمات استشارية متخصصة لتحقيق أهدافك المالية مع فريق من الخبراء المعتمدين
           </p>
-          <div className="w-32 h-1 bg-gradient-to-r from-transparent via-white to-transparent mx-auto"></div>
+          <div className="w-32 h-1 bg-gradient-to-r from-transparent via-gray-500 to-transparent mx-auto"></div>
         </div>
       </div>
 
@@ -93,12 +94,12 @@ export default function AdvisorySupportPage() {
       <div className="relative py-12 px-6">
         <div className="max-w-5xl mx-auto">
           <div className="relative group">
-            <div className="absolute inset-0 bg-gray-800/40 rounded-2xl blur-2xl transform translate-x-4 translate-y-4"></div>
-            <div className="relative bg-gradient-to-br from-gray-900/95 to-black/95 backdrop-blur-xl rounded-2xl border border-gray-700/50 overflow-hidden shadow-2xl">
+            <div className="absolute inset-0 bg-zinc-800/20 rounded-xl blur-xl transform translate-x-4 translate-y-4"></div>
+            <div className="mono-card overflow-hidden shadow-2xl">
               <img 
                 src="/images/advisory-support.png" 
                 alt="خدمات الاستشارات والدعم المالي" 
-                className="w-full h-auto object-cover rounded-xl"
+                className="w-full h-auto object-cover rounded-xl mono-image"
               />
             </div>
           </div>
@@ -110,23 +111,23 @@ export default function AdvisorySupportPage() {
         <div className="max-w-7xl mx-auto" dir="rtl">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             <div>
-              <h2 className="text-4xl font-bold text-white mb-6">وصف الخدمة</h2>
-              <p className="text-lg text-gray-300 mb-6 leading-relaxed">
+              <h2 className="text-4xl font-light text-gray-200 mb-6">وصف الخدمة</h2>
+              <p className="text-lg text-gray-400 mb-6 leading-relaxed">
                 نقدم خدمات استشارية مالية شاملة تهدف إلى مساعدتك في اتخاذ قرارات مالية مدروسة وتحقيق أهدافك الاستثمارية. 
                 فريقنا من المستشارين المعتمدين يوفر لك التوجيه والدعم اللازم لإدارة أموالك بكفاءة عالية.
               </p>
-              <p className="text-lg text-gray-300 mb-8 leading-relaxed">
+              <p className="text-lg text-gray-400 mb-8 leading-relaxed">
                 نستخدم أحدث أدوات التحليل المالي والذكاء الاصطناعي لتقديم توصيات مخصصة تناسب وضعك المالي وأهدافك الشخصية.
               </p>
               
               <div className="space-y-4">
                 {features.map((feature, index) => (
                   <div key={index} className="flex items-start space-x-4 space-x-reverse">
-                    <div className="text-gray-400 mt-1">
+                    <div className="mono-icon mt-1">
                       {feature.icon}
                     </div>
                     <div>
-                      <h3 className="text-xl font-semibold text-white mb-2">{feature.title}</h3>
+                      <h3 className="text-xl font-normal text-gray-300 mb-2">{feature.title}</h3>
                       <p className="text-gray-400">{feature.description}</p>
                     </div>
                   </div>
@@ -134,42 +135,42 @@ export default function AdvisorySupportPage() {
               </div>
             </div>
 
-            <div className="bg-gradient-to-br from-gray-900/90 to-black/90 backdrop-blur-xl rounded-2xl border border-gray-700/50 p-8">
-              <h3 className="text-2xl font-bold text-white mb-6">مثال توضيحي</h3>
+            <div className="mono-card p-8">
+              <h3 className="text-2xl font-light text-gray-200 mb-6">مثال توضيحي</h3>
               <div className="space-y-4">
-                <div className="bg-gray-800/50 rounded-lg p-4">
-                  <h4 className="text-lg font-semibold text-white mb-2">العميل: محمد أحمد</h4>
-                  <p className="text-gray-300 text-sm mb-3">مهندس، 35 سنة، يريد الاستثمار لتعليم أطفاله</p>
+                <div className="bg-zinc-800/50 rounded-lg p-4">
+                  <h4 className="text-lg font-normal text-gray-200 mb-2">العميل: محمد أحمد</h4>
+                  <p className="text-gray-400 text-sm mb-3">مهندس، 35 سنة، يريد الاستثمار لتعليم أطفاله</p>
                   
                   <div className="space-y-2">
                     <div className="flex justify-between">
                       <span className="text-gray-400">الراتب الشهري:</span>
-                      <span className="text-white">15,000 ريال</span>
+                      <span className="text-gray-200">15,000 ريال</span>
                     </div>
                     <div className="flex justify-between">
                       <span className="text-gray-400">المدخرات الحالية:</span>
-                      <span className="text-white">100,000 ريال</span>
+                      <span className="text-gray-200">100,000 ريال</span>
                     </div>
                     <div className="flex justify-between">
                       <span className="text-gray-400">الهدف:</span>
-                      <span className="text-white">500,000 ريال في 10 سنوات</span>
+                      <span className="text-gray-200">500,000 ريال في 10 سنوات</span>
                     </div>
                   </div>
                 </div>
 
-                <div className="bg-green-900/30 rounded-lg p-4 border border-green-700/50">
-                  <h4 className="text-lg font-semibold text-green-300 mb-2">الحل المقترح</h4>
-                  <ul className="space-y-2 text-sm text-gray-300">
+                <div className="bg-green-900/20 rounded-lg p-4 border border-green-800/30">
+                  <h4 className="text-lg font-normal text-green-400 mb-2">الحل المقترح</h4>
+                  <ul className="space-y-2 text-sm text-gray-400">
                     <li className="flex items-center">
-                      <CheckCircle className="h-4 w-4 text-green-400 ml-2" />
+                      <CheckCircle className="h-4 w-4 text-green-500 ml-2" />
                       استثمار 3,000 ريال شهرياً في صناديق متنوعة
                     </li>
                     <li className="flex items-center">
-                      <CheckCircle className="h-4 w-4 text-green-400 ml-2" />
+                      <CheckCircle className="h-4 w-4 text-green-500 ml-2" />
                       توزيع المحفظة: 60% أسهم، 30% سندات، 10% ذهب
                     </li>
                     <li className="flex items-center">
-                      <CheckCircle className="h-4 w-4 text-green-400 ml-2" />
+                      <CheckCircle className="h-4 w-4 text-green-500 ml-2" />
                       مراجعة ربع سنوية وإعادة توازن المحفظة
                     </li>
                   </ul>
@@ -183,14 +184,14 @@ export default function AdvisorySupportPage() {
       {/* Implementation Steps */}
       <div className="relative py-20 px-6">
         <div className="max-w-7xl mx-auto" dir="rtl">
-          <h2 className="text-4xl font-bold text-white text-center mb-12">خطوات تنفيذ الخدمة</h2>
+          <h2 className="text-4xl font-light text-gray-200 text-center mb-12">خطوات تنفيذ الخدمة</h2>
           
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
             {steps.map((step, index) => (
               <Card 
                 key={index}
-                className={`bg-gradient-to-br from-gray-900/90 to-black/90 backdrop-blur-xl border-gray-700/50 cursor-pointer transition-all duration-300 ${
-                  activeStep === index ? 'border-white/50 scale-105' : 'hover:border-gray-600/50'
+                className={`mono-card cursor-pointer transition-all duration-300 ${
+                  activeStep === index ? 'border-gray-500 scale-105' : ''
                 }`}
                 onClick={() => setActiveStep(index)}
               >
@@ -203,10 +204,10 @@ export default function AdvisorySupportPage() {
                     </div>
                     <span className="text-xs text-gray-400">{step.duration}</span>
                   </div>
-                  <CardTitle className="text-white text-lg">{step.title}</CardTitle>
+                  <CardTitle className="text-gray-200 text-lg font-normal">{step.title}</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <p className="text-gray-300 text-sm">{step.description}</p>
+                  <p className="text-gray-400 text-sm">{step.description}</p>
                 </CardContent>
               </Card>
             ))}
@@ -217,38 +218,38 @@ export default function AdvisorySupportPage() {
       {/* Contact Section */}
       <div className="relative py-20 px-6">
         <div className="max-w-5xl mx-auto">
-          <div className="bg-gradient-to-br from-gray-900/95 to-black/95 backdrop-blur-xl rounded-2xl border border-gray-700/50 p-8" dir="rtl">
-            <h2 className="text-3xl font-bold text-white text-center mb-8">اطلب الخدمة الآن</h2>
+          <div className="mono-card p-8" dir="rtl">
+            <h2 className="text-3xl font-light text-gray-200 text-center mb-8">اطلب الخدمة الآن</h2>
             
             <div className="grid md:grid-cols-2 gap-8">
               <div>
-                <h3 className="text-xl font-semibold text-white mb-4">معلومات التواصل</h3>
+                <h3 className="text-xl font-normal text-gray-200 mb-4">معلومات التواصل</h3>
                 <div className="space-y-4">
                   <div className="flex items-center space-x-3 space-x-reverse">
-                    <Phone className="h-5 w-5 text-gray-400" />
-                    <span className="text-gray-300">+963 940 632 191</span>
+                    <Phone className="h-5 w-5 mono-icon" />
+                    <span className="text-gray-400">+963 940 632 191</span>
                   </div>
                   <div className="flex items-center space-x-3 space-x-reverse">
-                    <Mail className="h-5 w-5 text-gray-400" />
-                    <span className="text-gray-300">info@ruyaacapital.com</span>
+                    <Mail className="h-5 w-5 mono-icon" />
+                    <span className="text-gray-400">info@ruyaacapital.com</span>
                   </div>
                   <div className="flex items-center space-x-3 space-x-reverse">
-                    <MessageSquare className="h-5 w-5 text-gray-400" />
-                    <span className="text-gray-300">تواصل عبر الواتساب</span>
+                    <MessageSquare className="h-5 w-5 mono-icon" />
+                    <span className="text-gray-400">تواصل عبر الواتساب</span>
                   </div>
                 </div>
               </div>
               
               <div>
-                <h3 className="text-xl font-semibold text-white mb-4">ابدأ رحلتك المالية</h3>
-                <p className="text-gray-300 mb-6">
+                <h3 className="text-xl font-normal text-gray-200 mb-4">ابدأ رحلتك المالية</h3>
+                <p className="text-gray-400 mb-6">
                   احجز استشارة مجانية مع أحد خبرائنا لمناقشة أهدافك المالية ووضع خطة مخصصة لك.
                 </p>
                 <div className="space-y-3">
-                  <Button className="w-full bg-gradient-to-r from-gray-700 to-gray-800 hover:from-gray-600 hover:to-gray-700 text-white border-0">
+                  <Button className="w-full bg-white text-black hover:bg-gray-200">
                     احجز استشارة مجانية
                   </Button>
-                  <Button variant="outline" className="w-full border-gray-600/50 text-gray-300 hover:bg-gray-800/20 bg-transparent">
+                  <Button variant="outline" className="w-full border-zinc-700 text-gray-300 hover:bg-zinc-800 bg-transparent">
                     تحميل الكتيب التعريفي
                   </Button>
                 </div>
@@ -263,7 +264,7 @@ export default function AdvisorySupportPage() {
       {/* WhatsApp Floating Button */}
       <a
         href="https://api.whatsapp.com/send/?phone=963940632191&text&type=phone_number&app_absent=0"
-        className="fixed bottom-6 left-6 bg-green-500 hover:bg-green-600 text-white p-4 rounded-full shadow-lg z-50"
+        className="fixed bottom-6 left-6 bg-green-600 hover:bg-green-500 text-white p-4 rounded-full shadow-lg z-50 transition-colors duration-200"
         target="_blank"
         aria-label="Chat on WhatsApp"
         rel="noreferrer"

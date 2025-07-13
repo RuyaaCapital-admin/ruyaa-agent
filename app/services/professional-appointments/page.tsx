@@ -63,18 +63,20 @@ export default function ProfessionalAppointmentsPage() {
   ]
 
   return (
-    <div className="min-h-screen text-white overflow-hidden bg-cover bg-center bg-no-repeat" 
-         style={{ backgroundImage: 'url("https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-yqffaVPVc3zn939Dz3nCF475QQUNSQ.png")' }}>
+    <div className="min-h-screen bg-black text-gray-200 overflow-hidden">
+      {/* Background Pattern */}
+      <div className="fixed inset-0 bg-gradient-to-br from-zinc-900/20 via-black to-zinc-900/20"></div>
+      <div className="fixed inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(255,255,255,0.02),transparent_70%)]"></div>
       
       {/* Navigation Bar */}
-      <nav className="relative z-50 px-6 py-4 bg-black/90 backdrop-blur-md border-b border-gray-700/30">
+      <nav className="relative z-50 px-6 py-4 bg-zinc-950/95 backdrop-blur-md border-b border-zinc-800">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
           <Link href="/" className="flex items-center space-x-2">
-            <img src="/images/ruyaa-logo.png" alt="Ruyaa Capital Logo" className="h-10 w-auto" />
+            <img src="/images/ruyaa-logo.png" alt="Ruyaa Capital Logo" className="h-10 w-auto mono-image" />
           </Link>
           
           <Link href="/">
-            <Button variant="outline" className="border-gray-600/50 text-gray-300 hover:bg-gray-800/20 bg-transparent">
+            <Button variant="outline" className="border-zinc-700 text-gray-300 hover:bg-zinc-800 bg-transparent">
               <ArrowRight className="h-4 w-4 ml-2" />
               العودة للرئيسية
             </Button>
@@ -84,19 +86,18 @@ export default function ProfessionalAppointmentsPage() {
 
       {/* Hero Section */}
       <div className="relative py-20 px-6">
-        <div className="absolute inset-0 bg-transparent"></div>
-        <div className="absolute inset-0 opacity-10">
-          <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.05)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.05)_1px,transparent_1px)] bg-[size:50px_50px]"></div>
+        <div className="absolute inset-0 opacity-3">
+          <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.1)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.1)_1px,transparent_1px)] bg-[size:50px_50px]"></div>
         </div>
 
         <div className="relative z-10 max-w-7xl mx-auto text-center" dir="rtl">
-          <h1 className="text-5xl md:text-7xl font-bold text-white mb-6">
+          <h1 className="text-5xl md:text-7xl font-light text-gray-200 mb-6">
             إدارة المواعيد الاحترافية
           </h1>
-          <p className="text-xl md:text-2xl text-gray-400 max-w-3xl mx-auto mb-8">
+          <p className="text-xl md:text-2xl text-gray-400 max-w-3xl mx-auto mb-8 leading-relaxed">
             نظام متطور لإدارة وجدولة المواعيد مع تذكيرات ذكية وتطبيق جوال مخصص
           </p>
-          <div className="w-32 h-1 bg-gradient-to-r from-transparent via-white to-transparent mx-auto"></div>
+          <div className="w-32 h-1 bg-gradient-to-r from-transparent via-gray-500 to-transparent mx-auto"></div>
         </div>
       </div>
 
