@@ -8,10 +8,26 @@ import Link from "next/link";
 
 export default function Navigation() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isContactOpen, setIsContactOpen] = useState(false);
   const { lang, setLang, t } = useLanguage();
 
   const toggleLanguage = () => {
     setLang(lang === "ar" ? "en" : "ar");
+  };
+
+  const handleWhatsApp = () => {
+    window.open(
+      "https://api.whatsapp.com/send/?phone=963940632191&text&type=phone_number&app_absent=0",
+      "_blank",
+    );
+  };
+
+  const handleEmail = () => {
+    window.open("mailto:admin@ruyaacapital.com", "_blank");
+  };
+
+  const handleCall = () => {
+    window.open("tel:+963940632191", "_self");
   };
 
   return (
