@@ -43,39 +43,6 @@ const translations: Record<Language, Record<string, string>> = {
     type_your_message: "اكتب رسالتك...",
     send: "إرسال",
     language_switch: "English", // Text for the button to switch to English
-    smart_communication_description:
-      "نظام إدارة الاتصالات الذكية المتطور الذي يحول تجربة التفاعل مع العملاء",
-    smart_communication_main_benefit:
-      "تحسين كفاءة التواصل وزيادة رضا العملاء بنسبة تصل إلى 85%",
-    service_overview: "نظرة عامة على الخدمة",
-    key_benefits: "الفوائد الرئيسية",
-    how_it_works: "كيف تعمل الخدمة",
-    smart_comm_overview:
-      "نظام إدارة الاتصالات الذكية يستخدم تقنيات الذكاء الاصطناعي المتقدمة لتحليل وتوجيه المحادثات بشكل تلقائي، مما يضمن وصول كل عميل إلى الحل المناسب في أسرع وقت ممكن.",
-    automated_routing: "توجيه تلقائي ذكي",
-    automated_routing_desc:
-      "توجيه المحادثات تلقائياً إلى الفريق المناسب بناءً على طبيعة الاستفسار",
-    sentiment_analysis: "تحليل المشاعر",
-    sentiment_analysis_desc: "فهم حالة العميل النفسية وتقديم الردود المناسبة",
-    response_optimization: "تحسين الردود",
-    response_optimization_desc:
-      "اقتراح أفضل الردود والحلول بناءً على السياق والتاريخ",
-    multichannel_support: "دعم متعدد القنوات",
-    multichannel_support_desc:
-      "إدارة موحدة للمحادثات عبر البريد الإلكتروني، الدردشة، والهاتف",
-    real_time_analytics: "تحليلات فورية",
-    real_time_analytics_desc:
-      "مراقبة أداء الفريق ومؤشرات رضا العملاء في الوقت الفعلي",
-    cost_reduction: "خفض التكاليف",
-    cost_reduction_desc: "تقليل تكاليف خدمة العملاء بنسبة تصل إلى 40%",
-    step_1: "الخطوة 1: التحليل التلقائي",
-    step_1_desc: "يحلل النظام محتوى الرسالة ويحدد طبيعة الاستفسار",
-    step_2: "الخطوة 2: التوجيه الذكي",
-    step_2_desc: "يوجه المحادثة إلى أفضل فريق أو وكيل متاح",
-    step_3: "الخطوة 3: المساعدة الذكية",
-    step_3_desc: "يقدم اقتراحات للحلول والردود المناسبة",
-    step_4: "الخطوة 4: المتابعة والتحسين",
-    step_4_desc: "يتابع النتائج ويحسن الأداء باستمرار",
   },
   en: {
     home: "Home",
