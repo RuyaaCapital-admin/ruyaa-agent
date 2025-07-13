@@ -156,12 +156,39 @@ export default function Navigation() {
             >
               {t("about")}
             </a>
-            <a
-              href="#"
-              className="hover:text-gray-300 transition-colors text-gray-400"
-            >
-              {t("contact")}
-            </a>
+            <div>
+              <button
+                onClick={() => setIsContactOpen(!isContactOpen)}
+                className="hover:text-gray-300 transition-colors text-gray-400 w-full text-left"
+              >
+                {t("contact")}
+              </button>
+              {isContactOpen && (
+                <div className="mt-2 ml-4 flex flex-col space-y-2">
+                  <button
+                    onClick={handleWhatsApp}
+                    className="flex items-center gap-3 text-gray-300 hover:text-green-400 transition-colors p-2 rounded hover:bg-gray-800/50"
+                  >
+                    <MessageCircle className="h-4 w-4" />
+                    <span>WhatsApp</span>
+                  </button>
+                  <button
+                    onClick={handleEmail}
+                    className="flex items-center gap-3 text-gray-300 hover:text-blue-400 transition-colors p-2 rounded hover:bg-gray-800/50"
+                  >
+                    <Mail className="h-4 w-4" />
+                    <span>Email</span>
+                  </button>
+                  <button
+                    onClick={handleCall}
+                    className="flex items-center gap-3 text-gray-300 hover:text-red-400 transition-colors p-2 rounded hover:bg-gray-800/50"
+                  >
+                    <Phone className="h-4 w-4" />
+                    <span>{lang === "ar" ? "اتصال" : "Call"}</span>
+                  </button>
+                </div>
+              )}
+            </div>
             <Button className="bg-gradient-to-r from-gray-700 to-gray-800 hover:from-gray-600 hover:to-gray-700 text-white border-0 w-full">
               {t("get_started")}
             </Button>
