@@ -12,8 +12,6 @@ export default function SmartCommunicationPage() {
         backgroundRepeat: "no-repeat",
         backgroundAttachment: "fixed",
       }}
-    >
-      {/* Empty page with just the background */}
-    </div>
+    ></div>
   );
 }
