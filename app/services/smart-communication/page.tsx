@@ -35,6 +35,19 @@ export default function SmartCommunicationPage() {
                 }}
               />
             </div>
+
+            {/* How Smart Agent Works Image */}
+            <div className="flex justify-center mb-12">
+              <img
+                src="https://cdn.builder.io/api/v1/image/assets%2F8d6e2ebe2191474fb5a6de98317d4278%2Ffaa0d28016fd431a9b1e525e41eb75ed?format=webp&width=800"
+                alt="كيف يعمل الوكيل الذكي؟ - How does the smart agent work?"
+                className="max-w-full h-auto"
+                style={{
+                  filter: "none",
+                  background: "transparent",
+                }}
+              />
+            </div>
           </div>
         </div>
       </div>
