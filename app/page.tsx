@@ -343,7 +343,6 @@ export default function AIHeroPage() {
         </div>
       </div>
 
-      <ChatWidget />
       {/* WhatsApp Floating Button */}
       <a
         href="https://api.whatsapp.com/send/?phone=963940632191&text&type=phone_number&app_absent=0"
