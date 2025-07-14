@@ -42,6 +42,7 @@ const translations: Record<Language, Record<string, string>> = {
       "أهلاً! أنا مساعد رؤيا الذكي – جاهز أشرح كيف وكلاؤنا بيخلّصوا شغلك تلقائياً. شو بتحتاج؟",
     type_your_message: "اكتب رسالتك...",
     send: "إرسال",
+    contact_us_title: "تواصل معنا",
     language_switch: "English", // Text for the button to switch to English
   },
   en: {
