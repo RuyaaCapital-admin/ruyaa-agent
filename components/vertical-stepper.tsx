@@ -61,11 +61,11 @@ export default function VerticalStepper() {
         </div>
 
         {/* Steps */}
-        <div className="space-y-8 sm:space-y-16">
+        <div className="space-y-12 sm:space-y-16">
           {stepperData.map((step, index) => {
             const isLeft = index % 2 === 1; // Alternate: right, left, right, left, right
             return (
-              <div key={step.id} className="relative">
+              <div key={step.id} className="relative mb-4 sm:mb-0">
                 {/* Step Circle positioned at center */}
                 <div className="absolute left-1/2 transform -translate-x-1/2 z-10">
                   {/* Blue shadow layer */}
@@ -91,7 +91,7 @@ export default function VerticalStepper() {
                   className={`w-full flex ${isLeft ? "justify-start" : "justify-end"}`}
                 >
                   <div
-                    className={`w-full sm:w-5/12 ${isLeft ? "pr-8 sm:pr-16" : "pl-8 sm:pl-16"}`}
+                    className={`w-full sm:w-5/12 ${isLeft ? "pr-12 sm:pr-16" : "pl-12 sm:pl-16"}`}
                   >
                     {/* Card with Blue Shadow */}
                     <div className="relative">
