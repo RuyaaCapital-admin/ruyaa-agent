@@ -73,6 +73,34 @@ export default function AIHeroPage() {
           </div>
         </div>
       </div>
+
+      {/* Features Timeline Section */}
+      <div className="relative py-20 px-6">
+        {/* Background Effects */}
+        <div className="absolute inset-0 bg-transparent"></div>
+
+        {/* Animated Grid Background */}
+        <div className="absolute inset-0 opacity-10">
+          <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.05)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.05)_1px,transparent_1px)] bg-[size:40px_40px]"></div>
+        </div>
+
+        <div className="relative z-10 max-w-7xl mx-auto">
+          {/* Section Title */}
+          <div className="text-center mb-16" dir="rtl">
+            <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">
+              مميزات وكيل الذكاء الاصطناعي
+            </h2>
+            <div className="w-24 h-1 bg-gradient-to-r from-transparent via-blue-400/50 to-transparent mx-auto"></div>
+            <p className="text-gray-400 text-lg mt-6 max-w-2xl mx-auto">
+              اكتشف كيف يمكن لوكيل الذكاء الاصطناعي الخاص بنا تحويل عملك وزيادة
+              أرباحك
+            </p>
+          </div>
+
+          <VerticalStepper />
+        </div>
+      </div>
+
       {/* Professional Appointments Section */}
       <div className="relative py-20 px-6">
         {/* Background Effects */}
