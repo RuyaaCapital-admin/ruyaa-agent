@@ -106,7 +106,7 @@ export default function AIHeroPage() {
         <div className="relative z-10 max-w-7xl mx-auto">
           {/* Section Title */}
           <div className="text-center mb-16" dir="rtl">
-            <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-4 leading-tight px-4">
               مميزات وكيل الذكاء الاصطناعي
             </h2>
             <div className="w-24 h-1 bg-gradient-to-r from-transparent via-blue-400/50 to-transparent mx-auto"></div>
