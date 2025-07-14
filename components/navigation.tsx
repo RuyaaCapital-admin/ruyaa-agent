@@ -4,6 +4,7 @@ import { useState } from "react";
 import { Menu, X, Phone, Mail, MessageCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useLanguage } from "@/context/language-context";
+import { useChatWidget } from "@/context/chat-context";
 import Link from "next/link";
 
 export default function Navigation() {
