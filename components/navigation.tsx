@@ -4,12 +4,14 @@ import { useState } from "react";
 import { Menu, X, Phone, Mail, MessageCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useLanguage } from "@/context/language-context";
+import { useChatWidget } from "@/context/chat-context";
 import Link from "next/link";
 
 export default function Navigation() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isContactOpen, setIsContactOpen] = useState(false);
   const { lang, setLang, t } = useLanguage();
+  const { openChat } = useChatWidget();
 
   const toggleLanguage = () => {
     setLang(lang === "ar" ? "en" : "ar");
@@ -51,14 +53,16 @@ export default function Navigation() {
           >
             {t("home")}
           </Link>
-          <a
-            href="#"
+          <Link
+            href="/about"
             className="hover:text-gray-300 transition-colors text-gray-400"
           >
             {t("services")}
-          </a>
+          </Link>
           <a
-            href="#"
+            href="https://docs.google.com/forms/d/e/1FAIpQLSe1uegNY1vFO2TALM3JadNRt0fvPB_WJs_lb9Av6ePiS7OjIA/viewform?usp=dialog"
+            target="_blank"
+            rel="noopener noreferrer"
             className="hover:text-gray-300 transition-colors text-gray-400"
           >
             {t("about")}
@@ -98,7 +102,10 @@ export default function Navigation() {
               </div>
             )}
           </div>
-          <Button className="bg-gradient-to-r from-gray-700 to-gray-800 hover:from-gray-600 hover:to-gray-700 text-white border-0">
+          <Button
+            onClick={openChat}
+            className="bg-gradient-to-r from-gray-700 to-gray-800 hover:from-gray-600 hover:to-gray-700 text-white border-0"
+          >
             {t("get_started")}
           </Button>
           {/* Language Switch Button */}
@@ -144,14 +151,16 @@ export default function Navigation() {
             >
               {t("home")}
             </Link>
-            <a
-              href="#"
+            <Link
+              href="/about"
               className="hover:text-gray-300 transition-colors text-gray-400"
             >
               {t("services")}
-            </a>
+            </Link>
             <a
-              href="#"
+              href="https://docs.google.com/forms/d/e/1FAIpQLSe1uegNY1vFO2TALM3JadNRt0fvPB_WJs_lb9Av6ePiS7OjIA/viewform?usp=dialog"
+              target="_blank"
+              rel="noopener noreferrer"
               className="hover:text-gray-300 transition-colors text-gray-400"
             >
               {t("about")}
@@ -189,7 +198,10 @@ export default function Navigation() {
                 </div>
               )}
             </div>
-            <Button className="bg-gradient-to-r from-gray-700 to-gray-800 hover:from-gray-600 hover:to-gray-700 text-white border-0 w-full">
+            <Button
+              onClick={openChat}
+              className="bg-gradient-to-r from-gray-700 to-gray-800 hover:from-gray-600 hover:to-gray-700 text-white border-0 w-full"
+            >
               {t("get_started")}
             </Button>
           </div>
