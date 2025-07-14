@@ -122,14 +122,13 @@ export default function AIHeroPage() {
         <div className="relative z-10 max-w-7xl mx-auto">
           {/* Section Title */}
           <div className="text-center mb-12" dir="rtl">
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-white leading-tight px-4 mb-4">
+              مميزات وكيل الذكاء الاصطناعي
+            </h2>
             <p className="text-gray-400 text-lg mb-4 max-w-2xl mx-auto">
               اكتشف كيف يمكن لوكيل الذكاء الاصطناعي الخاص بنا تحويل عملك وزيادة
               أرباحك
             </p>
-            <div className="w-24 h-1 bg-gradient-to-r from-transparent via-blue-400/50 to-transparent mx-auto mb-6"></div>
-            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-white leading-tight px-4">
-              مميزات وكيل الذكاء الاصطناعي
-            </h2>
           </div>
 
           <VerticalStepper />
