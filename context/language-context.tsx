@@ -23,8 +23,8 @@ const LanguageContext = createContext<LanguageContextType | undefined>(
 const translations: Record<Language, Record<string, string>> = {
   ar: {
     home: "الرئيسية",
-    services: "الخدمات",
-    about: "حول",
+    services: "من نحن",
+    about: "سجل طلبك",
     contact: "اتصل بنا",
     get_started: "ابدأ الآن",
     hero_subtitle: "حلول ذكية متطورة لتحويل تجربة العملاء المالية",
@@ -42,12 +42,13 @@ const translations: Record<Language, Record<string, string>> = {
       "أهلاً! أنا مساعد رؤيا الذكي – جاهز أشرح كيف وكلاؤنا بيخلّصوا شغلك تلقائياً. شو بتحتاج؟",
     type_your_message: "اكتب رسالتك...",
     send: "إرسال",
+    contact_us_title: "تواصل معنا",
     language_switch: "English", // Text for the button to switch to English
   },
   en: {
     home: "Home",
-    services: "Services",
-    about: "About",
+    services: "About Us",
+    about: "Register Request",
     contact: "Contact",
     get_started: "Get Started",
     hero_subtitle:
@@ -66,6 +67,7 @@ const translations: Record<Language, Record<string, string>> = {
       "Hello! I'm Ruyaa AI Assistant – ready to explain how our agents automate your work. What do you need?",
     type_your_message: "Type your message...",
     send: "Send",
+    contact_us_title: "Contact Us",
     language_switch: "العربية", // Text for the button to switch to Arabic
   },
 };
