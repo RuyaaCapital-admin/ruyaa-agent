@@ -15,9 +15,10 @@ import {
 } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useLanguage } from "@/context/language-context";
+import { useChatWidget } from "@/context/chat-context";
 
 export default function ChatWidget() {
-  const [isOpen, setIsOpen] = useState(false);
+  const { isOpen, setIsOpen } = useChatWidget();
   const [isMinimized, setIsMinimized] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const { lang, t } = useLanguage();
