@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import ChatWidget from "@/components/chat-widget";
 import ContactForm from "@/components/contact-form";
 import VerticalStepper from "@/components/vertical-stepper";
+import PlatformLogos from "@/components/platform-logos";
 import { useLanguage } from "@/context/language-context"; // Import useLanguage
 import Link from "next/link";
 
