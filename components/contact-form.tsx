@@ -39,15 +39,37 @@ export default function ContactForm() {
 
   const onSubmit = async (data: ContactFormData) => {
     setIsLoading(true);
-    // Simulate API call
-    await new Promise((resolve) => setTimeout(resolve, 1500));
-    console.log("Form submitted:", data);
-    setIsSubmitted(true);
-    setIsLoading(false);
-    reset();
 
-    // Reset success state after 3 seconds
-    setTimeout(() => setIsSubmitted(false), 3000);
+    try {
+      // For now, we'll use mailto as a fallback since no backend is set up
+      // This can be replaced with a backend API call later
+      const emailBody = `
+Name: ${data.name}
+Email: ${data.email}
+Phone: ${data.phone}
+Company: ${data.company || "N/A"}
+Subject: ${data.subject}
+
+Message:
+${data.message}
+      `.trim();
+
+      const mailtoLink = `mailto:admin@ruyaacapital.com?subject=${encodeURIComponent(data.subject)}&body=${encodeURIComponent(emailBody)}`;
+
+      // Open default email client
+      window.open(mailtoLink, "_self");
+
+      // Show success message
+      setIsSubmitted(true);
+      reset();
+
+      // Reset success state after 3 seconds
+      setTimeout(() => setIsSubmitted(false), 3000);
+    } catch (error) {
+      console.error("Error sending email:", error);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   if (isSubmitted) {
@@ -227,7 +249,7 @@ export default function ContactForm() {
             ) : (
               <div className="flex items-center justify-center gap-2">
                 <Send className="w-5 h-5" />
-                {lang === "ar" ? "إرسال الر��الة" : "Send Message"}
+                {lang === "ar" ? "إرسال الرسالة" : "Send Message"}
               </div>
             )}
           </Button>
