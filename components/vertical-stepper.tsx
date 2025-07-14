@@ -32,7 +32,7 @@ const stepperData: StepperItem[] = [
     details: [
       "الإجابة والإقناع وإتمام الصفقات أوتوماتيكياً",
       "متوفر 24 ساعة/7 أيام لجميع الاستفسارات",
-      "نسبة حل المشكلات تصل إلى 90%",
+      "نسبة حل ا��مشكلات تصل إلى 90%",
     ],
     icon: <Brain className="w-6 h-6" />,
   },
@@ -61,13 +61,13 @@ export default function VerticalStepper() {
         </div>
 
         {/* Steps */}
-        <div className="space-y-8 sm:space-y-16">
+        <div className="space-y-12 sm:space-y-16">
           {stepperData.map((step, index) => {
             const isLeft = index % 2 === 1; // Alternate: right, left, right, left, right
             return (
-              <div key={step.id} className="relative">
+              <div key={step.id} className="relative mb-4 sm:mb-0">
                 {/* Step Circle positioned at center */}
-                <div className="absolute left-1/2 transform -translate-x-1/2 z-10">
+                <div className="absolute left-1/2 transform -translate-x-1/2 z-10 top-4 sm:top-0">
                   {/* Blue shadow layer */}
                   <div className="absolute inset-0 w-12 h-12 bg-blue-500/20 rounded-full blur-md transform translate-x-1 translate-y-1"></div>
 
@@ -77,7 +77,11 @@ export default function VerticalStepper() {
                   </div>
 
                   {/* Step number badge */}
-                  <div className="absolute -top-2 -right-2 w-6 h-6 bg-gradient-to-br from-gray-700 to-gray-800 rounded-full flex items-center justify-center border border-gray-600 text-white text-xs font-bold">
+                  <div
+                    className={`absolute -top-2 w-6 h-6 bg-gradient-to-br from-gray-700 to-gray-800 rounded-full flex items-center justify-center border border-gray-600 text-white text-xs font-bold ${
+                      isLeft ? "-left-2" : "-right-2"
+                    }`}
+                  >
                     {step.id}
                   </div>
                 </div>
@@ -87,7 +91,7 @@ export default function VerticalStepper() {
                   className={`w-full flex ${isLeft ? "justify-start" : "justify-end"}`}
                 >
                   <div
-                    className={`w-full sm:w-5/12 ${isLeft ? "pr-8 sm:pr-16" : "pl-8 sm:pl-16"}`}
+                    className={`w-full sm:w-5/12 ${isLeft ? "pr-12 sm:pr-16" : "pl-12 sm:pl-16"}`}
                   >
                     {/* Card with Blue Shadow */}
                     <div className="relative">
@@ -95,7 +99,7 @@ export default function VerticalStepper() {
                       <div className="absolute inset-0 bg-blue-500/10 rounded-xl blur-sm transform translate-x-2 translate-y-2"></div>
 
                       {/* Main card */}
-                      <div className="relative bg-black rounded-xl border border-gray-800/50 p-4 sm:p-6 shadow-2xl">
+                      <div className="relative bg-black rounded-xl border border-gray-800/50 p-4 sm:p-6 shadow-2xl mt-8 sm:mt-0">
                         {/* Subtle border glow */}
                         <div className="absolute inset-0 rounded-xl bg-gradient-to-r from-blue-500/5 via-transparent to-blue-400/5 p-[1px]">
                           <div className="h-full w-full rounded-xl bg-black"></div>

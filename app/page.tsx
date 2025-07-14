@@ -1,5 +1,7 @@
 "use client";
 
+"use client";
+
 import { Zap, Shield } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import ChatWidget from "@/components/chat-widget";
@@ -50,46 +52,60 @@ export default function AIHeroPage() {
         </div>
 
         {/* Hero Content */}
-        <div className="relative z-10 max-w-7xl mx-auto text-center" dir="rtl">
-          {/* Main Title with Subtle Blue Shadow */}
-          <div className="relative mb-8">
-            {/* Blue Shadow Layer */}
-            <div className="absolute inset-0 transform translate-x-2 translate-y-2">
-              <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold bg-gradient-to-r from-blue-400/20 to-cyan-400/20 bg-clip-text text-transparent blur-sm">
-                وكيل الذكاء الاصطناعي من رؤيا كابيتا
-              </h1>
+        <div className="relative z-10 max-w-7xl mx-auto" dir="rtl">
+          <div className="flex items-center justify-between">
+            {/* AI Brain Image - positioned on the right */}
+            <div className="hidden lg:flex items-center justify-center w-1/3 opacity-80">
+              <img
+                src="https://cdn.builder.io/api/v1/image/assets%2F2c6c4e9567bc48d998d9523a7c150246%2Fd8d2d23a35ae4a4ab74780941dfdb855?format=webp&width=800"
+                alt="AI Brain"
+                className="w-72 h-72 object-contain drop-shadow-lg"
+              />
             </div>
-            {/* Main Title */}
-            <h1 className="relative text-4xl md:text-6xl lg:text-7xl font-bold bg-gradient-to-r from-white via-gray-100 to-gray-200 bg-clip-text text-transparent">
-              وكيل الذكاء الاصطناعي من رؤيا كابيتا
-            </h1>
+
+            {/* Main Content */}
+            <div className="text-center relative z-10 lg:w-2/3">
+              {/* Main Title with Subtle Blue Shadow */}
+              <div className="relative mb-8">
+                {/* Blue Shadow Layer */}
+                <div className="absolute inset-0 transform translate-x-2 translate-y-2">
+                  <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold bg-gradient-to-r from-blue-400/20 to-cyan-400/20 bg-clip-text text-transparent blur-sm">
+                    وكيل الذكاء الاصطناعي من رؤيا كابيتا
+                  </h1>
+                </div>
+                {/* Main Title */}
+                <h1 className="relative text-4xl md:text-6xl lg:text-7xl font-bold bg-gradient-to-r from-white via-gray-100 to-gray-200 bg-clip-text text-transparent">
+                  وكيل الذكاء الاصطناعي من رؤيا كابيتا
+                </h1>
+              </div>
+
+              {/* Subtitle */}
+              <p className="text-xl md:text-2xl text-gray-400 max-w-3xl mx-auto mb-12 leading-relaxed">
+                حلول ذكية متطورة لتحويل تجربة العملاء وزيادة الإيرادات
+              </p>
+
+              {/* CTA Buttons */}
+              <div className="flex flex-col sm:flex-row gap-4 justify-center mb-16">
+                <Button
+                  size="lg"
+                  onClick={openChat}
+                  className="bg-gradient-to-r from-gray-700 to-gray-800 hover:from-gray-600 hover:to-gray-700 text-white border-0 px-8 py-4 text-lg shadow-lg shadow-blue-500/10"
+                >
+                  ابدأ التجربة المجانية
+                </Button>
+                <Button
+                  size="lg"
+                  variant="outline"
+                  className="border-gray-600/50 text-gray-300 hover:bg-gray-800/20 px-8 py-4 text-lg bg-transparent shadow-lg shadow-blue-500/5"
+                >
+                  تعرف على المزيد
+                </Button>
+              </div>
+
+              {/* Platform Logos */}
+              <PlatformLogos />
+            </div>
           </div>
-
-          {/* Subtitle */}
-          <p className="text-xl md:text-2xl text-gray-400 max-w-3xl mx-auto mb-12 leading-relaxed">
-            حلول ذكية متطورة لتحويل تجربة العملاء وزيادة الإيرادات
-          </p>
-
-          {/* CTA Buttons */}
-          <div className="flex flex-col sm:flex-row gap-4 justify-center mb-16">
-            <Button
-              size="lg"
-              onClick={openChat}
-              className="bg-gradient-to-r from-gray-700 to-gray-800 hover:from-gray-600 hover:to-gray-700 text-white border-0 px-8 py-4 text-lg shadow-lg shadow-blue-500/10"
-            >
-              ابدأ التجربة المجانية
-            </Button>
-            <Button
-              size="lg"
-              variant="outline"
-              className="border-gray-600/50 text-gray-300 hover:bg-gray-800/20 px-8 py-4 text-lg bg-transparent shadow-lg shadow-blue-500/5"
-            >
-              تعرف على المزيد
-            </Button>
-          </div>
-
-          {/* Platform Logos */}
-          <PlatformLogos />
         </div>
       </div>
 
