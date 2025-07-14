@@ -1,12 +1,12 @@
-'use client';
+"use client";
 
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef } from "react";
 
 const stats = [
-  '8% فقط من المواعيد الملغاة',
-  'تحقيق 90% من رضا المرضى',
-  'توفير 3 ساعات يومياً من وقت العمل',
-  'استقبال 80 مريض يومياً بكفاءة'
+  "جميع المواعيد مُنظَّمة بدقة، دون إلغاء أو تأخير، وكل عميل يعلم دوره بوضوح.",
+  "رضا العملاء يرتفع إلى أعلى المستويات بفضل سرعة الاستجابة وسهولة الخدمة.",
+  "توفير 6 ساعات يوميًا من وقت العمل، حيث تُدار جميع المهام المتكررة تلقائيًا وبسلاسة.",
+  "يمكنك خدمة أكثر من 100 عميل يوميًا دون أي ضغط أو إرهاق—النظام دائمًا دقيق وسريع الاستجابة.",
 ];
 
 export default function StatisticsSection() {
@@ -15,10 +15,10 @@ export default function StatisticsSection() {
       <h2 className="text-xl font-bold text-white text-center mb-6">
         النتائج بعد التطبيق
       </h2>
-      
+
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
         {stats.map((stat, index) => (
-          <div 
+          <div
             key={index}
             className="bg-black/40 backdrop-blur-sm rounded-lg p-3 border border-gray-800 text-sm font-semibold text-white text-center hover:bg-black/60 transition-colors duration-200"
           >
