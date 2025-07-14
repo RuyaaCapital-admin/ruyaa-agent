@@ -47,8 +47,8 @@ const translations: Record<Language, Record<string, string>> = {
   },
   en: {
     home: "Home",
-    services: "Services",
-    about: "About",
+    services: "About Us",
+    about: "Register Request",
     contact: "Contact",
     get_started: "Get Started",
     hero_subtitle:
