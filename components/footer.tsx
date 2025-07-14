@@ -109,7 +109,7 @@ export default function Footer() {
               <div className="space-y-3">
                 <div className="text-gray-400 text-sm">
                   {lang === "ar"
-                    ? "وكيل الذكاء الاصطناعي"
+                    ? "وكيل الذكا�� الاصطناعي"
                     : "AI Agent Solutions"}
                 </div>
                 <div className="text-gray-400 text-sm">
@@ -153,18 +153,18 @@ export default function Footer() {
 
                 <div className="flex items-start gap-3">
                   <div className="p-2 bg-gray-900/60 border border-gray-700/50 rounded-lg">
-                    <Phone className="w-4 h-4 text-gray-400" />
+                    <MessageCircle className="w-4 h-4 text-gray-400" />
                   </div>
                   <div>
                     <p className="text-gray-400 text-sm">
-                      {lang === "ar" ? "الهاتف" : "Phone"}
+                      {lang === "ar" ? "واتساب" : "WhatsApp"}
                     </p>
-                    <a
-                      href="tel:+963940632191"
+                    <button
+                      onClick={handleWhatsApp}
                       className="text-white text-sm hover:text-gray-300 transition-colors"
                     >
-                      +963 940 632 191
-                    </a>
+                      963 940 632 191
+                    </button>
                   </div>
                 </div>
 
