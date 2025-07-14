@@ -38,7 +38,7 @@ export default function Navigation() {
         <div className="flex items-center space-x-2">
           <Link href="/">
             <img
-              src="/images/ruyaa-logo.png"
+              src="https://cdn.builder.io/api/v1/image/assets%2Fb28b53df88fa4c49b4b3781167d08bdc%2F79e6ee17896a499bbacd1436df3f847c?format=webp&width=800"
               alt="Ruyaa Capital Logo"
               className="h-12 md:h-16 w-auto transition-all duration-300 cursor-pointer"
             />
