@@ -117,7 +117,12 @@ export default function ChatWidget() {
           aria-label="Open chat"
         >
           <div className="absolute inset-0 rounded-full bg-gradient-to-tr from-gray-900 to-black opacity-90 group-hover:opacity-100 transition-opacity duration-300" />
-          <MessageSquare className="relative z-10 w-6 h-6 sm:w-7 sm:h-7 text-white group-hover:text-gray-200 transition-colors duration-300" />
+          <div
+            className="relative z-10 text-white group-hover:text-gray-200 transition-colors duration-300 animate-spin"
+            style={{ animation: "spin 4s linear infinite" }}
+          >
+            <span className="text-xl sm:text-2xl font-bold font-serif">R</span>
+          </div>
           <div className="absolute inset-0 rounded-full border-2 border-gray-600 opacity-0 group-hover:opacity-100 animate-ping" />
         </Button>
       </div>
