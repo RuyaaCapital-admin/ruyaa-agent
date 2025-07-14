@@ -1,7 +1,5 @@
-// Edge-runtime proxy to OpenRouter
+// Edge-runtime proxy to OpenRouter (OpenAI-compatible response)
 export const runtime = 'edge';
-
-const OPENROUTER_API_KEY = process.env.OPENROUTER_API_KEY!;
 
 export async function POST(req: Request) {
   const { messages } = await req.json();
@@ -10,7 +8,7 @@ export async function POST(req: Request) {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      Authorization: `Bearer ${OPENROUTER_API_KEY}`,
+      Authorization: `Bearer ${process.env.OPENROUTER_API_KEY}`,
     },
     body: JSON.stringify({
       model: 'deepseek/deepseek-r1:free',
@@ -19,8 +17,31 @@ export async function POST(req: Request) {
     }),
   });
 
-  return new Response(r.body, {
-    status: r.status,
-    headers: { 'Content-Type': 'application/json' },
-  });
+  // Parse response from OpenRouter
+  const data = await r.json();
+
+  // Patch: wrap into OpenAI-style response so most UIs work
+  return new Response(
+    JSON.stringify({
+      id: data.id,
+      object: data.object || 'chat.completion',
+      created: data.created || Date.now(),
+      model: data.model,
+      choices: [
+        {
+          index: 0,
+          message: data.choices?.[0]?.message || {
+            role: data.role || 'assistant',
+            content: data.content || '',
+          },
+          finish_reason:
+            data.choices?.[0]?.finish_reason || data.finish_reason || 'stop',
+        },
+      ],
+    }),
+    {
+      status: r.status,
+      headers: { 'Content-Type': 'application/json' },
+    }
+  );
 }
