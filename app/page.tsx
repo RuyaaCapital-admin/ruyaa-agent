@@ -6,6 +6,7 @@ import ChatWidget from "@/components/chat-widget";
 import ContactForm from "@/components/contact-form";
 import VerticalStepper from "@/components/vertical-stepper";
 import PlatformLogos from "@/components/platform-logos";
+import Footer from "@/components/footer";
 import { useLanguage } from "@/context/language-context"; // Import useLanguage
 import { useChatWidget } from "@/context/chat-context"; // Import chat context
 import Link from "next/link";
