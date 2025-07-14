@@ -25,6 +25,7 @@ function useSimpleChat(api: string, initialMessages: any[]) {
   const [messages, setMessages] = useState(initialMessages);
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [hasShownWelcome, setHasShownWelcome] = useState(false);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setInput(e.target.value);
