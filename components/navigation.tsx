@@ -11,6 +11,7 @@ export default function Navigation() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isContactOpen, setIsContactOpen] = useState(false);
   const { lang, setLang, t } = useLanguage();
+  const { openChat } = useChatWidget();
 
   const toggleLanguage = () => {
     setLang(lang === "ar" ? "en" : "ar");
