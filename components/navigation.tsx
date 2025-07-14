@@ -198,7 +198,10 @@ export default function Navigation() {
                 </div>
               )}
             </div>
-            <Button className="bg-gradient-to-r from-gray-700 to-gray-800 hover:from-gray-600 hover:to-gray-700 text-white border-0 w-full">
+            <Button
+              onClick={openChat}
+              className="bg-gradient-to-r from-gray-700 to-gray-800 hover:from-gray-600 hover:to-gray-700 text-white border-0 w-full"
+            >
               {t("get_started")}
             </Button>
           </div>
