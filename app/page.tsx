@@ -49,19 +49,20 @@ export default function AIHeroPage() {
           <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.05)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.05)_1px,transparent_1px)] bg-[size:50px_50px] [mask-image:radial-gradient(ellipse_80%_50%_at_50%_0%,#000_70%,transparent_110%)]"></div>
         </div>
 
-        {/* Hero Content */}
+                {/* Hero Content */}
         <div className="relative z-10 max-w-7xl mx-auto" dir="rtl">
-          {/* AI Brain Image - positioned on the right */}
-          <div className="absolute top-0 right-0 hidden lg:block opacity-70 pointer-events-none">
-            <img
-              src="https://cdn.builder.io/api/v1/image/assets%2F2c6c4e9567bc48d998d9523a7c150246%2Fd8d2d23a35ae4a4ab74780941dfdb855?format=webp&width=800"
-              alt="AI Brain"
-              className="w-80 h-80 object-contain"
-            />
-          </div>
+          <div className="flex items-center justify-between">
+            {/* AI Brain Image - positioned on the right */}
+            <div className="hidden lg:flex items-center justify-center w-1/3 opacity-80">
+              <img
+                src="https://cdn.builder.io/api/v1/image/assets%2F2c6c4e9567bc48d998d9523a7c150246%2Fd8d2d23a35ae4a4ab74780941dfdb855?format=webp&width=800"
+                alt="AI Brain"
+                className="w-72 h-72 object-contain drop-shadow-lg"
+              />
+            </div>
 
-          {/* Main Content */}
-          <div className="text-center relative z-10">
+            {/* Main Content */}
+            <div className="text-center relative z-10 lg:w-2/3">
             {/* Main Title with Subtle Blue Shadow */}
             <div className="relative mb-8">
               {/* Blue Shadow Layer */}
