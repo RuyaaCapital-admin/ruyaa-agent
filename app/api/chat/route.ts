@@ -1,6 +1,6 @@
-import { generateText } from "ai"
-import { groq } from "@ai-sdk/groq"
-import { nanoid } from "nanoid"
+import { generateText } from "ai";
+import { groq } from "@ai-sdk/groq";
+import { nanoid } from "nanoid";
 
 /**
  * POST /api/chat
@@ -14,9 +14,22 @@ import { nanoid } from "nanoid"
  */
 export async function POST(req: Request) {
   try {
-    const { messages } = await req.json()
+    const { messages } = await req.json();
 
-    const systemPrompt = `Ruyaa Capital AI Agent **Identity & Mission** أنت «مساعد رؤيا الذكي» (AI Agent فعّال، وليس Chatbot). تمثّل بوابة وكلاء رؤيا كابيتال وتتفاعل مباشرة مع الزوّار – كثير منهم جديد على الشركة ولا يعرف عروضها التخصصية. مهمّتك : إرشادهم ودعمهم بالاعتماد **حصراً** على محتوى قاعدة المعرفة الرسمية (RAG).
+    const systemPrompt = `Ruyaa Capital AI Agent **Identity & Mission** أنت «مساعد رؤيا الذكي» (AI Agent فعّال، وليس Chatbot). تمثّل بوابة وكلاء رؤيا كابيتال وتتفاعل مباشرة مع الزوّار – كثير منهم جديد على الشركة ولا يعرف عروضها التخصصية. مهمّتك : إرشادهم ودعمهم بالاعتماد **حصراً** على محتوى قاعدة المعرفة الرسم��ة (RAG).
+
+**أنت مساعد ذكي محادثي وودود. هدفك هو جذب العملاء لرؤيا كابيتال من خلال ردود قصيرة وذكية ومحادثية. لا تخرج أبداً عن دورك كوكيل رؤيا الذكي ودعم العملاء.**
+
+## معلومات رؤيا كابيتال الاجتماعية والتواصل
+**حسابات التواصل الاجتماعي:**
+- Instagram: https://www.instagram.com/ruyaa.ai
+- ChatGPT Agent: https://chatgpt.com/g/g-68753b21dc948191908c3e7f1310504f-ruyaacapital-smart-agent
+- الموقع الرئيسي: https://ruyaacapital.com (للتداول الذكي - Trading with AI)
+- الهاتف: +963 9406 32191
+- الإيميل: admin@ruyaacapital.com
+
+**أنت على دراية كاملة بالموقع وجميع الخدمات والنماذج. إذا سأل المستخدم عن أي شيء، يجب أن تكون قادر على توجيهه.**
+
 ---
 ## 1 – التزام صارم بقاعدة المعرفة
 * تردّ فقط بما يسترجع من RAG؛ لا تعميم ولا افتراض ولا تأليف.
@@ -46,21 +59,21 @@ export async function POST(req: Request) {
 * لا تُحيل إلى موظّف بشري ولا تكشف آليات داخلية.
 ---
 ## تحيّة الجلسة (مرة واحدة)
-«أهلاً! أنا مساعد رؤيا الذكي – جاهز أشرح كيف وكلاؤنا بيخلّصوا شغلك تلقائياً. شو بتحتاج؟»`
+«أهلاً! أنا مساعد رؤيا الذكي – جاهز أشرح كيف وكلاؤنا بيخلّصوا شغلك تلقائياً. شو بتحتاج؟»`;
 
     const { text } = await generateText({
       model: groq("llama3-8b-8192"),
       prompt: messages[messages.length - 1]?.content ?? "",
       system: systemPrompt,
-    })
+    });
 
     return Response.json({
       id: nanoid(),
       role: "assistant",
       text, // <- key changed from content to text
-    })
+    });
   } catch (err) {
-    console.error("chat api error:", err)
-    return Response.json({ error: "failed" }, { status: 500 })
+    console.error("chat api error:", err);
+    return Response.json({ error: "failed" }, { status: 500 });
   }
 }
