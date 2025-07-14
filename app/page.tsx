@@ -32,6 +32,45 @@ export default function AIHeroPage() {
         <div className="absolute inset-0 opacity-10">
           <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.05)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.05)_1px,transparent_1px)] bg-[size:50px_50px] [mask-image:radial-gradient(ellipse_80%_50%_at_50%_0%,#000_70%,transparent_110%)]"></div>
         </div>
+
+        {/* Hero Content */}
+        <div className="relative z-10 max-w-7xl mx-auto text-center" dir="rtl">
+          {/* Main Title with Subtle Blue Shadow */}
+          <div className="relative mb-8">
+            {/* Blue Shadow Layer */}
+            <div className="absolute inset-0 transform translate-x-2 translate-y-2">
+              <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold bg-gradient-to-r from-blue-400/20 to-cyan-400/20 bg-clip-text text-transparent blur-sm">
+                وكيل الذكاء الاصطناعي من رؤيا كابيتا
+              </h1>
+            </div>
+            {/* Main Title */}
+            <h1 className="relative text-4xl md:text-6xl lg:text-7xl font-bold bg-gradient-to-r from-white via-gray-100 to-gray-200 bg-clip-text text-transparent">
+              وكيل الذكاء الاصطناعي من رؤيا كابيتا
+            </h1>
+          </div>
+
+          {/* Subtitle */}
+          <p className="text-xl md:text-2xl text-gray-400 max-w-3xl mx-auto mb-12 leading-relaxed">
+            حلول ذكية متطورة لتحويل تجربة العملاء وزيادة الإيرادات
+          </p>
+
+          {/* CTA Buttons */}
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <Button
+              size="lg"
+              className="bg-gradient-to-r from-gray-700 to-gray-800 hover:from-gray-600 hover:to-gray-700 text-white border-0 px-8 py-4 text-lg shadow-lg shadow-blue-500/10"
+            >
+              ابدأ التجربة المجانية
+            </Button>
+            <Button
+              size="lg"
+              variant="outline"
+              className="border-gray-600/50 text-gray-300 hover:bg-gray-800/20 px-8 py-4 text-lg bg-transparent shadow-lg shadow-blue-500/5"
+            >
+              تعرف على المزيد
+            </Button>
+          </div>
+        </div>
       </div>
       {/* Professional Appointments Section */}
       <div className="relative py-20 px-6">
