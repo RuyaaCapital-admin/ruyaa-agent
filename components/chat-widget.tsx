@@ -2,8 +2,6 @@
 
 import type React from "react";
 import { useState, useEffect, useRef } from "react";
-import { useChat } from "ai/react";
-import type { Message } from "ai";
 import { Send, MessageSquare, X, Bot, User, Minimize2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -17,23 +15,85 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { useLanguage } from "@/context/language-context";
 import { useChatWidget } from "@/context/chat-context";
 
+// ----
+// IMPORTANT: The "You need to call 'initialize' before calling this" error
+// means the `useChat` hook is being called without the required provider or context initialization.
+// This version does NOT use useChat from ai/react. Instead, it fetches the API directly.
+// ----
+
+function useSimpleChat(api: string, initialMessages: any[]) {
+  const [messages, setMessages] = useState(initialMessages);
+  const [input, setInput] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setInput(e.target.value);
+  };
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (!input.trim()) return;
+    const userMessage = {
+      id: Math.random().toString(36).slice(2),
+      role: "user",
+      content: input,
+    };
+    setMessages((prev: any) => [...prev, userMessage]);
+    setInput("");
+    setIsLoading(true);
+    try {
+      const res = await fetch(api, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          messages: [...messages, { role: "user", content: input }],
+        }),
+      });
+      const data = await res.json();
+      // Accept both text or content keys
+      const assistantMessage = {
+        id: data.id || Math.random().toString(36).slice(2),
+        role: "assistant",
+        content: data.text || data.content || "[No response]",
+      };
+      setMessages((prev: any) => [...prev, assistantMessage]);
+    } catch (e) {
+      setMessages((prev: any) => [
+        ...prev,
+        {
+          id: Math.random().toString(36).slice(2),
+          role: "assistant",
+          content: "[Error: No response from server]",
+        },
+      ]);
+    }
+    setIsLoading(false);
+  };
+
+  return {
+    messages,
+    input,
+    handleInputChange,
+    handleSubmit,
+    isLoading,
+  };
+}
+
 export default function ChatWidget() {
   const { isOpen, setIsOpen } = useChatWidget();
   const [isMinimized, setIsMinimized] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const { lang, t } = useLanguage();
 
+  // Replace useChat with useSimpleChat
   const { messages, input, handleInputChange, handleSubmit, isLoading } =
-    useChat({
-      api: "/api/chat",
-      initialMessages: [
-        {
-          id: "welcome",
-          role: "assistant",
-          content: t("chat_welcome_message"),
-        },
-      ],
-    });
+    useSimpleChat("/api/chat", [
+      {
+        id: "welcome",
+        role: "assistant",
+        content: t("chat_welcome_message"),
+      },
+    ]);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -58,8 +118,6 @@ export default function ChatWidget() {
         >
           <div className="absolute inset-0 rounded-full bg-gradient-to-tr from-gray-900 to-black opacity-90 group-hover:opacity-100 transition-opacity duration-300" />
           <MessageSquare className="relative z-10 w-6 h-6 sm:w-7 sm:h-7 text-white group-hover:text-gray-200 transition-colors duration-300" />
-
-          {/* Pulse animation */}
           <div className="absolute inset-0 rounded-full border-2 border-gray-600 opacity-0 group-hover:opacity-100 animate-ping" />
         </Button>
       </div>
@@ -144,7 +202,7 @@ export default function ChatWidget() {
         <CardContent className="flex-1 p-0 bg-gradient-to-b from-gray-950 to-black overflow-hidden">
           <ScrollArea className="h-full px-4 py-4">
             <div className="space-y-4">
-              {messages.map((m: Message) => (
+              {messages.map((m: any) => (
                 <div key={m.id} className="flex items-start space-x-3">
                   {m.role === "assistant" && (
                     <div className="w-8 h-8 bg-gradient-to-br from-gray-800 to-gray-900 rounded-full flex items-center justify-center border border-gray-700 flex-shrink-0 mt-1">
