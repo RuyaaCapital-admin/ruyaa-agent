@@ -9,7 +9,7 @@ import { nanoid } from "nanoid"
  *  { messages: Array<{ role: "user" | "assistant"; content: string }> }
  *
  * We respond with JSON:
- *  { id: string; role: "assistant"; content: string }
+ *  { id: string; role: "assistant"; text: string }
  * which avoids stream ports and works fine in Next.js.
  */
 export async function POST(req: Request) {
@@ -57,7 +57,7 @@ export async function POST(req: Request) {
     return Response.json({
       id: nanoid(),
       role: "assistant",
-      content: text,
+      text, // <- key changed from content to text
     })
   } catch (err) {
     console.error("chat api error:", err)
