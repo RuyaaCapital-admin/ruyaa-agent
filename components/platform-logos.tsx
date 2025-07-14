@@ -16,7 +16,7 @@ export default function PlatformLogos() {
           className="group relative cursor-pointer"
         >
           <div className="absolute inset-0 bg-blue-500/20 rounded-full blur-lg"></div>
-          <div className="relative w-12 h-12 md:w-16 md:h-16 bg-black rounded-full flex items-center justify-center border border-gray-700 hover:border-gray-500 transition-all duration-300 group-hover:scale-110">
+          <div className="relative w-12 h-12 md:w-16 md:h-16 bg-black rounded-full flex items-center justify-center border border-gray-700 hover:border-gray-500 transition-all duration-300 group-hover:scale-110 group-hover:rotate-12">
             <svg
               viewBox="0 0 24 24"
               className="w-6 h-6 md:w-8 md:h-8 text-white"
@@ -35,7 +35,7 @@ export default function PlatformLogos() {
           className="group relative cursor-pointer"
         >
           <div className="absolute inset-0 bg-green-500/20 rounded-full blur-lg"></div>
-          <div className="relative w-12 h-12 md:w-16 md:h-16 bg-black rounded-full flex items-center justify-center border border-gray-700 hover:border-gray-500 transition-all duration-300 group-hover:scale-110">
+          <div className="relative w-12 h-12 md:w-16 md:h-16 bg-black rounded-full flex items-center justify-center border border-gray-700 hover:border-gray-500 transition-all duration-300 group-hover:scale-110 group-hover:rotate-12">
             <svg
               viewBox="0 0 24 24"
               className="w-6 h-6 md:w-8 md:h-8 text-green-400"
@@ -54,7 +54,7 @@ export default function PlatformLogos() {
           className="group relative cursor-pointer"
         >
           <div className="absolute inset-0 bg-pink-500/20 rounded-full blur-lg"></div>
-          <div className="relative w-12 h-12 md:w-16 md:h-16 bg-black rounded-full flex items-center justify-center border border-gray-700 hover:border-gray-500 transition-all duration-300 group-hover:scale-110">
+          <div className="relative w-12 h-12 md:w-16 md:h-16 bg-black rounded-full flex items-center justify-center border border-gray-700 hover:border-gray-500 transition-all duration-300 group-hover:scale-110 group-hover:rotate-12">
             <svg
               viewBox="0 0 24 24"
               className="w-6 h-6 md:w-8 md:h-8 text-pink-400"
@@ -68,7 +68,7 @@ export default function PlatformLogos() {
         {/* Facebook */}
         <div className="group relative">
           <div className="absolute inset-0 bg-blue-600/20 rounded-full blur-lg"></div>
-          <div className="relative w-12 h-12 md:w-16 md:h-16 bg-black rounded-full flex items-center justify-center border border-gray-700 hover:border-gray-500 transition-all duration-300 group-hover:scale-110">
+          <div className="relative w-12 h-12 md:w-16 md:h-16 bg-black rounded-full flex items-center justify-center border border-gray-700 hover:border-gray-500 transition-all duration-300 group-hover:scale-110 group-hover:rotate-12">
             <svg
               viewBox="0 0 24 24"
               className="w-6 h-6 md:w-8 md:h-8 text-blue-400"
@@ -87,7 +87,7 @@ export default function PlatformLogos() {
           className="group relative cursor-pointer"
         >
           <div className="absolute inset-0 bg-red-500/20 rounded-full blur-lg"></div>
-          <div className="relative w-12 h-12 md:w-16 md:h-16 bg-black rounded-full flex items-center justify-center border border-gray-700 hover:border-gray-500 transition-all duration-300 group-hover:scale-110">
+          <div className="relative w-12 h-12 md:w-16 md:h-16 bg-black rounded-full flex items-center justify-center border border-gray-700 hover:border-gray-500 transition-all duration-300 group-hover:scale-110 group-hover:rotate-12">
             <svg
               viewBox="0 0 24 24"
               className="w-6 h-6 md:w-8 md:h-8 text-white"
