@@ -93,10 +93,10 @@ export default function VerticalStepper() {
                   <div className="absolute inset-0 bg-blue-500/10 rounded-xl blur-sm transform translate-x-2 translate-y-2"></div>
 
                   {/* Main card */}
-                  <div className="relative bg-gradient-to-br from-gray-900/90 to-black/90 backdrop-blur-xl rounded-xl border border-gray-800/50 p-4 sm:p-6 shadow-2xl">
+                  <div className="relative bg-black rounded-xl border border-gray-800/50 p-4 sm:p-6 shadow-2xl">
                     {/* Subtle border glow */}
-                    <div className="absolute inset-0 rounded-xl bg-gradient-to-r from-blue-500/10 via-transparent to-blue-400/10 p-[1px]">
-                      <div className="h-full w-full rounded-xl bg-gradient-to-br from-gray-900/95 to-black/95"></div>
+                    <div className="absolute inset-0 rounded-xl bg-gradient-to-r from-blue-500/5 via-transparent to-blue-400/5 p-[1px]">
+                      <div className="h-full w-full rounded-xl bg-black"></div>
                     </div>
 
                     <div className="relative">
