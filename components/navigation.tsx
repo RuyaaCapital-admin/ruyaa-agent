@@ -146,14 +146,16 @@ export default function Navigation() {
             >
               {t("home")}
             </Link>
-            <a
-              href="#"
+            <Link
+              href="/about"
               className="hover:text-gray-300 transition-colors text-gray-400"
             >
               {t("services")}
-            </a>
+            </Link>
             <a
-              href="#"
+              href="https://docs.google.com/forms/d/e/1FAIpQLSe1uegNY1vFO2TALM3JadNRt0fvPB_WJs_lb9Av6ePiS7OjIA/viewform?usp=dialog"
+              target="_blank"
+              rel="noopener noreferrer"
               className="hover:text-gray-300 transition-colors text-gray-400"
             >
               {t("about")}
