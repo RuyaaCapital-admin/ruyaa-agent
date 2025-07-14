@@ -12,6 +12,7 @@ import Link from "next/link";
 
 export default function AIHeroPage() {
   const { lang, t } = useLanguage(); // Use the language hook
+  const { openChat } = useChatWidget(); // Use the chat widget hook
 
   return (
     <div
