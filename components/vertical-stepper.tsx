@@ -1,6 +1,17 @@
 "use client";
 
-import { Clock, TrendingUp, Brain, Link, Calendar } from "lucide-react";
+import {
+  Clock,
+  TrendingUp,
+  Brain,
+  Link,
+  Calendar,
+  Shield,
+  Zap,
+  MessageCircle,
+  Globe,
+  Settings,
+} from "lucide-react";
 
 interface StepperItem {
   id: number;
@@ -40,7 +51,7 @@ const stepperData: StepperItem[] = [
     id: 4,
     title: "تكامل سلس عبر المنصات",
     description: "يمكن مقارنته مع جميع منصات التواصل الاجتماعي",
-    icon: <Link className="w-6 h-6" />,
+    icon: <Globe className="w-6 h-6" />,
   },
   {
     id: 5,
