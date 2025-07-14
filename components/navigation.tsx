@@ -1,7 +1,7 @@
 "use client";
 
-import { useState } from "react";
-import { Menu, X, Phone, Mail, MessageCircle } from "lucide-react";
+import { useState, useEffect } from "react";
+import { Menu, X, Phone, Mail, MessageCircle, Globe } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useLanguage } from "@/context/language-context";
 import { useChatWidget } from "@/context/chat-context";
@@ -10,6 +10,8 @@ import Link from "next/link";
 export default function Navigation() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isContactOpen, setIsContactOpen] = useState(false);
+  const [isVisible, setIsVisible] = useState(true);
+  const [lastScrollY, setLastScrollY] = useState(0);
   const { lang, setLang, t } = useLanguage();
   const { openChat } = useChatWidget();
 
@@ -32,8 +34,34 @@ export default function Navigation() {
     window.open("tel:+963940632191", "_self");
   };
 
+  useEffect(() => {
+    const controlNavbar = () => {
+      if (typeof window !== "undefined") {
+        if (window.scrollY > lastScrollY && window.scrollY > 100) {
+          // Scrolling down and past 100px
+          setIsVisible(false);
+        } else {
+          // Scrolling up
+          setIsVisible(true);
+        }
+        setLastScrollY(window.scrollY);
+      }
+    };
+
+    if (typeof window !== "undefined") {
+      window.addEventListener("scroll", controlNavbar);
+      return () => {
+        window.removeEventListener("scroll", controlNavbar);
+      };
+    }
+  }, [lastScrollY]);
+
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 px-6 py-4 bg-black/90 backdrop-blur-md border-b border-gray-700/30">
+    <nav
+      className={`fixed top-0 left-0 right-0 z-50 px-6 py-4 bg-black/90 backdrop-blur-md border-b border-gray-700/30 transition-transform duration-300 ease-in-out ${
+        isVisible ? "translate-y-0" : "-translate-y-full"
+      }`}
+    >
       <div className="max-w-7xl mx-auto flex items-center justify-between">
         <div className="flex items-center space-x-2">
           <Link href="/">
@@ -111,10 +139,10 @@ export default function Navigation() {
           {/* Language Switch Button */}
           <Button
             variant="outline"
-            className="border-gray-600/50 text-gray-300 hover:bg-gray-800/20 px-4 py-2 bg-transparent"
+            className="border-gray-600/50 text-gray-300 hover:bg-gray-800/20 px-3 py-2 bg-transparent"
             onClick={toggleLanguage}
           >
-            {t("language_switch")}
+            <Globe className="h-4 w-4" />
           </Button>
         </div>
 
@@ -123,10 +151,10 @@ export default function Navigation() {
           {/* Language Switch Button for Mobile */}
           <Button
             variant="outline"
-            className="border-gray-600/50 text-gray-300 hover:bg-gray-800/20 px-3 py-1.5 bg-transparent mr-2"
+            className="border-gray-600/50 text-gray-300 hover:bg-gray-800/20 px-2 py-1.5 bg-transparent mr-2"
             onClick={toggleLanguage}
           >
-            {t("language_switch")}
+            <Globe className="h-4 w-4" />
           </Button>
           <button
             className="text-gray-300"
