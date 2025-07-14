@@ -67,7 +67,7 @@ function useSimpleChat(api: string, initialMessages: any[]) {
 
     if (hasIdentityKeyword) {
       return lang === "ar"
-        ? "أنا مساعد رؤيا كابيتال، بخلي شغلك أسهل وأسرع وبدون أخطاء—أي خدمة بتحتاجها ج��هز فوراً."
+        ? "أنا مساعد رؤيا كابيتال، بخلي شغلك أسهل وأسرع وبدون أخطاء—أي خدمة بتحتاجها جاهز فوراً."
         : "I'm your RuyaaCapital Smart Assistant. I help you boost sales, avoid mistakes, and get things done fast—24/7.";
     }
 
@@ -208,8 +208,8 @@ export default function ChatWidget() {
 
   if (isMinimized) {
     return (
-      <div className="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-50">
-        <Card className="w-72 sm:w-80 max-w-[calc(100vw-2rem)] bg-black border-2 border-gray-800 shadow-2xl rounded-xl overflow-hidden">
+      <div className="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-50 w-[calc(100vw-2rem)] sm:w-auto max-w-xs sm:max-w-sm">
+        <Card className="w-full bg-black border-2 border-gray-800 shadow-2xl rounded-xl overflow-hidden">
           <CardHeader className="flex flex-row items-center justify-between p-4 bg-gradient-to-r from-gray-900 to-black border-b border-gray-800">
             <div className="flex items-center space-x-3">
               <div className="w-3 h-3 bg-green-500 rounded-full animate-pulse" />
