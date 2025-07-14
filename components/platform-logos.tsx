@@ -80,7 +80,12 @@ export default function PlatformLogos() {
         </div>
 
         {/* Google */}
-        <div className="group relative">
+        <a
+          href="mailto:admin@ruyaacapital.com"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="group relative cursor-pointer"
+        >
           <div className="absolute inset-0 bg-red-500/20 rounded-full blur-lg"></div>
           <div className="relative w-12 h-12 md:w-16 md:h-16 bg-black rounded-full flex items-center justify-center border border-gray-700 hover:border-gray-500 transition-all duration-300 group-hover:scale-110">
             <svg
@@ -106,7 +111,7 @@ export default function PlatformLogos() {
               />
             </svg>
           </div>
-        </div>
+        </a>
       </div>
     </div>
   );
