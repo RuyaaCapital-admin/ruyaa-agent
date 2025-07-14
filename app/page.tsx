@@ -374,9 +374,8 @@ export default function AIHeroPage() {
         </svg>
       </a>
 
-            {/* Footer */}
+      {/* Footer */}
       <Footer />
     </div>
   );
-}
 }
