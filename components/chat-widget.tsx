@@ -49,22 +49,6 @@ function useSimpleChat(api: string, initialMessages: any[]) {
           messages: [...messages, { role: "user", content: input }],
         }),
       });
-
-      if (!res.ok) {
-        const errorData = await res.json();
-        const errorMessage =
-          errorData.error || `HTTP ${res.status}: ${res.statusText}`;
-        setMessages((prev: any) => [
-          ...prev,
-          {
-            id: Math.random().toString(36).slice(2),
-            role: "assistant",
-            content: `عذراً، حدث خطأ: ${errorMessage}`,
-          },
-        ]);
-        return;
-      }
-
       const data = await res.json();
       // Accept both text or content keys
       const assistantMessage = {
@@ -79,8 +63,7 @@ function useSimpleChat(api: string, initialMessages: any[]) {
         {
           id: Math.random().toString(36).slice(2),
           role: "assistant",
-          content:
-            "عذراً، لا أستطيع الاتصال بالخدمة حالياً. يرجى المحاولة لاحقاً.",
+          content: "[Error: No response from server]",
         },
       ]);
     }
