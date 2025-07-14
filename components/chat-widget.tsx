@@ -297,7 +297,7 @@ export default function ChatWidget() {
                     </div>
                   )}
                   <div
-                    className={`flex-1 p-3 rounded-xl max-w-[80%] ${
+                    className={`flex-1 p-2 sm:p-3 rounded-xl max-w-[85%] sm:max-w-[80%] ${
                       m.role === "user"
                         ? "bg-gradient-to-br from-gray-800 to-gray-900 text-white border border-gray-700 ml-auto"
                         : "bg-gradient-to-br from-gray-900 to-black text-gray-200 border border-gray-800"
