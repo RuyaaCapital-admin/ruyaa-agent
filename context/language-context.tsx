@@ -67,6 +67,7 @@ const translations: Record<Language, Record<string, string>> = {
       "Hello! I'm Ruyaa AI Assistant – ready to explain how our agents automate your work. What do you need?",
     type_your_message: "Type your message...",
     send: "Send",
+    contact_us_title: "Contact Us",
     language_switch: "العربية", // Text for the button to switch to Arabic
   },
 };
