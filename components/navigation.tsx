@@ -78,6 +78,7 @@ export default function Navigation() {
           <Link
             href="/"
             className="hover:text-gray-300 transition-colors text-gray-400"
+            onClick={() => setIsMenuOpen(false)}
           >
             {t("home")}
           </Link>
