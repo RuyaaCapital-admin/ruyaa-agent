@@ -1,6 +1,17 @@
 "use client";
 
-import { Clock, TrendingUp, Brain, Link, Calendar } from "lucide-react";
+import {
+  Clock,
+  TrendingUp,
+  Brain,
+  Link,
+  Calendar,
+  Shield,
+  Zap,
+  MessageCircle,
+  Globe,
+  Settings,
+} from "lucide-react";
 
 interface StepperItem {
   id: number;
