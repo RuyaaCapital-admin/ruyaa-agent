@@ -25,28 +25,102 @@ function useSimpleChat(api: string, initialMessages: any[]) {
   const [messages, setMessages] = useState(initialMessages);
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [hasShownWelcome, setHasShownWelcome] = useState(false);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setInput(e.target.value);
   };
 
+  const detectLanguage = (text: string): "ar" | "en" => {
+    // Simple Arabic detection - if text contains Arabic characters
+    const arabicRegex = /[\u0600-\u06FF]/;
+    return arabicRegex.test(text) ? "ar" : "en";
+  };
+
+  const checkIdentityQuestion = (
+    text: string,
+    lang: "ar" | "en",
+  ): string | null => {
+    const lowerText = text.toLowerCase();
+    const identityKeywords = {
+      ar: [
+        "من انت",
+        "مين انت",
+        "شو انت",
+        "ايش انت",
+        "who are you",
+        "what are you",
+      ],
+      en: [
+        "who are you",
+        "what are you",
+        "who r u",
+        "what r u",
+        "introduce yourself",
+      ],
+    };
+
+    const keywords = identityKeywords[lang];
+    const hasIdentityKeyword = keywords.some((keyword) =>
+      lowerText.includes(keyword),
+    );
+
+    if (hasIdentityKeyword) {
+      return lang === "ar"
+        ? "أنا مساعد رؤيا كابيتال، بخلي شغلك أسهل وأسرع وبدون أخطاء—أي خدمة بتحتاجها جاهز فوراً."
+        : "I'm your RuyaaCapital Smart Assistant. I help you boost sales, avoid mistakes, and get things done fast—24/7.";
+    }
+
+    return null;
+  };
+
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!input.trim()) return;
+
+    // Detect user's language
+    const userLang = detectLanguage(input);
+
     const userMessage = {
       id: Math.random().toString(36).slice(2),
       role: "user",
       content: input,
     };
     setMessages((prev: any) => [...prev, userMessage]);
+    const currentInput = input;
     setInput("");
     setIsLoading(true);
+
     try {
+      // Check if it's an identity question
+      const identityResponse = checkIdentityQuestion(currentInput, userLang);
+
+      if (identityResponse) {
+        // Provide immediate identity response
+        const assistantMessage = {
+          id: Math.random().toString(36).slice(2),
+          role: "assistant",
+          content: identityResponse,
+        };
+        setMessages((prev: any) => [...prev, assistantMessage]);
+        setIsLoading(false);
+        return;
+      }
+
+      // Create language instruction prefix
+      const langInstruction =
+        userLang === "ar"
+          ? "[CRITICAL: Reply ONLY in Arabic. Be ultra-short (2-3 sentences max). Sound professional and human, never mention AI/bot/digital. Focus on clear value for RuyaaCapital services.] "
+          : "[CRITICAL: Reply ONLY in English. Be ultra-short (2-3 sentences max). Sound professional and human, never mention AI/bot/digital. Focus on clear value for RuyaaCapital services.] ";
+
       const res = await fetch(api, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          messages: [...messages, { role: "user", content: input }],
+          messages: [
+            ...messages,
+            { role: "user", content: langInstruction + currentInput },
+          ],
         }),
       });
       const data = await res.json();
@@ -63,7 +137,10 @@ function useSimpleChat(api: string, initialMessages: any[]) {
         {
           id: Math.random().toString(36).slice(2),
           role: "assistant",
-          content: "[Error: No response from server]",
+          content:
+            userLang === "ar"
+              ? "عذراً، حدث خطأ. جرب مرة أخرى."
+              : "Sorry, an error occurred. Please try again.",
         },
       ]);
     }
@@ -117,7 +194,12 @@ export default function ChatWidget() {
           aria-label="Open chat"
         >
           <div className="absolute inset-0 rounded-full bg-gradient-to-tr from-gray-900 to-black opacity-90 group-hover:opacity-100 transition-opacity duration-300" />
-          <MessageSquare className="relative z-10 w-6 h-6 sm:w-7 sm:h-7 text-white group-hover:text-gray-200 transition-colors duration-300" />
+          <div
+            className="relative z-10 text-white group-hover:text-gray-200 transition-colors duration-300 animate-spin"
+            style={{ animation: "spin 4s linear infinite" }}
+          >
+            <span className="text-xl sm:text-2xl font-bold font-serif">R</span>
+          </div>
           <div className="absolute inset-0 rounded-full border-2 border-gray-600 opacity-0 group-hover:opacity-100 animate-ping" />
         </Button>
       </div>
