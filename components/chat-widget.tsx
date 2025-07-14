@@ -30,9 +30,25 @@ function useSimpleChat(api: string, initialMessages: any[]) {
     setInput(e.target.value);
   };
 
+  const detectLanguage = (text: string): "ar" | "en" => {
+    // Simple Arabic detection - if text contains Arabic characters
+    const arabicRegex = /[\u0600-\u06FF]/;
+    return arabicRegex.test(text) ? "ar" : "en";
+  };
+
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!input.trim()) return;
+
+    // Detect user's language
+    const userLang = detectLanguage(input);
+
+    // Create language instruction prefix
+    const langInstruction =
+      userLang === "ar"
+        ? "[REPLY IN ARABIC ONLY - ULTRA SHORT 2-3 SENTENCES - PROFESSIONAL HUMAN TONE - NO AI/BOT REFERENCES] "
+        : "[REPLY IN ENGLISH ONLY - ULTRA SHORT 2-3 SENTENCES - PROFESSIONAL HUMAN TONE - NO AI/BOT REFERENCES] ";
+
     const userMessage = {
       id: Math.random().toString(36).slice(2),
       role: "user",
@@ -46,7 +62,10 @@ function useSimpleChat(api: string, initialMessages: any[]) {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          messages: [...messages, { role: "user", content: input }],
+          messages: [
+            ...messages,
+            { role: "user", content: langInstruction + input },
+          ],
         }),
       });
       const data = await res.json();
