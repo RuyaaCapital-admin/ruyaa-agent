@@ -57,7 +57,7 @@ export default function AIHeroPage() {
           </p>
 
           {/* CTA Buttons */}
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+          <div className="flex flex-col sm:flex-row gap-4 justify-center mb-16">
             <Button
               size="lg"
               className="bg-gradient-to-r from-gray-700 to-gray-800 hover:from-gray-600 hover:to-gray-700 text-white border-0 px-8 py-4 text-lg shadow-lg shadow-blue-500/10"
@@ -72,6 +72,9 @@ export default function AIHeroPage() {
               تعرف على المزيد
             </Button>
           </div>
+
+          {/* Platform Logos */}
+          <PlatformLogos />
         </div>
       </div>
 
