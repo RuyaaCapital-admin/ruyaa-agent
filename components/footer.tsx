@@ -162,8 +162,9 @@ export default function Footer() {
                     <a
                       href="tel:+963940632191"
                       className="text-white text-sm hover:text-gray-300 transition-colors"
+                      dir="ltr"
                     >
-                      +963 940 632 191
+                      +963 9406 32191
                     </a>
                   </div>
                 </div>
