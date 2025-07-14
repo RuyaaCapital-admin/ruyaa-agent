@@ -32,7 +32,7 @@ const stepperData: StepperItem[] = [
     details: [
       "الإجابة والإقناع وإتمام الصفقات أوتوماتيكياً",
       "متوفر 24 ساعة/7 أيام لجميع الاستفسارات",
-      "نسبة حل المشكلات تصل إلى 90%",
+      "نسبة حل المشكلات تص�� إلى 90%",
     ],
     icon: <Brain className="w-6 h-6" />,
   },
@@ -67,7 +67,7 @@ export default function VerticalStepper() {
             return (
               <div key={step.id} className="relative mb-4 sm:mb-0">
                 {/* Step Circle positioned at center */}
-                <div className="absolute left-1/2 transform -translate-x-1/2 z-10">
+                <div className="absolute left-1/2 transform -translate-x-1/2 z-10 top-4 sm:top-0">
                   {/* Blue shadow layer */}
                   <div className="absolute inset-0 w-12 h-12 bg-blue-500/20 rounded-full blur-md transform translate-x-1 translate-y-1"></div>
 
