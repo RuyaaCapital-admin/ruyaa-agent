@@ -167,7 +167,7 @@ export default function ChatWidget() {
                       className="text-sm leading-relaxed whitespace-pre-wrap"
                       dir={lang === "ar" ? "rtl" : "ltr"}
                     >
-                      {m.content}
+                      {m.content || m.text}
                     </p>
                   </div>
                 </div>
