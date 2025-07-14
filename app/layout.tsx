@@ -25,6 +25,7 @@ export default function RootLayout({
           <ChatProvider>
             <Navigation />
             {children}
+            <ChatWidget />
           </ChatProvider>
         </LanguageProvider>
       </body>
