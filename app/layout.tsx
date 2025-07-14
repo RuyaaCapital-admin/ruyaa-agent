@@ -4,6 +4,7 @@ import "./globals.css";
 import { LanguageProvider } from "@/context/language-context"; // Import LanguageProvider
 import { ChatProvider } from "@/context/chat-context";
 import Navigation from "@/components/navigation";
+import ChatWidget from "@/components/chat-widget";
 
 export const metadata: Metadata = {
   title: "v0 App",
@@ -24,6 +25,7 @@ export default function RootLayout({
           <ChatProvider>
             <Navigation />
             {children}
+            <ChatWidget />
           </ChatProvider>
         </LanguageProvider>
       </body>
