@@ -7,6 +7,7 @@ import ContactForm from "@/components/contact-form";
 import VerticalStepper from "@/components/vertical-stepper";
 import PlatformLogos from "@/components/platform-logos";
 import { useLanguage } from "@/context/language-context"; // Import useLanguage
+import { useChatWidget } from "@/context/chat-context"; // Import chat context
 import Link from "next/link";
 
 export default function AIHeroPage() {
