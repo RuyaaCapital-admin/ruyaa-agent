@@ -23,8 +23,8 @@ const LanguageContext = createContext<LanguageContextType | undefined>(
 const translations: Record<Language, Record<string, string>> = {
   ar: {
     home: "الرئيسية",
-    services: "الخدمات",
-    about: "حول",
+    services: "من نحن",
+    about: "سجل طلبك",
     contact: "اتصل بنا",
     get_started: "ابدأ الآن",
     hero_subtitle: "حلول ذكية متطورة لتحويل تجربة العملاء المالية",
