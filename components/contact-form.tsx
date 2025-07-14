@@ -52,7 +52,7 @@ export default function ContactForm() {
 
   if (isSubmitted) {
     return (
-      <Card className="w-full max-w-2xl mx-auto bg-black border-2 border-gray-800 shadow-2xl">
+      <Card className="w-full max-w-2xl mx-auto bg-black/95 border border-gray-800/50 shadow-2xl backdrop-blur-md">
         <CardContent className="p-8">
           <div className="text-center space-y-4">
             <div className="w-16 h-16 bg-green-900/20 rounded-full flex items-center justify-center mx-auto border-2 border-green-700">
@@ -76,10 +76,10 @@ export default function ContactForm() {
 
   return (
     <Card
-      className="w-full max-w-2xl mx-auto bg-black border-2 border-gray-800 shadow-2xl"
+      className="w-full max-w-2xl mx-auto bg-black/95 border border-gray-800/50 shadow-2xl backdrop-blur-md"
       dir={lang === "ar" ? "rtl" : "ltr"}
     >
-      <CardHeader className="bg-gradient-to-r from-gray-900 to-black border-b border-gray-800 p-6">
+      <CardHeader className="bg-gradient-to-r from-gray-900/90 to-black/90 border-b border-gray-700/30 p-6">
         <CardTitle className="text-2xl font-bold text-white text-center">
           {lang === "ar" ? "تواصل معنا" : "Contact Us"}
         </CardTitle>
@@ -106,7 +106,7 @@ export default function ContactForm() {
                 id="name"
                 {...register("name")}
                 placeholder={lang === "ar" ? "اسمك الكامل" : "Your full name"}
-                className="bg-gray-900 border-gray-700 text-white placeholder:text-gray-500 focus:ring-2 focus:ring-gray-600 focus:border-transparent"
+                className="bg-gray-900/80 border-gray-700/50 text-white placeholder:text-gray-500 focus:ring-2 focus:ring-gray-600/50 focus:border-transparent backdrop-blur-sm"
               />
               {errors.name && (
                 <p className="text-red-400 text-sm">{errors.name.message}</p>
@@ -128,7 +128,7 @@ export default function ContactForm() {
                 placeholder={
                   lang === "ar" ? "بريدك الإلكتروني" : "your@email.com"
                 }
-                className="bg-gray-900 border-gray-700 text-white placeholder:text-gray-500 focus:ring-2 focus:ring-gray-600 focus:border-transparent"
+                className="bg-gray-900/80 border-gray-700/50 text-white placeholder:text-gray-500 focus:ring-2 focus:ring-gray-600/50 focus:border-transparent backdrop-blur-sm"
               />
               {errors.email && (
                 <p className="text-red-400 text-sm">{errors.email.message}</p>
@@ -150,7 +150,7 @@ export default function ContactForm() {
                 id="phone"
                 {...register("phone")}
                 placeholder={lang === "ar" ? "رقم هاتفك" : "Your phone number"}
-                className="bg-gray-900 border-gray-700 text-white placeholder:text-gray-500 focus:ring-2 focus:ring-gray-600 focus:border-transparent"
+                className="bg-gray-900/80 border-gray-700/50 text-white placeholder:text-gray-500 focus:ring-2 focus:ring-gray-600/50 focus:border-transparent backdrop-blur-sm"
               />
               {errors.phone && (
                 <p className="text-red-400 text-sm">{errors.phone.message}</p>
@@ -165,7 +165,7 @@ export default function ContactForm() {
                 id="company"
                 {...register("company")}
                 placeholder={lang === "ar" ? "اسم شركتك" : "Your company name"}
-                className="bg-gray-900 border-gray-700 text-white placeholder:text-gray-500 focus:ring-2 focus:ring-gray-600 focus:border-transparent"
+                className="bg-gray-900/80 border-gray-700/50 text-white placeholder:text-gray-500 focus:ring-2 focus:ring-gray-600/50 focus:border-transparent backdrop-blur-sm"
               />
             </div>
           </div>
@@ -185,7 +185,7 @@ export default function ContactForm() {
               placeholder={
                 lang === "ar" ? "موضوع رسالتك" : "What is this about?"
               }
-              className="bg-gray-900 border-gray-700 text-white placeholder:text-gray-500 focus:ring-2 focus:ring-gray-600 focus:border-transparent"
+              className="bg-gray-900/80 border-gray-700/50 text-white placeholder:text-gray-500 focus:ring-2 focus:ring-gray-600/50 focus:border-transparent backdrop-blur-sm"
             />
             {errors.subject && (
               <p className="text-red-400 text-sm">{errors.subject.message}</p>
@@ -217,7 +217,7 @@ export default function ContactForm() {
           <Button
             type="submit"
             disabled={isLoading}
-            className="w-full bg-gradient-to-r from-gray-700 to-gray-800 hover:from-gray-600 hover:to-gray-700 text-white border border-gray-600 py-3 text-lg font-semibold rounded-xl transition-all duration-300 hover:scale-105 disabled:scale-100 disabled:opacity-50"
+            className="w-full bg-gradient-to-r from-gray-800/90 to-black/90 hover:from-gray-700/90 hover:to-gray-800/90 text-white border border-gray-700/50 py-3 text-lg font-semibold rounded-xl transition-all duration-300 hover:scale-105 disabled:scale-100 disabled:opacity-50 backdrop-blur-sm"
           >
             {isLoading ? (
               <div className="flex items-center justify-center gap-2">
@@ -227,7 +227,7 @@ export default function ContactForm() {
             ) : (
               <div className="flex items-center justify-center gap-2">
                 <Send className="w-5 h-5" />
-                {lang === "ar" ? "إرسال الرسالة" : "Send Message"}
+                {lang === "ar" ? "إرسال الر��الة" : "Send Message"}
               </div>
             )}
           </Button>
