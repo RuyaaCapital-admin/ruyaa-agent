@@ -205,6 +205,32 @@ export default function AIHeroPage() {
         </div>
       </div>
 
+      {/* Contact Form Section */}
+      <div className="relative py-20 px-6">
+        {/* Background Effects */}
+        <div className="absolute inset-0 bg-transparent"></div>
+
+        {/* Animated Grid Background */}
+        <div className="absolute inset-0 opacity-10">
+          <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.05)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.05)_1px,transparent_1px)] bg-[size:40px_40px]"></div>
+        </div>
+
+        <div className="relative z-10 max-w-7xl mx-auto">
+          {/* Section Title */}
+          <div
+            className="text-center mb-16"
+            dir={lang === "ar" ? "rtl" : "ltr"}
+          >
+            <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">
+              {t("contact_us_title")}
+            </h2>
+            <div className="w-24 h-1 bg-gradient-to-r from-transparent via-white to-transparent mx-auto"></div>
+          </div>
+
+          <ContactForm />
+        </div>
+      </div>
+
       <ChatWidget />
       {/* WhatsApp Floating Button */}
       <a
