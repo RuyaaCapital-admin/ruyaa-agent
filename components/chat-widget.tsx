@@ -53,11 +53,11 @@ export default function ChatWidget() {
       <div className="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-50">
         <Button
           onClick={() => setIsOpen(true)}
-          className="group relative w-16 h-16 rounded-full bg-black border-2 border-gray-800 hover:border-gray-600 shadow-2xl transition-all duration-300 hover:scale-110"
+          className="group relative w-14 h-14 sm:w-16 sm:h-16 rounded-full bg-black border-2 border-gray-800 hover:border-gray-600 shadow-2xl transition-all duration-300 hover:scale-110"
           aria-label="Open chat"
         >
           <div className="absolute inset-0 rounded-full bg-gradient-to-tr from-gray-900 to-black opacity-90 group-hover:opacity-100 transition-opacity duration-300" />
-          <MessageSquare className="relative z-10 w-7 h-7 text-white group-hover:text-gray-200 transition-colors duration-300" />
+          <MessageSquare className="relative z-10 w-6 h-6 sm:w-7 sm:h-7 text-white group-hover:text-gray-200 transition-colors duration-300" />
 
           {/* Pulse animation */}
           <div className="absolute inset-0 rounded-full border-2 border-gray-600 opacity-0 group-hover:opacity-100 animate-ping" />
