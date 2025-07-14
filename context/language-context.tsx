@@ -40,8 +40,7 @@ const translations: Record<Language, Record<string, string>> = {
     smart_communication_title: "إدارة الاتصالات الذكية",
     professional_appointments_title: "إدارة المواعيد الاحترافية",
     ruyaa_ai_assistant: "مساعد رؤيا الذكي",
-    chat_welcome_message:
-      "أهلاً! أنا مساعد رؤيا الذكي – جاهز أشرح كيف وكلاؤنا بيخلّصوا شغلك تلقائياً. شو بتحتاج؟",
+    chat_welcome_message: "أهلاً! كيف فيني ساعدك اليوم؟",
     type_your_message: "اكتب رسالتك...",
     send: "إرسال",
     contact_us_title: "تواصل معنا",
@@ -65,8 +64,7 @@ const translations: Record<Language, Record<string, string>> = {
     smart_communication_title: "Smart Communication Management",
     professional_appointments_title: "Professional Appointment Management",
     ruyaa_ai_assistant: "Ruyaa AI Assistant",
-    chat_welcome_message:
-      "Hello! I'm Ruyaa AI Assistant – ready to explain how our agents automate your work. What do you need?",
+    chat_welcome_message: "Welcome! How can I help you today?",
     type_your_message: "Type your message...",
     send: "Send",
     contact_us_title: "Contact Us",
