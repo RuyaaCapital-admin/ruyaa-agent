@@ -68,8 +68,8 @@ export default function ChatWidget() {
 
   if (isMinimized) {
     return (
-      <div className="fixed bottom-6 right-6 z-50">
-        <Card className="w-80 bg-black border-2 border-gray-800 shadow-2xl rounded-xl overflow-hidden">
+      <div className="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-50">
+        <Card className="w-72 sm:w-80 max-w-[calc(100vw-2rem)] bg-black border-2 border-gray-800 shadow-2xl rounded-xl overflow-hidden">
           <CardHeader className="flex flex-row items-center justify-between p-4 bg-gradient-to-r from-gray-900 to-black border-b border-gray-800">
             <div className="flex items-center space-x-3">
               <div className="w-3 h-3 bg-green-500 rounded-full animate-pulse" />
