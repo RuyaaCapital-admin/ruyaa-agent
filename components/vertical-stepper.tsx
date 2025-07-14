@@ -77,7 +77,11 @@ export default function VerticalStepper() {
                   </div>
 
                   {/* Step number badge */}
-                  <div className="absolute -top-2 -right-2 w-6 h-6 bg-gradient-to-br from-gray-700 to-gray-800 rounded-full flex items-center justify-center border border-gray-600 text-white text-xs font-bold">
+                  <div
+                    className={`absolute -top-2 w-6 h-6 bg-gradient-to-br from-gray-700 to-gray-800 rounded-full flex items-center justify-center border border-gray-600 text-white text-xs font-bold ${
+                      isLeft ? "-left-2" : "-right-2"
+                    }`}
+                  >
                     {step.id}
                   </div>
                 </div>
