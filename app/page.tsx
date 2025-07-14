@@ -9,6 +9,17 @@ import PlatformLogos from "@/components/platform-logos";
 import { useLanguage } from "@/context/language-context"; // Import useLanguage
 import { useChatWidget } from "@/context/chat-context"; // Import chat context
 import Link from "next/link";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 
 export default function AIHeroPage() {
   const { lang, t } = useLanguage(); // Use the language hook
@@ -244,38 +255,63 @@ export default function AIHeroPage() {
             className="relative group max-w-4xl mx-auto"
             dir={lang === "ar" ? "rtl" : "ltr"}
           >
-            <Link href="/services/advisory-support">
-              <div className="relative transform-gpu transition-all duration-700 hover:scale-105 hover:-translate-y-2 cursor-pointer">
-                {/* 3D Shadow Layers */}
-                <div className="absolute inset-0 bg-gray-800/40 rounded-2xl blur-2xl transform translate-x-6 translate-y-6"></div>
-                <div className="absolute inset-0 bg-gray-700/30 rounded-2xl blur-xl transform translate-x-3 translate-y-3"></div>
-                <div className="absolute inset-0 bg-gray-600/20 rounded-2xl blur-lg transform translate-x-1 translate-y-1"></div>
+            <AlertDialog>
+              <AlertDialogTrigger asChild>
+                <div className="relative transform-gpu transition-all duration-700 hover:scale-105 hover:-translate-y-2 cursor-pointer">
+                  {/* 3D Shadow Layers */}
+                  <div className="absolute inset-0 bg-gray-800/40 rounded-2xl blur-2xl transform translate-x-6 translate-y-6"></div>
+                  <div className="absolute inset-0 bg-gray-700/30 rounded-2xl blur-xl transform translate-x-3 translate-y-3"></div>
+                  <div className="absolute inset-0 bg-gray-600/20 rounded-2xl blur-lg transform translate-x-1 translate-y-1"></div>
 
-                {/* Main Card */}
-                <div className="relative bg-gradient-to-br from-gray-900/95 to-black/95 backdrop-blur-xl rounded-2xl border border-gray-700/50 overflow-hidden shadow-2xl">
-                  {/* Subtle Border Glow */}
-                  <div className="absolute inset-0 rounded-2xl bg-gradient-to-r from-gray-500/20 via-transparent to-gray-400/20 p-[1px]">
-                    <div className="h-full w-full rounded-2xl bg-gradient-to-br from-gray-900/98 to-black/98"></div>
-                  </div>
-
-                  {/* Card Content */}
-                  <div className="relative">
-                    {/* Image Container - Full Image */}
-                    <div className="relative rounded-t-xl overflow-hidden aspect-[2/1]">
-                      {" "}
-                      {/* Adjusted aspect ratio to fit the full image */}
-                      <img
-                        src="/images/advisory-support.png"
-                        alt="Advisory Support"
-                        className="w-full h-full object-cover"
-                      />
+                  {/* Main Card */}
+                  <div className="relative bg-gradient-to-br from-gray-900/95 to-black/95 backdrop-blur-xl rounded-2xl border border-gray-700/50 overflow-hidden shadow-2xl">
+                    {/* Subtle Border Glow */}
+                    <div className="absolute inset-0 rounded-2xl bg-gradient-to-r from-gray-500/20 via-transparent to-gray-400/20 p-[1px]">
+                      <div className="h-full w-full rounded-2xl bg-gradient-to-br from-gray-900/98 to-black/98"></div>
                     </div>
 
-                    {/* Text Content - Below the image */}
+                    {/* Card Content */}
+                    <div className="relative">
+                      {/* Image Container - Full Image */}
+                      <div className="relative rounded-t-xl overflow-hidden aspect-[2/1]">
+                        {" "}
+                        {/* Adjusted aspect ratio to fit the full image */}
+                        <img
+                          src="/images/advisory-support.png"
+                          alt="Advisory Support"
+                          className="w-full h-full object-cover"
+                        />
+                      </div>
+
+                      {/* Text Content - Below the image */}
+                    </div>
                   </div>
                 </div>
-              </div>
-            </Link>
+              </AlertDialogTrigger>
+              <AlertDialogContent className="bg-gray-900/95 border-gray-700">
+                <AlertDialogHeader>
+                  <AlertDialogTitle
+                    className="text-white text-center"
+                    dir="rtl"
+                  >
+                    الانتقال إلى صفحة وكلاء التداول؟
+                  </AlertDialogTitle>
+                </AlertDialogHeader>
+                <AlertDialogFooter className="flex justify-center">
+                  <AlertDialogAction
+                    className="bg-gradient-to-r from-gray-700 to-gray-800 hover:from-gray-600 hover:to-gray-700 text-white"
+                    onClick={() =>
+                      window.open("https://ruyaacapital.com", "_blank")
+                    }
+                  >
+                    زيارة الآن
+                  </AlertDialogAction>
+                  <AlertDialogCancel className="border-gray-600 text-gray-300 hover:bg-gray-800">
+                    إلغاء
+                  </AlertDialogCancel>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
           </div>
         </div>
       </div>
