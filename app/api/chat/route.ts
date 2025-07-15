@@ -5,7 +5,7 @@ import { nanoid } from "nanoid";
 /* ---------- helper: build compact history ---------- */
 function buildHistory(
   msgs: { role: "user" | "assistant"; content: string }[],
-  limit = 8
+  limit = 8,
 ) {
   return msgs
     .slice(-limit)
@@ -18,7 +18,6 @@ export async function POST(req: Request) {
   try {
     const { messages } = await req.json();
 
- ai_main_04c45c0a66c2
     const systemPrompt = `
 # RuyaaCapital – Smart Agent (Production Rules)
 
@@ -62,18 +61,13 @@ OUT‑OF‑SCOPE
 `;
 
     /* pick a model – keep llama‑3 default */
-    const modelID = "llama3-8b-8192";      // change to "deepseek-chat" if you want
-
-    const systemPrompt = `# RuyaaCapital – Smart Agent (Production Rules)
-(… keep your full prompt here …)
-STRICTLY: never mix languages; max‑3 sentences; value‑focused.`;
-main
+    const modelID = "llama3-8b-8192"; // change to "deepseek-chat" if you want
 
     const { text } = await generateText({
       model: groq(modelID),
       temperature: 0.2,
       system: systemPrompt,
-      prompt: buildHistory(messages),   // full context
+      prompt: buildHistory(messages), // full context
     });
 
     return Response.json({

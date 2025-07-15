@@ -92,3 +92,53 @@ body {
     @apply text-foreground;
   }
 }
+
+@layer utilities {
+  .pb-safe {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+
+  .pt-safe {
+    padding-top: env(safe-area-inset-top);
+  }
+}
+
+/* Prevent zoom on mobile inputs */
+@media screen and (max-width: 640px) {
+  input[type="text"],
+  input[type="email"],
+  input[type="search"],
+  input[type="password"],
+  textarea,
+  select {
+    font-size: 16px !important;
+    transform-origin: left top;
+    transition: none;
+  }
+
+  /* Prevent body scroll when chat is open on mobile */
+  body.chat-open {
+    overflow: hidden;
+    position: fixed;
+    width: 100%;
+    height: 100vh;
+  }
+
+  /* Ensure touch targets are accessible */
+  .chat-input {
+    min-height: 48px !important;
+    touch-action: manipulation;
+  }
+
+  /* Improve mobile viewport handling */
+  .mobile-chat-container {
+    height: 100vh;
+    height: 100dvh; /* Dynamic viewport height for better mobile support */
+  }
+
+  @media (min-width: 640px) {
+    .mobile-chat-container-none {
+      height: auto !important;
+    }
+  }
+}
