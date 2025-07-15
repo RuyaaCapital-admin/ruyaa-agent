@@ -260,7 +260,7 @@ export default function ChatWidget() {
   }
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 top-16 sm:bottom-6 sm:right-6 sm:left-auto sm:top-auto sm:inset-auto z-50 sm:w-auto sm:max-w-md">
+    <div className="fixed bottom-0 left-0 right-0 top-16 sm:bottom-6 sm:right-6 sm:left-auto sm:top-auto sm:inset-auto z-50 sm:w-auto sm:max-w-md mobile-chat-container sm:mobile-chat-container-none">
       <Card className="w-full h-full sm:h-[600px] sm:max-h-[calc(100vh-3rem)] bg-black border-2 border-gray-800 shadow-2xl rounded-t-xl sm:rounded-xl overflow-hidden flex flex-col backdrop-blur-sm">
         {/* Header */}
         <CardHeader className="flex flex-row items-center justify-between p-3 sm:p-4 bg-gradient-to-r from-gray-900 to-black border-b border-gray-800 shrink-0">
