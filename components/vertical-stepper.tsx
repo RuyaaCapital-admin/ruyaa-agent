@@ -43,7 +43,7 @@ const stepperData: StepperItem[] = [
   {
     id: 3,
     title: "الحل الذكي المتكامل",
-    description: "نظام شامل ومتطور لإدارة العملاء",
+    description: "نظام شامل ومتطور لإ��ارة العملاء",
     details: [
       "الإجابة والإقناع وإتمام الصفقات أوتوماتيكياً",
       "متوفر 24 ساعة/7 أيام لجميع الاستفسارات",
@@ -75,31 +75,6 @@ export default function VerticalStepper() {
             const isLeft = index % 2 === 1; // Alternate: right, left, right, left, right
             return (
               <div key={step.id} className="relative mb-4 sm:mb-0">
-                {/* Step Circle positioned at center */}
-                <div className="absolute left-1/2 transform -translate-x-1/2 z-10 top-4 sm:top-0">
-                  {/* Multiple shadow layers for depth */}
-                  <div className="absolute inset-0 w-12 h-12 bg-blue-500/30 rounded-full blur-lg transform translate-x-2 translate-y-2"></div>
-                  <div className="absolute inset-0 w-12 h-12 bg-black/40 rounded-full blur-sm transform translate-x-1 translate-y-1"></div>
-
-                  {/* Main circle with enhanced design */}
-                  <div className="relative w-12 h-12 bg-gradient-to-br from-gray-900 via-black to-gray-800 rounded-full flex items-center justify-center border-2 border-gray-700 shadow-xl">
-                    {/* Inner glow effect */}
-                    <div className="absolute inset-1 rounded-full bg-gradient-to-br from-gray-800/50 to-transparent"></div>
-                    <div className="relative text-white drop-shadow-sm">
-                      {step.icon}
-                    </div>
-                  </div>
-
-                  {/* Enhanced step number badge */}
-                  <div
-                    className={`absolute -top-2 w-6 h-6 bg-gradient-to-br from-gray-800 via-gray-900 to-black rounded-full flex items-center justify-center border border-gray-600 text-white text-xs font-bold shadow-lg ${
-                      isLeft ? "-left-2" : "-right-2"
-                    }`}
-                  >
-                    {step.id}
-                  </div>
-                </div>
-
                 {/* Content positioned left or right */}
                 <div
                   className={`w-full flex ${isLeft ? "justify-start" : "justify-end"}`}
