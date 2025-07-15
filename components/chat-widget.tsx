@@ -281,9 +281,9 @@ export default function ChatWidget() {
         </CardHeader>
 
         {/* Messages */}
-        <CardContent className="flex-1 p-0 bg-gradient-to-b from-gray-950 to-black overflow-hidden">
-          <ScrollArea className="h-full px-4 py-4">
-            <div className="space-y-4">
+        <CardContent className="flex-1 p-0 bg-gradient-to-b from-gray-950 to-black overflow-hidden min-h-0">
+          <ScrollArea className="h-full px-2 sm:px-4 py-2 sm:py-4">
+            <div className="space-y-3 sm:space-y-4">
               {messages.map((m: any) => (
                 <div key={m.id} className="flex items-start space-x-3">
                   {m.role === "assistant" && (
