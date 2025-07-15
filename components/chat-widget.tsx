@@ -245,7 +245,7 @@ export default function ChatWidget() {
     <div className="fixed inset-4 sm:bottom-6 sm:right-6 sm:inset-auto z-50 sm:w-auto sm:max-w-md">
       <Card className="w-full h-full sm:h-[600px] sm:max-h-[calc(100vh-3rem)] bg-black border-2 border-gray-800 shadow-2xl rounded-xl overflow-hidden flex flex-col">
         {/* Header */}
-        <CardHeader className="flex flex-row items-center justify-between p-4 bg-gradient-to-r from-gray-900 to-black border-b border-gray-800">
+        <CardHeader className="flex flex-row items-center justify-between p-3 sm:p-4 bg-gradient-to-r from-gray-900 to-black border-b border-gray-800 shrink-0">
           <div className="flex items-center space-x-3">
             <div className="w-10 h-10 bg-gradient-to-br from-gray-800 to-gray-900 rounded-full flex items-center justify-center border border-gray-700">
               <Bot className="w-5 h-5 text-white" />
