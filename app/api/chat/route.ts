@@ -2,20 +2,23 @@ import { generateText } from "ai";
 import { groq } from "@ai-sdk/groq";
 import { nanoid } from "nanoid";
 
-/**
- * POST /api/chat
- *
- * The client (useChat) sends:
- *  { messages: Array<{ role: "user" | "assistant"; content: string }> }
- *
- * We respond with JSON:
- *  { id: string; role: "assistant"; text: string }
- * which avoids stream ports and works fine in Next.js.
- */
+/* ---------- helper: build compact history ---------- */
+function buildHistory(
+  msgs: { role: "user" | "assistant"; content: string }[],
+  limit = 8
+) {
+  return msgs
+    .slice(-limit)
+    .map((m) => `${m.role === "user" ? "User" : "Assistant"}: ${m.content}`)
+    .join("\n");
+}
+
+/* ---------- POST /api/chat ---------- */
 export async function POST(req: Request) {
   try {
     const { messages } = await req.json();
 
+ ai_main_04c45c0a66c2
     const systemPrompt = `
 # RuyaaCapital – Smart Agent (Production Rules)
 
@@ -58,16 +61,25 @@ OUT‑OF‑SCOPE
 - EN: Sorry, that request is outside my scope.
 `;
 
+    /* pick a model – keep llama‑3 default */
+    const modelID = "llama3-8b-8192";      // change to "deepseek-chat" if you want
+
+    const systemPrompt = `# RuyaaCapital – Smart Agent (Production Rules)
+(… keep your full prompt here …)
+STRICTLY: never mix languages; max‑3 sentences; value‑focused.`;
+main
+
     const { text } = await generateText({
-      model: groq("llama3-8b-8192"),
-      prompt: messages[messages.length - 1]?.content ?? "",
+      model: groq(modelID),
+      temperature: 0.2,
       system: systemPrompt,
+      prompt: buildHistory(messages),   // full context
     });
 
     return Response.json({
       id: nanoid(),
       role: "assistant",
-      text, // <- key changed from content to text
+      text,
     });
   } catch (err) {
     console.error("chat api error:", err);
