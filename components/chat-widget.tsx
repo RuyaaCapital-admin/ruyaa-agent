@@ -285,26 +285,29 @@ export default function ChatWidget() {
           <ScrollArea className="h-full px-2 sm:px-4 py-2 sm:py-4">
             <div className="space-y-3 sm:space-y-4">
               {messages.map((m: any) => (
-                <div key={m.id} className="flex items-start space-x-3">
+                <div
+                  key={m.id}
+                  className="flex items-start space-x-2 sm:space-x-3"
+                >
                   {m.role === "assistant" && (
-                    <div className="w-8 h-8 bg-gradient-to-br from-gray-800 to-gray-900 rounded-full flex items-center justify-center border border-gray-700 flex-shrink-0 mt-1">
-                      <Bot className="w-4 h-4 text-white" />
+                    <div className="w-7 h-7 sm:w-8 sm:h-8 bg-gradient-to-br from-gray-800 to-gray-900 rounded-full flex items-center justify-center border border-gray-700 flex-shrink-0 mt-1">
+                      <Bot className="w-3 h-3 sm:w-4 sm:h-4 text-white" />
                     </div>
                   )}
                   {m.role === "user" && (
-                    <div className="w-8 h-8 bg-gradient-to-br from-gray-700 to-gray-800 rounded-full flex items-center justify-center border border-gray-600 flex-shrink-0 mt-1">
-                      <User className="w-4 h-4 text-white" />
+                    <div className="w-7 h-7 sm:w-8 sm:h-8 bg-gradient-to-br from-gray-700 to-gray-800 rounded-full flex items-center justify-center border border-gray-600 flex-shrink-0 mt-1">
+                      <User className="w-3 h-3 sm:w-4 sm:h-4 text-white" />
                     </div>
                   )}
                   <div
-                    className={`flex-1 p-2 sm:p-3 rounded-xl max-w-[85%] sm:max-w-[80%] ${
+                    className={`flex-1 p-2 sm:p-3 rounded-lg sm:rounded-xl max-w-[80%] sm:max-w-[75%] ${
                       m.role === "user"
                         ? "bg-gradient-to-br from-gray-800 to-gray-900 text-white border border-gray-700 ml-auto"
                         : "bg-gradient-to-br from-gray-900 to-black text-gray-200 border border-gray-800"
                     }`}
                   >
                     <p
-                      className="text-sm leading-relaxed whitespace-pre-wrap"
+                      className="text-xs sm:text-sm leading-relaxed whitespace-pre-wrap"
                       dir={lang === "ar" ? "rtl" : "ltr"}
                     >
                       {m.content || m.text}
