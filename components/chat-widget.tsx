@@ -242,8 +242,8 @@ export default function ChatWidget() {
   }
 
   return (
-    <div className="fixed inset-2 sm:bottom-6 sm:right-6 sm:inset-auto z-50 sm:w-auto sm:max-w-md">
-      <Card className="w-full h-full sm:h-[600px] sm:max-h-[calc(100vh-3rem)] bg-black border-2 border-gray-800 shadow-2xl rounded-lg sm:rounded-xl overflow-hidden flex flex-col">
+    <div className="fixed bottom-0 left-0 right-0 top-16 sm:bottom-6 sm:right-6 sm:left-auto sm:top-auto sm:inset-auto z-50 sm:w-auto sm:max-w-md">
+      <Card className="w-full h-full sm:h-[600px] sm:max-h-[calc(100vh-3rem)] bg-black border-2 border-gray-800 shadow-2xl rounded-t-xl sm:rounded-xl overflow-hidden flex flex-col">
         {/* Header */}
         <CardHeader className="flex flex-row items-center justify-between p-3 sm:p-4 bg-gradient-to-r from-gray-900 to-black border-b border-gray-800 shrink-0">
           <div className="flex items-center space-x-3">
@@ -335,7 +335,7 @@ export default function ChatWidget() {
         </CardContent>
 
         {/* Input */}
-        <CardFooter className="p-2 sm:p-4 bg-gradient-to-r from-gray-900 to-black border-t border-gray-800 shrink-0">
+        <CardFooter className="p-2 sm:p-4 bg-gradient-to-r from-gray-900 to-black border-t border-gray-800 shrink-0 pb-safe">
           <form
             onSubmit={handleFormSubmit}
             className="flex w-full space-x-2 sm:space-x-3"
@@ -347,7 +347,12 @@ export default function ChatWidget() {
                 placeholder={t("type_your_message")}
                 disabled={isLoading}
                 dir={lang === "ar" ? "rtl" : "ltr"}
-                className="bg-gray-800 border-gray-700 text-white placeholder:text-gray-500 focus:ring-2 focus:ring-gray-600 focus:border-transparent rounded-xl px-3 py-3 text-sm w-full"
+                className="bg-gray-800 border-gray-700 text-white placeholder:text-gray-500 focus:ring-2 focus:ring-gray-600 focus:border-transparent rounded-xl px-3 py-3 text-sm w-full text-base sm:text-sm"
+                style={{ fontSize: "16px" }}
+                autoComplete="off"
+                autoCorrect="off"
+                autoCapitalize="off"
+                spellCheck="false"
               />
             </div>
             <Button
