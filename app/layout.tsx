@@ -9,6 +9,12 @@ export const metadata: Metadata = {
   title: "v0 App",
   description: "Created with v0",
   generator: "v0.dev",
+  viewport: {
+    width: "device-width",
+    initialScale: 1,
+    maximumScale: 1,
+    userScalable: false,
+  },
 };
 
 export default function RootLayout({
@@ -18,6 +24,12 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+      <head>
+        <meta
+          name="viewport"
+          content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"
+        />
+      </head>
       {/* lang attribute will be set dynamically by LanguageProvider */}
       <body>
         <LanguageProvider>
