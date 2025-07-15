@@ -11,6 +11,10 @@ import {
   MessageCircle,
   Globe,
   Settings,
+  Headphones,
+  DollarSign,
+  Smartphone,
+  CalendarClock,
 } from "lucide-react";
 
 interface StepperItem {
@@ -41,7 +45,7 @@ const stepperData: StepperItem[] = [
     title: "الحل الذكي المتكامل",
     description: "نظام شامل ومتطور لإدارة العملاء",
     details: [
-      "الإجابة والإقناع وإتمام الصفقات أوتوماتيكياً",
+      "الإجابة والإقناع وإتمام الصفقات أوتوماتي��ياً",
       "متوفر 24 ساعة/7 أيام لجميع الاستفسارات",
       "نسبة حل ا��مشكلات تصل إلى 90%",
     ],
