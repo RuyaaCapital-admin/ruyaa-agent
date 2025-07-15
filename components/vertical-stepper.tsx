@@ -61,7 +61,7 @@ const stepperData: StepperItem[] = [
     id: 5,
     title: "إدارة المواعيد و الحجوزات باحتراف",
     description: "ينظم مواعيدك مثل الإنسان",
-    icon: <Calendar className="w-6 h-6" />,
+    icon: <CalendarClock className="w-6 h-6" />,
   },
 ];
 
