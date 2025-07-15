@@ -208,7 +208,7 @@ export default function ChatWidget() {
 
   if (isMinimized) {
     return (
-      <div className="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-50 w-[calc(100vw-1rem)] max-w-[300px] sm:max-w-sm">
+      <div className="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-50 w-auto max-w-[280px] sm:max-w-sm">
         <Card className="w-full bg-black border-2 border-gray-800 shadow-2xl rounded-xl overflow-hidden">
           <CardHeader className="flex flex-row items-center justify-between p-4 bg-gradient-to-r from-gray-900 to-black border-b border-gray-800">
             <div className="flex items-center space-x-3">
