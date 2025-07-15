@@ -332,27 +332,27 @@ export default function ChatWidget() {
         </CardContent>
 
         {/* Input */}
-        <CardFooter className="p-3 sm:p-4 bg-gradient-to-r from-gray-900 to-black border-t border-gray-800">
+        <CardFooter className="p-2 sm:p-4 bg-gradient-to-r from-gray-900 to-black border-t border-gray-800 shrink-0">
           <form
             onSubmit={handleFormSubmit}
             className="flex w-full space-x-2 sm:space-x-3"
           >
-            <div className="flex-1 relative">
+            <div className="flex-1 relative min-w-0">
               <Input
                 value={input}
                 onChange={handleInputChange}
                 placeholder={t("type_your_message")}
                 disabled={isLoading}
                 dir={lang === "ar" ? "rtl" : "ltr"}
-                className="bg-gray-800 border-gray-700 text-white placeholder:text-gray-500 focus:ring-2 focus:ring-gray-600 focus:border-transparent rounded-xl px-3 sm:px-4 py-2 sm:py-3 text-sm sm:text-base"
+                className="bg-gray-800 border-gray-700 text-white placeholder:text-gray-500 focus:ring-2 focus:ring-gray-600 focus:border-transparent rounded-xl px-3 py-3 text-sm w-full"
               />
             </div>
             <Button
               type="submit"
               disabled={isLoading || !input.trim()}
-              className="bg-gradient-to-br from-gray-700 to-gray-800 hover:from-gray-600 hover:to-gray-700 disabled:from-gray-800 disabled:to-gray-900 text-white border border-gray-600 rounded-xl px-3 sm:px-4 py-2 sm:py-3 transition-all duration-200 hover:scale-105 disabled:scale-100"
+              className="bg-gradient-to-br from-gray-700 to-gray-800 hover:from-gray-600 hover:to-gray-700 disabled:from-gray-800 disabled:to-gray-900 text-white border border-gray-600 rounded-xl px-3 py-3 transition-all duration-200 hover:scale-105 disabled:scale-100 shrink-0"
             >
-              <Send className="w-4 h-4 sm:w-5 sm:h-5" />
+              <Send className="w-4 h-4" />
             </Button>
           </form>
         </CardFooter>
