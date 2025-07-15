@@ -123,4 +123,16 @@ body {
     width: 100%;
     height: 100vh;
   }
+
+  /* Ensure touch targets are accessible */
+  .chat-input {
+    min-height: 48px !important;
+    touch-action: manipulation;
+  }
+
+  /* Improve mobile viewport handling */
+  .mobile-chat-container {
+    height: 100vh;
+    height: 100dvh; /* Dynamic viewport height for better mobile support */
+  }
 }
