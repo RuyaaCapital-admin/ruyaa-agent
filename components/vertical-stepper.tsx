@@ -55,7 +55,7 @@ const stepperData: StepperItem[] = [
     id: 4,
     title: "تكامل سلس عبر المنصات",
     description: "يمكن مقارنته مع جميع منصات التواصل الاجتماعي",
-    icon: <Globe className="w-6 h-6" />,
+    icon: <Smartphone className="w-6 h-6" />,
   },
   {
     id: 5,
