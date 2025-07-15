@@ -38,7 +38,7 @@ const stepperData: StepperItem[] = [
     title: "زيادة الإيرادات",
     description:
       "عزز مبيعاتك وأرباحك من خلال تفاعلات فعالة مع العملاء مدعومة بالذكاء الاصطناعي.",
-    icon: <TrendingUp className="w-6 h-6" />,
+    icon: <DollarSign className="w-6 h-6" />,
   },
   {
     id: 3,
