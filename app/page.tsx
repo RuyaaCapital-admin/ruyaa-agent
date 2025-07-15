@@ -71,12 +71,12 @@ export default function AIHeroPage() {
                 {/* Blue Shadow Layer */}
                 <div className="absolute inset-0 transform translate-x-2 translate-y-2">
                   <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold bg-gradient-to-r from-blue-400/20 to-cyan-400/20 bg-clip-text text-transparent blur-sm">
-                    وكيل الذكاء الاصطناعي من رؤيا كابيتا
+                    وكيل الذكاء الاصطناعي من رؤيا كابيتال
                   </h1>
                 </div>
                 {/* Main Title */}
                 <h1 className="relative text-4xl md:text-6xl lg:text-7xl font-bold bg-gradient-to-r from-white via-gray-100 to-gray-200 bg-clip-text text-transparent">
-                  وكيل الذكاء الاصطناعي من رؤيا كابيتا
+                  وكيل الذكاء الاصطناعي من رؤيا كابيتال
                 </h1>
               </div>
 
