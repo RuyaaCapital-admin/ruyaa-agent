@@ -208,7 +208,7 @@ export default function ChatWidget() {
 
   if (isMinimized) {
     return (
-      <div className="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-50 w-[calc(100vw-2rem)] sm:w-auto max-w-xs sm:max-w-sm">
+      <div className="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-50 w-auto max-w-[280px] sm:max-w-sm">
         <Card className="w-full bg-black border-2 border-gray-800 shadow-2xl rounded-xl overflow-hidden">
           <CardHeader className="flex flex-row items-center justify-between p-4 bg-gradient-to-r from-gray-900 to-black border-b border-gray-800">
             <div className="flex items-center space-x-3">
@@ -242,10 +242,10 @@ export default function ChatWidget() {
   }
 
   return (
-    <div className="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-50 w-[calc(100vw-2rem)] sm:w-auto max-w-sm sm:max-w-md">
-      <Card className="w-full h-[70vh] sm:h-[600px] max-h-[calc(100vh-8rem)] bg-black border-2 border-gray-800 shadow-2xl rounded-xl overflow-hidden flex flex-col">
+    <div className="fixed inset-2 sm:bottom-6 sm:right-6 sm:inset-auto z-50 sm:w-auto sm:max-w-md">
+      <Card className="w-full h-full sm:h-[600px] sm:max-h-[calc(100vh-3rem)] bg-black border-2 border-gray-800 shadow-2xl rounded-lg sm:rounded-xl overflow-hidden flex flex-col">
         {/* Header */}
-        <CardHeader className="flex flex-row items-center justify-between p-4 bg-gradient-to-r from-gray-900 to-black border-b border-gray-800">
+        <CardHeader className="flex flex-row items-center justify-between p-3 sm:p-4 bg-gradient-to-r from-gray-900 to-black border-b border-gray-800 shrink-0">
           <div className="flex items-center space-x-3">
             <div className="w-10 h-10 bg-gradient-to-br from-gray-800 to-gray-900 rounded-full flex items-center justify-center border border-gray-700">
               <Bot className="w-5 h-5 text-white" />
@@ -281,30 +281,33 @@ export default function ChatWidget() {
         </CardHeader>
 
         {/* Messages */}
-        <CardContent className="flex-1 p-0 bg-gradient-to-b from-gray-950 to-black overflow-hidden">
-          <ScrollArea className="h-full px-4 py-4">
-            <div className="space-y-4">
+        <CardContent className="flex-1 p-0 bg-gradient-to-b from-gray-950 to-black overflow-hidden min-h-0">
+          <ScrollArea className="h-full px-2 sm:px-4 py-2 sm:py-4">
+            <div className="space-y-3 sm:space-y-4">
               {messages.map((m: any) => (
-                <div key={m.id} className="flex items-start space-x-3">
+                <div
+                  key={m.id}
+                  className="flex items-start space-x-2 sm:space-x-3"
+                >
                   {m.role === "assistant" && (
-                    <div className="w-8 h-8 bg-gradient-to-br from-gray-800 to-gray-900 rounded-full flex items-center justify-center border border-gray-700 flex-shrink-0 mt-1">
-                      <Bot className="w-4 h-4 text-white" />
+                    <div className="w-7 h-7 sm:w-8 sm:h-8 bg-gradient-to-br from-gray-800 to-gray-900 rounded-full flex items-center justify-center border border-gray-700 flex-shrink-0 mt-1">
+                      <Bot className="w-3 h-3 sm:w-4 sm:h-4 text-white" />
                     </div>
                   )}
                   {m.role === "user" && (
-                    <div className="w-8 h-8 bg-gradient-to-br from-gray-700 to-gray-800 rounded-full flex items-center justify-center border border-gray-600 flex-shrink-0 mt-1">
-                      <User className="w-4 h-4 text-white" />
+                    <div className="w-7 h-7 sm:w-8 sm:h-8 bg-gradient-to-br from-gray-700 to-gray-800 rounded-full flex items-center justify-center border border-gray-600 flex-shrink-0 mt-1">
+                      <User className="w-3 h-3 sm:w-4 sm:h-4 text-white" />
                     </div>
                   )}
                   <div
-                    className={`flex-1 p-2 sm:p-3 rounded-xl max-w-[85%] sm:max-w-[80%] ${
+                    className={`flex-1 p-2 sm:p-3 rounded-lg sm:rounded-xl max-w-[80%] sm:max-w-[75%] ${
                       m.role === "user"
                         ? "bg-gradient-to-br from-gray-800 to-gray-900 text-white border border-gray-700 ml-auto"
                         : "bg-gradient-to-br from-gray-900 to-black text-gray-200 border border-gray-800"
                     }`}
                   >
                     <p
-                      className="text-sm leading-relaxed whitespace-pre-wrap"
+                      className="text-xs sm:text-sm leading-relaxed whitespace-pre-wrap"
                       dir={lang === "ar" ? "rtl" : "ltr"}
                     >
                       {m.content || m.text}
@@ -332,27 +335,27 @@ export default function ChatWidget() {
         </CardContent>
 
         {/* Input */}
-        <CardFooter className="p-3 sm:p-4 bg-gradient-to-r from-gray-900 to-black border-t border-gray-800">
+        <CardFooter className="p-2 sm:p-4 bg-gradient-to-r from-gray-900 to-black border-t border-gray-800 shrink-0">
           <form
             onSubmit={handleFormSubmit}
             className="flex w-full space-x-2 sm:space-x-3"
           >
-            <div className="flex-1 relative">
+            <div className="flex-1 relative min-w-0">
               <Input
                 value={input}
                 onChange={handleInputChange}
                 placeholder={t("type_your_message")}
                 disabled={isLoading}
                 dir={lang === "ar" ? "rtl" : "ltr"}
-                className="bg-gray-800 border-gray-700 text-white placeholder:text-gray-500 focus:ring-2 focus:ring-gray-600 focus:border-transparent rounded-xl px-3 sm:px-4 py-2 sm:py-3 text-sm sm:text-base"
+                className="bg-gray-800 border-gray-700 text-white placeholder:text-gray-500 focus:ring-2 focus:ring-gray-600 focus:border-transparent rounded-xl px-3 py-3 text-sm w-full"
               />
             </div>
             <Button
               type="submit"
               disabled={isLoading || !input.trim()}
-              className="bg-gradient-to-br from-gray-700 to-gray-800 hover:from-gray-600 hover:to-gray-700 disabled:from-gray-800 disabled:to-gray-900 text-white border border-gray-600 rounded-xl px-3 sm:px-4 py-2 sm:py-3 transition-all duration-200 hover:scale-105 disabled:scale-100"
+              className="bg-gradient-to-br from-gray-700 to-gray-800 hover:from-gray-600 hover:to-gray-700 disabled:from-gray-800 disabled:to-gray-900 text-white border border-gray-600 rounded-xl px-3 py-3 transition-all duration-200 hover:scale-105 disabled:scale-100 shrink-0"
             >
-              <Send className="w-4 h-4 sm:w-5 sm:h-5" />
+              <Send className="w-4 h-4" />
             </Button>
           </form>
         </CardFooter>
