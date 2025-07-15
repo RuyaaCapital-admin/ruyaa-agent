@@ -69,12 +69,6 @@ export default function VerticalStepper() {
   return (
     <div className="w-full max-w-6xl mx-auto px-4 sm:px-6" dir="rtl">
       <div className="relative">
-        {/* Central Vertical Line with Blue Shadow */}
-        <div className="absolute left-1/2 transform -translate-x-1/2 top-0 bottom-0 w-0.5 bg-gray-700">
-          {/* Blue glow effect */}
-          <div className="absolute inset-0 bg-blue-500/20 blur-sm w-1 -translate-x-0.5"></div>
-        </div>
-
         {/* Steps */}
         <div className="space-y-12 sm:space-y-16">
           {stepperData.map((step, index) => {
