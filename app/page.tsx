@@ -359,15 +359,16 @@ export default function AIHeroPage() {
         </div>
       </div>
 
-      <ChatWidget />
-      {/* WhatsApp Floating Button */}
-      <a
-        href="https://api.whatsapp.com/send/?phone=963940632191&text&type=phone_number&app_absent=0"
-        className="fixed bottom-6 left-6 bg-green-500 hover:bg-green-600 text-white p-4 rounded-full shadow-lg z-50"
-        target="_blank"
-        aria-label="Chat on WhatsApp"
-        rel="noreferrer"
-      >
+            <ChatWidget />
+      {/* WhatsApp Floating Button - Hide when chat is open */}
+      {!isOpen && (
+        <a
+          href="https://api.whatsapp.com/send/?phone=963940632191&text&type=phone_number&app_absent=0"
+          className="fixed bottom-6 left-6 bg-green-500 hover:bg-green-600 text-white p-4 rounded-full shadow-lg z-40 transition-opacity duration-300"
+          target="_blank"
+          aria-label="Chat on WhatsApp"
+          rel="noreferrer"
+        >
         <svg
           xmlns="http://www.w3.org/2000/svg"
           className="h-6 w-6"
