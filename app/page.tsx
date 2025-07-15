@@ -26,6 +26,7 @@ import {
 
 export default function AIHeroPage() {
   const { lang, t } = useLanguage(); // Use the language hook
+  const { isOpen } = useChatWidget(); // Get chat open state
   const { openChat } = useChatWidget(); // Use the chat widget hook
 
   return (
