@@ -356,7 +356,6 @@ export default function AIHeroPage() {
         </div>
       </div>
 
-      <ChatWidget />
       {/* WhatsApp Floating Button - Hide when chat is open */}
       {!isOpen && (
         <a
