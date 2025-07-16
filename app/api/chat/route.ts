@@ -6,7 +6,7 @@ import { nanoid } from "nanoid";
 /* ---------- helper: compact history ---------- */
 function buildHistory(
   msgs: { role: "user" | "assistant"; content: string }[],
-  limit = 8,
+  limit = 8
 ) {
   return msgs
     .slice(-limit)
@@ -16,7 +16,7 @@ function buildHistory(
 
 /* ---------- system prompt ---------- */
 const systemPrompt = `
-# RuyaaCapital – Smart Assistant (v2 · Jul 2025)
+# RuyaaCapital – Smart Assistant (v2 · Jul 2025)
 
 LANGUAGE
 - Detect language each turn.
@@ -25,7 +25,7 @@ LANGUAGE
 - NEVER mix the two languages within one sentence.
 
 STYLE
-- Max 2 short sentences per reply (≈ 25 words total).
+- Max 2 short sentences per reply (≈ 25 words total).
 - Confident, friendly; no filler. Apologise only if the user complains.
 - Never mention that you are an AI, a bot, or any tech detail.
 
@@ -60,19 +60,19 @@ OUT‑OF‑SCOPE
 
 PROFANITY
 - If the user insults, ignore the insult and continue politely with the mission.
-`.trim();
+`.trim() + `
 
 /* ---------- models ---------- */
-const primary = openrouter("deepseek/deepseek-r1:free"); // $0 model
-const fallback = groq("llama3-8b-8192"); // free backup
+const primary = openrouter("deepseek/deepseek-r1:free");  // free model
+const fallback = groq("llama3-8b-8192");                  // free backup
 
 /* ---------- POST /api/chat ---------- */
-export async function POST(req: Request) {
+export async function POST(req) {
   try {
     const { messages } = await req.json();
 
     /* ---------- try primary, fall back if needed ---------- */
-    let text: string;
+    let text;
     try {
       ({ text } = await generateText({
         model: primary,
@@ -89,13 +89,11 @@ export async function POST(req: Request) {
       }));
     }
 
-    return Response.json({
-      id: nanoid(),
-      role: "assistant",
-      text,
+    return new Response(JSON.stringify({ id: nanoid(), role: "assistant", text }), {
+      headers: { "Content-Type": "application/json" },
     });
   } catch (err) {
     console.error("chat api error:", err);
-    return Response.json({ error: "failed" }, { status: 500 });
+    return new Response(JSON.stringify({ error: "failed" }), { status: 500 });
   }
 }
