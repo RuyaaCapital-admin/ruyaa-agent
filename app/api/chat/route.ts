@@ -117,12 +117,18 @@ export async function POST(req: NextRequest) {
     // Handle session
     let sid = sessionId;
     if (!sid) {
-      const { data } = await supabase
-        .from("conversation_sessions")
-        .insert({ user_id: user.id })
-        .select("id")
-        .single();
-      sid = data?.id;
+      // Only create database session for authenticated users
+      if (user) {
+        const { data } = await supabase
+          .from("conversation_sessions")
+          .insert({ user_id: user.id })
+          .select("id")
+          .single();
+        sid = data?.id;
+      } else {
+        // For guest users, use a temporary session ID
+        sid = `guest-session-${nanoid(10)}`;
+      }
     }
 
     // Save user message
