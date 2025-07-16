@@ -122,6 +122,27 @@ export default function Navigation() {
     }
   }, [lastScrollY]);
 
+  // Close dropdowns when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      const target = event.target as HTMLElement;
+      if (
+        !target.closest(".user-dropdown-container") &&
+        !target.closest(".contact-dropdown-container")
+      ) {
+        setIsUserDropdownOpen(false);
+        setIsContactOpen(false);
+      }
+    };
+
+    if (isUserDropdownOpen || isContactOpen) {
+      document.addEventListener("mousedown", handleClickOutside);
+      return () => {
+        document.removeEventListener("mousedown", handleClickOutside);
+      };
+    }
+  }, [isUserDropdownOpen, isContactOpen]);
+
   return (
     <nav
       className={`fixed top-0 left-0 right-0 z-50 px-6 py-4 bg-black/90 backdrop-blur-md border-b border-gray-700/30 transition-transform duration-300 ease-in-out ${
