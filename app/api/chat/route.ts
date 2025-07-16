@@ -123,11 +123,15 @@ export async function POST(req: NextRequest) {
     const token = authHeader.replace(/^Bearer\s+/, "");
 
     let user = null;
-    if (token && token !== "guest-token") {
-      const {
-        data: { user: authUser },
-      } = await supabase.auth.getUser(token);
-      user = authUser;
+    if (token && token !== "guest-token" && supabase) {
+      try {
+        const {
+          data: { user: authUser },
+        } = await supabase.auth.getUser(token);
+        user = authUser;
+      } catch (error) {
+        console.log("Auth check failed, proceeding as guest:", error);
+      }
     }
 
     // For guest users, create a temporary session ID
