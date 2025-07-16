@@ -2,7 +2,7 @@
 
 import { Zap, Shield } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import ChatWidget from "@/components/chat-widget";
+
 import ContactForm from "@/components/contact-form";
 import VerticalStepper from "@/components/vertical-stepper";
 import PlatformLogos from "@/components/platform-logos";
