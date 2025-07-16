@@ -204,7 +204,9 @@ export default function SignInModal({ isOpen, onClose }: SignInModalProps) {
                 <div className="w-full border-t border-gray-600"></div>
               </div>
               <div className="relative flex justify-center text-sm">
-                <span className="bg-gray-900 px-2 text-gray-400">أو</span>
+                <span className="bg-gray-900 px-2 text-gray-400">
+                  {lang === "ar" ? "أو" : "or"}
+                </span>
               </div>
             </div>
 
