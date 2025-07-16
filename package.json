@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@ai-sdk/groq": "latest",
+    "@openrouter/ai-sdk-provider": "^1.0.0-beta.1",
     "@hookform/resolvers": "^3.9.1",
     "@radix-ui/react-accordion": "latest",
     "@radix-ui/react-alert-dialog": "latest",
@@ -51,6 +52,7 @@
     "nanoid": "latest",
     "next": "15.2.4",
     "next-themes": "latest",
+    "openai": "^4.29.0",
     "react": "^19",
     "react-day-picker": "latest",
     "react-dom": "^19",

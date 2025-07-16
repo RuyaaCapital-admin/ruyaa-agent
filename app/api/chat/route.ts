@@ -1,5 +1,5 @@
 import { generateText } from "ai";
-import { openrouter } from "@ai-sdk/openrouter";
+import { openrouter } from "@openrouter/ai-sdk-provider";
 import { groq } from "@ai-sdk/groq";
 import { nanoid } from "nanoid";
 
@@ -63,8 +63,8 @@ PROFANITY
 `.trim();
 
 /* ---------- models ---------- */
-const primary   = openrouter("deepseek/deepseek-r1:free"); // $0 model
-const fallback  = groq("llama3-8b-8192");                  // free backup
+const primary = openrouter("deepseek/deepseek-r1:free"); // $0 model
+const fallback = groq("llama3-8b-8192"); // free backup
 
 /* ---------- POST /api/chat ---------- */
 export async function POST(req: Request) {
