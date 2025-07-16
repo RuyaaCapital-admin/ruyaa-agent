@@ -161,16 +161,20 @@ export async function POST(req: NextRequest) {
       }
     }
 
-    // Save user message (only for authenticated users)
+    // Save user message (only for authenticated users with Supabase)
     const userMsg = messages[messages.length - 1].content;
-    if (user) {
-      await supabase.from("messages").insert([
-        {
-          session_id: sid,
-          role: "user",
-          content: userMsg,
-        },
-      ]);
+    if (user && supabase) {
+      try {
+        await supabase.from("messages").insert([
+          {
+            session_id: sid,
+            role: "user",
+            content: userMsg,
+          },
+        ]);
+      } catch (error) {
+        console.log("Failed to save user message:", error);
+      }
     }
 
     // Get session business type (only for authenticated users)
