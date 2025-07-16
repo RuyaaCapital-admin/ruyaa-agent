@@ -142,16 +142,21 @@ export async function POST(req: NextRequest) {
     // Handle session
     let sid = sessionId;
     if (!sid) {
-      // Only create database session for authenticated users
-      if (user) {
-        const { data } = await supabase
-          .from("conversation_sessions")
-          .insert({ user_id: user.id })
-          .select("id")
-          .single();
-        sid = data?.id;
+      // Only create database session for authenticated users with Supabase
+      if (user && supabase) {
+        try {
+          const { data } = await supabase
+            .from("conversation_sessions")
+            .insert({ user_id: user.id })
+            .select("id")
+            .single();
+          sid = data?.id;
+        } catch (error) {
+          console.log("Failed to create session, using guest session:", error);
+          sid = `guest-session-${nanoid(10)}`;
+        }
       } else {
-        // For guest users, use a temporary session ID
+        // For guest users or when Supabase is not available, use a temporary session ID
         sid = `guest-session-${nanoid(10)}`;
       }
     }
