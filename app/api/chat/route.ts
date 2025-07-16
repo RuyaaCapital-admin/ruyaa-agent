@@ -1,8 +1,9 @@
 import { generateText } from "ai";
+import { openrouter } from "@ai-sdk/openrouter";   // ← new
 import { groq } from "@ai-sdk/groq";
 import { nanoid } from "nanoid";
 
-/* ---------- helper: build compact history ---------- */
+/* ---------- helper: compact history ---------- */
 function buildHistory(
   msgs: { role: "user" | "assistant"; content: string }[],
   limit = 8,
@@ -18,57 +19,33 @@ export async function POST(req: Request) {
   try {
     const { messages } = await req.json();
 
+    /* ---------- system prompt ---------- */
     const systemPrompt = `
-# RuyaaCapital – Smart Agent (Production Rules)
+# RuyaaCapital – Smart Assistant (v2 · Jul 2025)
+<same prompt text you already use …>
+`.trim();
 
-LANGUAGE
-- Detect user language each turn.
-- If Arabic → reply only in Syrian Arabic (عامية سورية).
-- If English → reply only in English.
-- Never mix.
+    /* ---------- models ---------- */
+    const primary = openrouter("deepseek/deepseek-r1:free"); // $0 model
+    const fallback = groq("llama3-8b-8192");                 // free backup
 
-STYLE
-- Max 3 short sentences.
-- Friendly, confident, zero apologies, zero tech talk.
-
-VALUE
-- Faster service, zero mistakes, higher sales.
-- 24/7 instant support, one place for WhatsApp / FB / IG.
-- Automates scheduling, docs, notifications—stress‑free.
-
-SERVICES (paraphrase naturally)
-• Customer‑Support Agent: يرد فوراً ويحسم ٩٠٪ من المشاكل.
-• Social‑Media Agent: يكتب وجدول ويجاوب الرسائل مع تقارير أداء.
-• Business Assistant: فواتير، حجوزات، جداول، وتنبيهات بلا أخطاء.
-• Trading Assistant: يراقب السوق وينفذ أوامر بضبط مخاطرة.
-• Lifestyle Planner: يخطط رحلاتك ويذكرك بكل التفاصيل.
-
-CLARIFY ONCE
-- AR: وضّح لي أكتر كيف أقدر أخدمك.
-- EN: Please clarify what you need so I can help.
-
-WELCOME once/ session
-- AR: أهلاً! كيف فيني ساعدك اليوم؟
-- EN: Welcome! How can I help you today?
-
-FORBIDDEN
-- Never mention AI, bot, backend, or tech details.
-- No profanity / personal‑data requests.
-
-OUT‑OF‑SCOPE
-- AR: عذراً، هاد الطلب خارج نطاق خدمتي.
-- EN: Sorry, that request is outside my scope.
-`;
-
-    /* pick a model – using Groq with llama3 as primary */
-    const modelID = "llama3-8b-8192";
-
-    const { text } = await generateText({
-      model: groq(modelID),
-      temperature: 0.2,
-      system: systemPrompt,
-      prompt: buildHistory(messages), // full context
-    });
+    /* ---------- try primary, else fallback ---------- */
+    let text: string;
+    try {
+      ({ text } = await generateText({
+        model: primary,
+        temperature: 0.2,
+        system: systemPrompt,
+        prompt: buildHistory(messages),
+      }));
+    } catch {
+      ({ text } = await generateText({
+        model: fallback,
+        temperature: 0.2,
+        system: systemPrompt,
+        prompt: buildHistory(messages),
+      }));
+    }
 
     return Response.json({
       id: nanoid(),
