@@ -4,10 +4,14 @@ import { nanoid } from "nanoid";
 
 export const runtime = "edge";
 
-const supabase = createClient(
-  process.env.SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!,
-);
+// Create Supabase client only if environment variables are available
+const supabase =
+  process.env.SUPABASE_URL && process.env.SUPABASE_SERVICE_ROLE_KEY
+    ? createClient(
+        process.env.SUPABASE_URL,
+        process.env.SUPABASE_SERVICE_ROLE_KEY,
+      )
+    : null;
 
 function buildHistory(
   msgs: { role: "user" | "assistant"; content: string }[],
@@ -95,87 +99,153 @@ PROFANITY
 
 export async function POST(req: NextRequest) {
   try {
-    const { messages, sessionId } = await req.json();
+    const body = await req.json();
+    const { messages, sessionId } = body;
 
-    // Authenticate user
+    // Validate request
+    if (!messages || !Array.isArray(messages) || messages.length === 0) {
+      return NextResponse.json(
+        { error: "Invalid messages array" },
+        { status: 400 },
+      );
+    }
+
+    if (!process.env.OPENROUTER_API_KEY) {
+      console.error("Missing OPENROUTER_API_KEY environment variable");
+      return NextResponse.json(
+        { error: "API configuration error" },
+        { status: 500 },
+      );
+    }
+
+    // Handle authentication - allow guest users
     const authHeader = req.headers.get("authorization") || "";
     const token = authHeader.replace(/^Bearer\s+/, "");
-    const {
-      data: { user },
-    } = await supabase.auth.getUser(token);
-    if (!user)
-      return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
+
+    let user = null;
+    if (token && token !== "guest-token" && supabase) {
+      try {
+        const {
+          data: { user: authUser },
+        } = await supabase.auth.getUser(token);
+        user = authUser;
+      } catch (error) {
+        console.log("Auth check failed, proceeding as guest:", error);
+      }
+    }
+
+    // For guest users, create a temporary session ID
+    let userId = user?.id || `guest-${nanoid(10)}`;
+
+    console.log("Processing chat request for user:", userId);
 
     // Handle session
     let sid = sessionId;
     if (!sid) {
-      const { data } = await supabase
-        .from("conversation_sessions")
-        .insert({ user_id: user.id })
-        .select("id")
-        .single();
-      sid = data?.id;
-    }
-
-    // Save user message
-    const userMsg = messages[messages.length - 1].content;
-    await supabase.from("messages").insert([
-      {
-        session_id: sid,
-        role: "user",
-        content: userMsg,
-      },
-    ]);
-
-    // Get session business type
-    const { data: session } = await supabase
-      .from("conversation_sessions")
-      .select("business_type")
-      .eq("id", sid)
-      .single();
-
-    let businessType = session?.business_type;
-
-    // Handle first time business type capture
-    if (!businessType) {
-      await supabase
-        .from("conversation_sessions")
-        .update({ business_type: userMsg.trim() })
-        .eq("id", sid);
-
-      const confirmationReply = `سجلت إنو شغلك هو "${userMsg.trim()}". هل بتحب خبرك شو فيني ساوي لإلك؟`;
-      await supabase.from("messages").insert([
-        {
-          session_id: sid,
-          role: "assistant",
-          content: confirmationReply,
-        },
-      ]);
-      return NextResponse.json({ sessionId: sid, reply: confirmationReply });
-    }
-
-    // Generate embedding for knowledge base search
-    const embedding = await generateEmbedding(userMsg);
-    let docs = "";
-
-    if (embedding.length > 0) {
-      try {
-        const { data: kbRows } = await supabase.rpc("match_ai_kb", {
-          query_embedding: embedding,
-          match_count: 4,
-        });
-        docs = kbRows?.map((r: any) => r.content).join("\n---\n") || "";
-      } catch (error) {
-        console.error("Knowledge base search error:", error);
+      // Only create database session for authenticated users with Supabase
+      if (user && supabase) {
+        try {
+          const { data } = await supabase
+            .from("conversation_sessions")
+            .insert({ user_id: user.id })
+            .select("id")
+            .single();
+          sid = data?.id;
+        } catch (error) {
+          console.log("Failed to create session, using guest session:", error);
+          sid = `guest-session-${nanoid(10)}`;
+        }
+      } else {
+        // For guest users or when Supabase is not available, use a temporary session ID
+        sid = `guest-session-${nanoid(10)}`;
       }
     }
 
-    // Get conversation history
-    const { data: history } = await supabase
-      .from("messages")
-      .select("role, content")
-      .eq("session_id", sid)
-      .order("created_at", { ascending: true });
+    // Save user message (only for authenticated users with Supabase)
+    const userMsg = messages[messages.length - 1].content;
+    if (user && supabase) {
+      try {
+        await supabase.from("messages").insert([
+          {
+            session_id: sid,
+            role: "user",
+            content: userMsg,
+          },
+        ]);
+      } catch (error) {
+        console.log("Failed to save user message:", error);
+      }
+    }
+
+    // Get session business type (only for authenticated users with Supabase)
+    let businessType = null;
+    if (user && supabase && !sid.startsWith("guest-session-")) {
+      try {
+        const { data: session } = await supabase
+          .from("conversation_sessions")
+          .select("business_type")
+          .eq("id", sid)
+          .single();
+
+        businessType = session?.business_type;
+
+        // Handle first time business type capture
+        if (!businessType) {
+          await supabase
+            .from("conversation_sessions")
+            .update({ business_type: userMsg.trim() })
+            .eq("id", sid);
+
+          const confirmationReply = `سجلت إنو شغلك هو "${userMsg.trim()}". هل بتحب خبرك شو فيني ساوي لإلك؟`;
+          await supabase.from("messages").insert([
+            {
+              session_id: sid,
+              role: "assistant",
+              content: confirmationReply,
+            },
+          ]);
+          return NextResponse.json({
+            sessionId: sid,
+            reply: confirmationReply,
+          });
+        }
+      } catch (error) {
+        console.log("Failed to get/set business type:", error);
+      }
+    }
+
+    // Generate embedding for knowledge base search (only for authenticated users with Supabase)
+    let docs = "";
+    if (user && supabase) {
+      const embedding = await generateEmbedding(userMsg);
+
+      if (embedding.length > 0) {
+        try {
+          const { data: kbRows } = await supabase.rpc("match_ai_kb", {
+            query_embedding: embedding,
+            match_count: 4,
+          });
+          docs = kbRows?.map((r: any) => r.content).join("\n---\n") || "";
+        } catch (error) {
+          console.error("Knowledge base search error:", error);
+        }
+      }
+    }
+
+    // Get conversation history (only for authenticated users with Supabase)
+    let history = null;
+    if (user && supabase && !sid.startsWith("guest-session-")) {
+      try {
+        const { data: historyData } = await supabase
+          .from("messages")
+          .select("role, content")
+          .eq("session_id", sid)
+          .order("created_at", { ascending: true });
+        history = historyData;
+      } catch (error) {
+        console.log("Failed to get conversation history:", error);
+      }
+    }
 
     // Build context prompt
     const injectedPrompt = `${systemPrompt}\n\nUSER BUSINESS: ${businessType || "غير محدد"}\n`;
@@ -185,6 +255,7 @@ export async function POST(req: NextRequest) {
     const prompt = contextParts.join("\n\n");
 
     // Call OpenRouter API with DeepSeek model
+    console.log("Calling OpenRouter API...");
     const response = await fetch(
       "https://openrouter.ai/api/v1/chat/completions",
       {
@@ -210,21 +281,33 @@ export async function POST(req: NextRequest) {
     );
 
     if (!response.ok) {
-      throw new Error(`OpenRouter API error: ${response.status}`);
+      const errorText = await response.text();
+      console.error(`OpenRouter API error: ${response.status} - ${errorText}`);
+      throw new Error(
+        `OpenRouter API error: ${response.status} - ${errorText}`,
+      );
     }
 
     const json = await response.json();
+    console.log("OpenRouter response received:", json);
+
     const assistantReply =
       json.choices?.[0]?.message?.content || "عذراً، ما قدرت أرد عليك هلأ.";
 
-    // Save assistant message
-    await supabase.from("messages").insert([
-      {
-        session_id: sid,
-        role: "assistant",
-        content: assistantReply,
-      },
-    ]);
+    // Save assistant message (only for authenticated users with Supabase)
+    if (user && supabase) {
+      try {
+        await supabase.from("messages").insert([
+          {
+            session_id: sid,
+            role: "assistant",
+            content: assistantReply,
+          },
+        ]);
+      } catch (error) {
+        console.log("Failed to save assistant message:", error);
+      }
+    }
 
     return NextResponse.json({ sessionId: sid, reply: assistantReply });
   } catch (error) {

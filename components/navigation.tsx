@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { createPortal } from "react-dom";
 import {
   Menu,
   X,
@@ -13,10 +12,11 @@ import {
   LogOut,
   Settings,
   RotateCcw,
+  ChevronDown,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useLanguage } from "@/context/language-context";
-import { useChatWidget } from "@/context/chat-context";
+
 import { useAuth } from "@/context/auth-context";
 import SignInModal from "@/components/signin-modal";
 import Link from "next/link";
@@ -29,7 +29,7 @@ export default function Navigation() {
   const [isSignInModalOpen, setIsSignInModalOpen] = useState(false);
   const [isUserDropdownOpen, setIsUserDropdownOpen] = useState(false);
   const { lang, setLang, t } = useLanguage();
-  const { openChat } = useChatWidget();
+
   const { user, loading, signOut, resetPassword } = useAuth();
 
   const toggleLanguage = () => {
@@ -123,6 +123,27 @@ export default function Navigation() {
     }
   }, [lastScrollY]);
 
+  // Close dropdowns when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      const target = event.target as HTMLElement;
+      if (
+        !target.closest(".user-dropdown-container") &&
+        !target.closest(".contact-dropdown-container")
+      ) {
+        setIsUserDropdownOpen(false);
+        setIsContactOpen(false);
+      }
+    };
+
+    if (isUserDropdownOpen || isContactOpen) {
+      document.addEventListener("mousedown", handleClickOutside);
+      return () => {
+        document.removeEventListener("mousedown", handleClickOutside);
+      };
+    }
+  }, [isUserDropdownOpen, isContactOpen]);
+
   return (
     <nav
       className={`fixed top-0 left-0 right-0 z-50 px-6 py-4 bg-black/90 backdrop-blur-md border-b border-gray-700/30 transition-transform duration-300 ease-in-out ${
@@ -163,7 +184,7 @@ export default function Navigation() {
           >
             {t("about")}
           </a>
-          <div className="relative">
+          <div className="relative contact-dropdown-container">
             <button
               onClick={() => setIsContactOpen(!isContactOpen)}
               className="hover:text-gray-300 transition-colors text-gray-400"
@@ -199,14 +220,14 @@ export default function Navigation() {
             )}
           </div>
           {!loading && (
-            <div className="relative">
+            <div className="relative user-dropdown-container">
               <Button
                 onClick={handleAuthButtonClick}
                 className={`${
                   user
-                    ? "bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-500 hover:to-blue-600"
+                    ? `bg-gradient-to-r ${isUserDropdownOpen ? "from-slate-700 to-slate-800" : "from-slate-800 to-slate-900"} hover:from-slate-700 hover:to-slate-800 border border-slate-600/50 ring-1 ring-slate-500/20`
                     : "bg-gradient-to-r from-gray-700 to-gray-800 hover:from-gray-600 hover:to-gray-700"
-                } text-white border-0 flex items-center gap-2`}
+                } text-white border-0 flex items-center gap-2 transition-all duration-200 shadow-lg hover:shadow-xl hover:scale-105 active:scale-95`}
               >
                 {user ? (
                   <>
@@ -214,6 +235,9 @@ export default function Navigation() {
                     <span className="max-w-32 truncate">
                       {getUserDisplayName()}
                     </span>
+                    <ChevronDown
+                      className={`h-3 w-3 transition-transform duration-200 ${isUserDropdownOpen ? "rotate-180" : ""}`}
+                    />
                   </>
                 ) : (
                   t("get_started")
@@ -221,36 +245,33 @@ export default function Navigation() {
               </Button>
 
               {/* User Dropdown */}
-              {user &&
-                isUserDropdownOpen &&
-                createPortal(
-                  <div className="absolute right-0 mt-2 w-48 z-50 bg-black/95 backdrop-blur-md border border-gray-700/50 rounded-lg shadow-xl p-2">
-                    <div className="flex flex-col space-y-1">
-                      <button
-                        onClick={() => setIsUserDropdownOpen(false)}
-                        className="flex items-center gap-3 text-gray-300 hover:text-white transition-colors p-3 rounded hover:bg-gray-800/50 text-left w-full"
-                      >
-                        <User className="h-4 w-4" />
-                        <span>{tAuth("profile")}</span>
-                      </button>
-                      <button
-                        onClick={handleResetPassword}
-                        className="flex items-center gap-3 text-gray-300 hover:text-yellow-400 transition-colors p-3 rounded hover:bg-gray-800/50 text-left w-full"
-                      >
-                        <RotateCcw className="h-4 w-4" />
-                        <span>{tAuth("resetPassword")}</span>
-                      </button>
-                      <button
-                        onClick={handleSignOut}
-                        className="flex items-center gap-3 text-gray-300 hover:text-red-400 transition-colors p-3 rounded hover:bg-gray-800/50 text-left w-full"
-                      >
-                        <LogOut className="h-4 w-4" />
-                        <span>{tAuth("signOut")}</span>
-                      </button>
-                    </div>
-                  </div>,
-                  document.body,
-                )}
+              {user && isUserDropdownOpen && (
+                <div className="absolute top-full right-0 mt-2 w-48 z-50 bg-black/95 backdrop-blur-md border border-gray-700/50 rounded-lg shadow-xl p-2">
+                  <div className="flex flex-col space-y-1">
+                    <button
+                      onClick={() => setIsUserDropdownOpen(false)}
+                      className="flex items-center gap-3 text-gray-300 hover:text-white transition-colors p-3 rounded hover:bg-gray-800/50 text-left w-full"
+                    >
+                      <User className="h-4 w-4" />
+                      <span>{tAuth("profile")}</span>
+                    </button>
+                    <button
+                      onClick={handleResetPassword}
+                      className="flex items-center gap-3 text-gray-300 hover:text-yellow-400 transition-colors p-3 rounded hover:bg-gray-800/50 text-left w-full"
+                    >
+                      <RotateCcw className="h-4 w-4" />
+                      <span>{tAuth("resetPassword")}</span>
+                    </button>
+                    <button
+                      onClick={handleSignOut}
+                      className="flex items-center gap-3 text-gray-300 hover:text-red-400 transition-colors p-3 rounded hover:bg-gray-800/50 text-left w-full"
+                    >
+                      <LogOut className="h-4 w-4" />
+                      <span>{tAuth("signOut")}</span>
+                    </button>
+                  </div>
+                </div>
+              )}
             </div>
           )}
           {/* Language Switch Button */}
@@ -367,9 +388,9 @@ export default function Navigation() {
                 }}
                 className={`${
                   user
-                    ? "bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-500 hover:to-blue-600"
+                    ? "bg-gradient-to-r from-slate-800 to-slate-900 hover:from-slate-700 hover:to-slate-800 border border-slate-600/50 ring-1 ring-slate-500/20"
                     : "bg-gradient-to-r from-gray-700 to-gray-800 hover:from-gray-600 hover:to-gray-700"
-                } text-white border-0 w-full flex items-center justify-center gap-2`}
+                } text-white border-0 w-full flex items-center justify-center gap-2 transition-all duration-200 shadow-lg hover:shadow-xl hover:scale-105 active:scale-95`}
               >
                 {user ? (
                   <>

@@ -19,6 +19,7 @@ function useSimpleChat(api: string, initialMessages: any[]) {
   const [messages, setMessages] = useState(initialMessages);
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [sessionId, setSessionId] = useState<string | null>(null);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setInput(e.target.value);
@@ -66,6 +67,17 @@ function useSimpleChat(api: string, initialMessages: any[]) {
     return null;
   };
 
+  const getAuthToken = () => {
+    if (typeof window !== "undefined") {
+      return (
+        localStorage.getItem("sb-auth-token") ||
+        sessionStorage.getItem("sb-auth-token") ||
+        "guest-token"
+      ); // Fallback for anonymous users
+    }
+    return "guest-token";
+  };
+
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!input.trim()) return;
@@ -96,29 +108,43 @@ function useSimpleChat(api: string, initialMessages: any[]) {
         return;
       }
 
-      const langInstruction =
-        userLang === "ar"
-          ? "[CRITICAL: Reply ONLY in Arabic. Be ultra-short (2-3 sentences max). Sound professional and human, never mention AI/bot/digital. Focus on clear value for RuyaaCapital services.] "
-          : "[CRITICAL: Reply ONLY in English. Be ultra-short (2-3 sentences max). Sound professional and human, never mention AI/bot/digital. Focus on clear value for RuyaaCapital services.] ";
+      const token = getAuthToken();
 
       const res = await fetch(api, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
         body: JSON.stringify({
-          messages: [
-            ...messages,
-            { role: "user", content: langInstruction + currentInput },
-          ],
+          messages: [{ role: "user", content: currentInput }],
+          sessionId: sessionId,
         }),
       });
+
+      if (!res.ok) {
+        throw new Error(`HTTP ${res.status}: ${res.statusText}`);
+      }
+
       const data = await res.json();
+
+      if (data.error) {
+        throw new Error(data.error);
+      }
+
+      // Update session ID if returned
+      if (data.sessionId && !sessionId) {
+        setSessionId(data.sessionId);
+      }
+
       const assistantMessage = {
-        id: data.id || Math.random().toString(36).slice(2),
+        id: Math.random().toString(36).slice(2),
         role: "assistant",
-        content: data.text || data.content || "[No response]",
+        content: data.reply || data.text || data.content || "[No response]",
       };
       setMessages((prev: any) => [...prev, assistantMessage]);
-    } catch (e) {
+    } catch (error) {
+      console.error("Chat error:", error);
       setMessages((prev: any) => [
         ...prev,
         {
