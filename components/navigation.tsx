@@ -235,6 +235,9 @@ export default function Navigation() {
                     <span className="max-w-32 truncate">
                       {getUserDisplayName()}
                     </span>
+                    <ChevronDown
+                      className={`h-3 w-3 transition-transform duration-200 ${isUserDropdownOpen ? "rotate-180" : ""}`}
+                    />
                   </>
                 ) : (
                   t("get_started")
