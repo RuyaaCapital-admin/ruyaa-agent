@@ -1,5 +1,5 @@
 import type React from "react";
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import "./globals.css";
 import { LanguageProvider } from "@/context/language-context"; // Import LanguageProvider
 import { ChatProvider } from "@/context/chat-context";
@@ -10,12 +10,13 @@ export const metadata: Metadata = {
   title: "v0 App",
   description: "Created with v0",
   generator: "v0.dev",
-  viewport: {
-    width: "device-width",
-    initialScale: 1,
-    maximumScale: 1,
-    userScalable: false,
-  },
+};
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
 };
 
 export default function RootLayout({
@@ -25,12 +26,6 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <head>
-        <meta
-          name="viewport"
-          content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"
-        />
-      </head>
       {/* lang attribute will be set dynamically by LanguageProvider */}
       <body>
         <LanguageProvider>
