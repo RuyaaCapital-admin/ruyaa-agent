@@ -67,8 +67,8 @@ function useSimpleChat(api: string, initialMessages: any[]) {
 
     if (hasIdentityKeyword) {
       return lang === "ar"
-        ? "أنا مساعد رؤيا كابيتال، بخلي شغلك أسهل وأسرع وبدون أخطاء—أي خدمة بتحتاجها جاهز فوراً."
-        : "I'm your RuyaaCapital Smart Assistant. I help you boost sales, avoid mistakes, and get things done fast—24/7.";
+        ? "أنا مساعد رؤيا الذكي، متخصص في وكلاء الذكاء الاصطناعي. أساعدك في تطوير حلول ذكية تنفذ المهام الحقيقية لعملك."
+        : "I'm your Ruyaa AI Assistant, specialized in AI agents. I help you develop smart solutions that execute real tasks for your business.";
     }
 
     return null;
