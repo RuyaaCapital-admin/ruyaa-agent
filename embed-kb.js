@@ -1,9 +1,9 @@
 /**
  * embed-kb.js – one-time script to fill the `embedding` column
- * Uses your OpenRouter API key to embed missing knowledge base entries via the OpenRouter SDK on their free model.
+ * Uses your OpenRouter API key to embed missing knowledge base entries via `@openrouter/ai-sdk-provider` without extra Zod imports.
  */
 const { createClient } = require('@supabase/supabase-js');
-const { openrouter } = require('@openrouter/ai-sdk-provider');
+const { OpenRouter } = require('@openrouter/ai-sdk-provider');
 
 // Initialize Supabase client (server-side with service role key)
 const supabase = createClient(
@@ -12,7 +12,8 @@ const supabase = createClient(
 );
 
 // Initialize OpenRouter client for embeddings
-const router = openrouter({ apiKey: process.env.OPENROUTER_API_KEY });
+type RouterConfig = { apiKey: string };
+const router = OpenRouter({ apiKey: process.env.OPENROUTER_API_KEY });
 
 // Use OpenRouter's free embedding model 'deepseek/deepseek-r1:free'
 const EMBEDDING_MODEL = process.env.EMBEDDING_MODEL_ID || 'deepseek/deepseek-r1:free';
