@@ -1,10 +1,23 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Menu, X, Phone, Mail, MessageCircle, Globe } from "lucide-react";
+import {
+  Menu,
+  X,
+  Phone,
+  Mail,
+  MessageCircle,
+  Globe,
+  User,
+  LogOut,
+  Settings,
+  RotateCcw,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useLanguage } from "@/context/language-context";
 import { useChatWidget } from "@/context/chat-context";
+import { useAuth } from "@/context/auth-context";
+import SignInModal from "@/components/signin-modal";
 import Link from "next/link";
 
 export default function Navigation() {
@@ -12,8 +25,11 @@ export default function Navigation() {
   const [isContactOpen, setIsContactOpen] = useState(false);
   const [isVisible, setIsVisible] = useState(true);
   const [lastScrollY, setLastScrollY] = useState(0);
+  const [isSignInModalOpen, setIsSignInModalOpen] = useState(false);
+  const [isUserDropdownOpen, setIsUserDropdownOpen] = useState(false);
   const { lang, setLang, t } = useLanguage();
   const { openChat } = useChatWidget();
+  const { user, loading, signOut, resetPassword } = useAuth();
 
   const toggleLanguage = () => {
     setLang(lang === "ar" ? "en" : "ar");
@@ -33,6 +49,56 @@ export default function Navigation() {
   const handleCall = () => {
     window.open("tel:+963940632191", "_self");
   };
+
+  const handleAuthButtonClick = () => {
+    if (user) {
+      setIsUserDropdownOpen(!isUserDropdownOpen);
+    } else {
+      setIsSignInModalOpen(true);
+    }
+  };
+
+  const handleSignOut = async () => {
+    try {
+      await signOut();
+      setIsUserDropdownOpen(false);
+    } catch (error) {
+      console.error("Error signing out:", error);
+    }
+  };
+
+  const handleResetPassword = async () => {
+    if (user?.email) {
+      try {
+        await resetPassword(user.email);
+        setIsUserDropdownOpen(false);
+        // Could show a success message here
+      } catch (error) {
+        console.error("Error resetting password:", error);
+      }
+    }
+  };
+
+  const getUserDisplayName = () => {
+    if (!user) return "";
+    return user.user_metadata?.full_name || user.email || "";
+  };
+
+  const authTranslations = {
+    ar: {
+      profile: "الملف الشخصي",
+      resetPassword: "إعادة ضبط كلمة المرور",
+      signOut: "تسجيل الخروج",
+    },
+    en: {
+      profile: "Profile",
+      resetPassword: "Reset Password",
+      signOut: "Sign Out",
+    },
+  };
+
+  const tAuth = (key: keyof typeof authTranslations.ar) =>
+    authTranslations[lang][key];
 
   useEffect(() => {
     const controlNavbar = () => {
@@ -131,12 +197,58 @@ export default function Navigation() {
               </div>
             )}
           </div>
-          <Button
-            onClick={openChat}
-            className="bg-gradient-to-r from-gray-700 to-gray-800 hover:from-gray-600 hover:to-gray-700 text-white border-0"
-          >
-            {t("get_started")}
-          </Button>
+          {!loading && (
+            <div className="relative">
+              <Button
+                onClick={handleAuthButtonClick}
+                className={`${
+                  user
+                    ? "bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-500 hover:to-blue-600"
+                    : "bg-gradient-to-r from-gray-700 to-gray-800 hover:from-gray-600 hover:to-gray-700"
+                } text-white border-0 flex items-center gap-2`}
+              >
+                {user ? (
+                  <>
+                    <User className="h-4 w-4" />
+                    <span className="max-w-32 truncate">
+                      {getUserDisplayName()}
+                    </span>
+                  </>
+                ) : (
+                  t("get_started")
+                )}
+              </Button>
+
+              {/* User Dropdown */}
+              {user && isUserDropdownOpen && (
+                <div className="absolute top-full right-0 mt-2 bg-black/95 backdrop-blur-md border border-gray-700/50 rounded-lg shadow-xl p-2 min-w-[200px] z-50">
+                  <div className="flex flex-col space-y-1">
+                    <button
+                      onClick={() => setIsUserDropdownOpen(false)}
+                      className="flex items-center gap-3 text-gray-300 hover:text-white transition-colors p-3 rounded hover:bg-gray-800/50 text-left w-full"
+                    >
+                      <User className="h-4 w-4" />
+                      <span>{tAuth("profile")}</span>
+                    </button>
+                    <button
+                      onClick={handleResetPassword}
+                      className="flex items-center gap-3 text-gray-300 hover:text-yellow-400 transition-colors p-3 rounded hover:bg-gray-800/50 text-left w-full"
+                    >
+                      <RotateCcw className="h-4 w-4" />
+                      <span>{tAuth("resetPassword")}</span>
+                    </button>
+                    <button
+                      onClick={handleSignOut}
+                      className="flex items-center gap-3 text-gray-300 hover:text-red-400 transition-colors p-3 rounded hover:bg-gray-800/50 text-left w-full"
+                    >
+                      <LogOut className="h-4 w-4" />
+                      <span>{tAuth("signOut")}</span>
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
           {/* Language Switch Button */}
           <Button
             variant="outline"
@@ -239,18 +351,77 @@ export default function Navigation() {
                 </div>
               )}
             </div>
-            <Button
-              onClick={() => {
-                openChat();
-                setIsMenuOpen(false);
-              }}
-              className="bg-gradient-to-r from-gray-700 to-gray-800 hover:from-gray-600 hover:to-gray-700 text-white border-0 w-full"
-            >
-              {t("get_started")}
-            </Button>
+            {!loading && (
+              <Button
+                onClick={() => {
+                  if (user) {
+                    setIsUserDropdownOpen(!isUserDropdownOpen);
+                  } else {
+                    setIsSignInModalOpen(true);
+                  }
+                  setIsMenuOpen(false);
+                }}
+                className={`${
+                  user
+                    ? "bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-500 hover:to-blue-600"
+                    : "bg-gradient-to-r from-gray-700 to-gray-800 hover:from-gray-600 hover:to-gray-700"
+                } text-white border-0 w-full flex items-center justify-center gap-2`}
+              >
+                {user ? (
+                  <>
+                    <User className="h-4 w-4" />
+                    <span className="truncate">{getUserDisplayName()}</span>
+                  </>
+                ) : (
+                  t("get_started")
+                )}
+              </Button>
+            )}
+
+            {/* Mobile User Actions */}
+            {user && (
+              <div className="mt-4 pt-4 border-t border-gray-700 space-y-2">
+                <button
+                  onClick={() => {
+                    setIsMenuOpen(false);
+                    setIsUserDropdownOpen(false);
+                  }}
+                  className="flex items-center gap-3 text-gray-300 hover:text-white transition-colors p-2 rounded hover:bg-gray-800/50 w-full text-left"
+                >
+                  <User className="h-4 w-4" />
+                  <span>{tAuth("profile")}</span>
+                </button>
+                <button
+                  onClick={() => {
+                    handleResetPassword();
+                    setIsMenuOpen(false);
+                  }}
+                  className="flex items-center gap-3 text-gray-300 hover:text-yellow-400 transition-colors p-2 rounded hover:bg-gray-800/50 w-full text-left"
+                >
+                  <RotateCcw className="h-4 w-4" />
+                  <span>{tAuth("resetPassword")}</span>
+                </button>
+                <button
+                  onClick={() => {
+                    handleSignOut();
+                    setIsMenuOpen(false);
+                  }}
+                  className="flex items-center gap-3 text-gray-300 hover:text-red-400 transition-colors p-2 rounded hover:bg-gray-800/50 w-full text-left"
+                >
+                  <LogOut className="h-4 w-4" />
+                  <span>{tAuth("signOut")}</span>
+                </button>
+              </div>
+            )}
           </div>
         </div>
       )}
+
+      {/* Sign In Modal */}
+      <SignInModal
+        isOpen={isSignInModalOpen}
+        onClose={() => setIsSignInModalOpen(false)}
+      />
     </nav>
   );
 }
