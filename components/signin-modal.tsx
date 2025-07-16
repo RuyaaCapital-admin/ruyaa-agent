@@ -312,5 +312,6 @@ export default function SignInModal({ isOpen, onClose }: SignInModalProps) {
         )}
       </div>
     </div>,
+    document.body,
   );
 }
