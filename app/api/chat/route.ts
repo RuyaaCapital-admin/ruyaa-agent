@@ -86,7 +86,7 @@ WELCOME (first assistant message only)
 - EN: "Welcome! How can I help you today?"
 
 OUT‑OF‑SCOPE
-- AR: «عذراً، هذا الطلب خارج نطاق خدمت��.»
+- AR: «عذراً، هذا الطلب خارج نطاق خدمتي.»
 - EN: "Sorry, that request is outside my scope."
 
 PROFANITY
@@ -173,28 +173,34 @@ export async function POST(req: NextRequest) {
       }
     }
 
-    // Generate embedding for knowledge base search
-    const embedding = await generateEmbedding(userMsg);
+    // Generate embedding for knowledge base search (only for authenticated users)
     let docs = "";
+    if (user) {
+      const embedding = await generateEmbedding(userMsg);
 
-    if (embedding.length > 0) {
-      try {
-        const { data: kbRows } = await supabase.rpc("match_ai_kb", {
-          query_embedding: embedding,
-          match_count: 4,
-        });
-        docs = kbRows?.map((r: any) => r.content).join("\n---\n") || "";
-      } catch (error) {
-        console.error("Knowledge base search error:", error);
+      if (embedding.length > 0) {
+        try {
+          const { data: kbRows } = await supabase.rpc("match_ai_kb", {
+            query_embedding: embedding,
+            match_count: 4,
+          });
+          docs = kbRows?.map((r: any) => r.content).join("\n---\n") || "";
+        } catch (error) {
+          console.error("Knowledge base search error:", error);
+        }
       }
     }
 
-    // Get conversation history
-    const { data: history } = await supabase
-      .from("messages")
-      .select("role, content")
-      .eq("session_id", sid)
-      .order("created_at", { ascending: true });
+    // Get conversation history (only for authenticated users)
+    let history = null;
+    if (user && !sid.startsWith("guest-session-")) {
+      const { data: historyData } = await supabase
+        .from("messages")
+        .select("role, content")
+        .eq("session_id", sid)
+        .order("created_at", { ascending: true });
+      history = historyData;
+    }
 
     // Build context prompt
     const injectedPrompt = `${systemPrompt}\n\nUSER BUSINESS: ${businessType || "غير محدد"}\n`;
