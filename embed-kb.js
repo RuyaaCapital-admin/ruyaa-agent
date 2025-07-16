@@ -1,58 +1,51 @@
 /**
  * embed-kb.js – one-time script to fill the `embedding` column
- * Uses your OpenRouter API key and SDK to embed missing knowledge base entries.
+ * Uses your OpenRouter API key and direct HTTP call to embed missing entries via OpenRouter.
  */
 const { createClient } = require('@supabase/supabase-js');
-const { OpenRouter } = require('@openrouter/ai-sdk-provider');
 
-// Initialize Supabase client (server-side with service role key)
+// Supabase (service role)
 const supabase = createClient(
   process.env.SUPABASE_URL,
   process.env.SUPABASE_SERVICE_ROLE_KEY
 );
 
-// Initialize OpenRouter client for embeddings
-const router = OpenRouter({ apiKey: process.env.OPENROUTER_API_KEY });
-
-// Use OpenRouter's free embedding model 'deepseek/deepseek-r1:free'
-const EMBEDDING_MODEL = process.env.EMBEDDING_MODEL_ID || 'deepseek/deepseek-r1:free';
+// Free DeepSeek embedding endpoint
+const EMBEDDING_MODEL = 'deepseek/deepseek-r1:free';
+const OPENROUTER_URL   = 'https://openrouter.ai/api/v1/embeddings';
 
 (async () => {
-  // Fetch rows missing embeddings
-  const { data: rows, error: fetchError } = await supabase
+  const { data: rows, error } = await supabase
     .from('ai_knowledge_base')
     .select('id, content')
     .is('embedding', null);
+  if (error) throw error;
 
-  if (fetchError) {
-    console.error('Error fetching KB rows:', fetchError);
-    process.exit(1);
-  }
-
-  // Embed each row using the free OpenRouter model
-  for (const row of rows) {
+  for (const { id, content } of rows) {
     try {
-      const resp = await router.embeddings.create({
-        model: EMBEDDING_MODEL,
-        input: row.content
+      const res = await fetch(OPENROUTER_URL, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${process.env.OPENROUTER_API_KEY}`
+        },
+        body: JSON.stringify({ model: EMBEDDING_MODEL, input: content })
       });
-      const embedding = resp.data[0].embedding;
+      const json = await res.json();
+      if (!res.ok) throw json;
+      const embedding = json.data[0].embedding;
 
-      const { error: updateError } = await supabase
+      await supabase
         .from('ai_knowledge_base')
         .update({ embedding })
-        .eq('id', row.id);
+        .eq('id', id);
 
-      if (updateError) {
-        console.error(`Failed to update ${row.id}:`, updateError);
-      } else {
-        console.log(`embedded row ${row.id}`);
-      }
+      console.log(`embedded ${id}`);
     } catch (err) {
-      console.error(`Error embedding ${row.id}:`, err);
+      console.error(`error ${id}:`, err);
     }
   }
 
-  console.log('✅ all embeddings done');
+  console.log('✅ done');
   process.exit(0);
 })();
