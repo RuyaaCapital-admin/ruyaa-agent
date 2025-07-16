@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
+import { generateEmbedding } from 'ai';
 import { nanoid } from 'nanoid';
 
 export const runtime = 'edge';
@@ -24,8 +25,8 @@ const systemPrompt = `
 
 LANGUAGE
 - Detect language each turn.
-- If the user writes Arabic ➔ reply ONLY in clear Syrian Arabic (عامية سورية).
-- Else ➔ reply ONLY in concise English.
+- If the user writes Arabic ➜ reply ONLY in clear Syrian Arabic (عامية سورية).
+- Else ➜ reply ONLY in concise English.
 - NEVER mix the two languages within one sentence.
 
 STYLE
@@ -40,8 +41,8 @@ MISSION
 4. Ask ONE brief clarifying question if the request is vague.
 
 VALUE (paraphrase freely)
-• Arabic ▹ سرعة الخدمة ▹ بدون أخطاء ▹ زيادة المبيعات  
-• English ▹ Faster service ▹ Zero mistakes ▹ Higher revenue
+• Arabic ▸ سرعة الخدمة ▸ بدون أخطاء ▸ زيادة المبيعات  
+• English ▸ Faster service ▸ Zero mistakes ▸ Higher revenue
 
 SERVICES (adapt wording)
 • Customer‑Support Agent — يرد فوراً ويحسم ٩٠٪ من الأسئلة المتكررة  
@@ -65,11 +66,6 @@ OUT‑OF‑SCOPE
 PROFANITY
 - If the user insults, ignore the insult and continue politely with the mission.
 `.trim();
-
-const model = OpenRouter({
-  apiKey: process.env.OPENROUTER_API_KEY!,
-  model: 'deepseek/deepseek-llm:free',
-});
 
 export async function POST(req: NextRequest) {
   try {
@@ -112,11 +108,8 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ sessionId: sid, reply: confirmationReply });
     }
 
-    const { data: kbRows } = await supabase.rpc('match_ai_kb', {
-      query_embedding: userMsg,
-      match_count: 4,
-    });
-
+    const embedding = await generateEmbedding({ model: process.env.EMBEDDING_MODEL_ID!, input: userMsg });
+    const { data: kbRows } = await supabase.rpc('match_ai_kb', { query_embedding: embedding, match_count: 4 });
     const docs = kbRows.map((r: any) => r.content).join('\n---\n');
 
     const { data: history } = await supabase
@@ -126,14 +119,32 @@ export async function POST(req: NextRequest) {
       .order('created_at', { ascending: true });
 
     const injectedPrompt = `${systemPrompt}\n\nUSER BUSINESS: ${businessType || 'غير محدد'}\n`;
-    const finalPrompt = [injectedPrompt, docs, buildHistory(history)].join('\n\n');
+    const prompt = [injectedPrompt, docs, buildHistory(history)].join('\n\n');
 
-    const result = await generate(model, finalPrompt, { temperature: 0.2 });
-    const reply = result.choices[0].message.content;
+    const res = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${process.env.OPENROUTER_API_KEY}`,
+        'Content-Type': 'application/json',
+        'HTTP-Referer': 'https://ruyaa-agent.vercel.app',
+        'X-Title': 'Ruyaa Smart Agent'
+      },
+      body: JSON.stringify({
+        model: 'deepseek-chat',
+        messages: [
+          { role: 'system', content: systemPrompt },
+          { role: 'user', content: prompt }
+        ],
+        temperature: 0.2
+      })
+    });
 
-    await supabase.from('messages').insert([{ session_id: sid, role: 'assistant', content: reply }]);
+    const json = await res.json();
+    const text = json.choices?.[0]?.message?.content || 'Sorry, no response.';
 
-    return NextResponse.json({ sessionId: sid, reply });
+    await supabase.from('messages').insert([{ session_id: sid, role: 'assistant', content: text }]);
+
+    return NextResponse.json({ sessionId: sid, reply: text });
   } catch (err) {
     console.error('chat api error:', err);
     return NextResponse.json({ error: 'failed' }, { status: 500 });
