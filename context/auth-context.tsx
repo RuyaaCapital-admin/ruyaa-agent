@@ -221,13 +221,43 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   const signOut = async () => {
     if (!supabase) {
-      console.warn(
-        "Supabase not configured. Please set NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY",
-      );
+      const message = "Supabase not configured. Please contact support.";
+      console.warn(message);
+      toast({
+        title: "Configuration Error",
+        description: message,
+        variant: "destructive",
+      });
       return;
     }
-    const { error } = await supabase.auth.signOut();
-    if (error) throw error;
+
+    try {
+      const { error } = await supabase.auth.signOut();
+
+      if (error) {
+        console.error("Sign out error:", error);
+        toast({
+          title: "Sign Out Failed",
+          description: error.message || "Failed to sign out. Please try again.",
+          variant: "destructive",
+        });
+        throw error;
+      } else {
+        toast({
+          title: "Signed Out",
+          description: "You have been successfully signed out.",
+          variant: "default",
+        });
+      }
+    } catch (error) {
+      console.error("Sign out error:", error);
+      toast({
+        title: "Sign Out Failed",
+        description: "An unexpected error occurred. Please try again.",
+        variant: "destructive",
+      });
+      throw error;
+    }
   };
 
   const value: AuthContextType = {
