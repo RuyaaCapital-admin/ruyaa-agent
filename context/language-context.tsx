@@ -49,7 +49,7 @@ const translations: Record<Language, Record<string, string>> = {
     services: "About Us",
     about: "Register Request",
     contact: "Contact",
-    get_started: "Get Started",
+    get_started: "Sign In",
     hero_subtitle:
       "Advanced AI Solutions for Transforming Financial Customer Experience",
     instant_processing: "Instant Processing",
