@@ -1,18 +1,21 @@
 /**
  * embed-kb.js – one-time script to fill the `embedding` column
- * Uses your OpenRouter API key to embed missing knowledge base entries via the OpenRouter SDK.
+ * Uses your OpenRouter API key to embed missing knowledge base entries via the OpenRouter SDK on their free model.
  */
 const { createClient } = require('@supabase/supabase-js');
 const { openrouter } = require('@openrouter/ai-sdk-provider');
 
-// Initialize Supabase client (server-only with service role key)
+// Initialize Supabase client (server-side with service role key)
 const supabase = createClient(
   process.env.SUPABASE_URL,
   process.env.SUPABASE_SERVICE_ROLE_KEY
 );
 
 // Initialize OpenRouter client for embeddings
-const router = openrouter(process.env.OPENROUTER_API_KEY);
+const router = openrouter({ apiKey: process.env.OPENROUTER_API_KEY });
+
+// Use OpenRouter's free embedding model
+const EMBEDDING_MODEL = 'deepseek/deepseek-r1:free';
 
 (async () => {
   // Fetch rows missing embeddings
@@ -26,11 +29,11 @@ const router = openrouter(process.env.OPENROUTER_API_KEY);
     process.exit(1);
   }
 
-  // Embed each row using OpenRouter
+  // Embed each row using the free OpenRouter model
   for (const row of rows) {
     try {
       const resp = await router.embeddings.create({
-        model: process.env.EMBEDDING_MODEL_ID,  // e.g. 'openai/text-embedding-3-small'
+        model: EMBEDDING_MODEL,
         input: row.content
       });
       const embedding = resp.data[0].embedding;
