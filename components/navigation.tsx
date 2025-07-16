@@ -184,6 +184,7 @@ export default function Navigation() {
             <Link
               href="/about"
               className="hover:text-gray-300 transition-colors text-gray-400"
+              onClick={() => setIsMenuOpen(false)}
             >
               {t("services")}
             </Link>
@@ -192,6 +193,7 @@ export default function Navigation() {
               target="_blank"
               rel="noopener noreferrer"
               className="hover:text-gray-300 transition-colors text-gray-400"
+              onClick={() => setIsMenuOpen(false)}
             >
               {t("about")}
             </a>
@@ -205,21 +207,30 @@ export default function Navigation() {
               {isContactOpen && (
                 <div className="mt-2 ml-4 flex flex-col space-y-2">
                   <button
-                    onClick={handleWhatsApp}
+                    onClick={() => {
+                      handleWhatsApp();
+                      setIsMenuOpen(false);
+                    }}
                     className="flex items-center gap-3 text-gray-300 hover:text-green-400 transition-colors p-2 rounded hover:bg-gray-800/50"
                   >
                     <MessageCircle className="h-4 w-4" />
                     <span>WhatsApp</span>
                   </button>
                   <button
-                    onClick={handleEmail}
+                    onClick={() => {
+                      handleEmail();
+                      setIsMenuOpen(false);
+                    }}
                     className="flex items-center gap-3 text-gray-300 hover:text-blue-400 transition-colors p-2 rounded hover:bg-gray-800/50"
                   >
                     <Mail className="h-4 w-4" />
                     <span>Email</span>
                   </button>
                   <button
-                    onClick={handleCall}
+                    onClick={() => {
+                      handleCall();
+                      setIsMenuOpen(false);
+                    }}
                     className="flex items-center gap-3 text-gray-300 hover:text-red-400 transition-colors p-2 rounded hover:bg-gray-800/50"
                   >
                     <Phone className="h-4 w-4" />
@@ -229,7 +240,10 @@ export default function Navigation() {
               )}
             </div>
             <Button
-              onClick={openChat}
+              onClick={() => {
+                openChat();
+                setIsMenuOpen(false);
+              }}
               className="bg-gradient-to-r from-gray-700 to-gray-800 hover:from-gray-600 hover:to-gray-700 text-white border-0 w-full"
             >
               {t("get_started")}

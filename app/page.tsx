@@ -71,18 +71,19 @@ export default function AIHeroPage() {
                 {/* Blue Shadow Layer */}
                 <div className="absolute inset-0 transform translate-x-2 translate-y-2">
                   <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold bg-gradient-to-r from-blue-400/20 to-cyan-400/20 bg-clip-text text-transparent blur-sm">
-                    وكيل الذكاء الاصطناعي من رؤيا كابيتال
+                    وكلاء الذكاء الاصطناعي من رؤيا - حلول ذكية تعمل حقاً
                   </h1>
                 </div>
                 {/* Main Title */}
                 <h1 className="relative text-4xl md:text-6xl lg:text-7xl font-bold bg-gradient-to-r from-white via-gray-100 to-gray-200 bg-clip-text text-transparent">
-                  وكيل الذكاء الاصطناعي من رؤيا كابيتال
+                  وكلاء الذكاء الاصطناعي من رؤيا - حلول ذكية تعمل حقاً
                 </h1>
               </div>
 
               {/* Subtitle */}
               <p className="text-xl md:text-2xl text-gray-400 max-w-3xl mx-auto mb-12 leading-relaxed">
-                حلول ذكية متطورة لتحويل تجربة العملاء وزيادة الإيرادات
+                وكلاء ذكاء اصطناعي متخصصون في تنفيذ المهام الحقيقية وأتمتة
+                العمليات التجارية - ليس مجرد دردشة
               </p>
 
               {/* CTA Buttons */}
@@ -124,11 +125,10 @@ export default function AIHeroPage() {
           {/* Section Title */}
           <div className="text-center mb-12" dir="rtl">
             <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-white leading-tight px-4 mb-4">
-              مميزات وكيل الذكاء الاصطناعي
+              وكلاؤنا الأذكياء - أكثر من مجرد دردشة
             </h2>
             <p className="text-gray-400 text-lg mb-4 max-w-2xl mx-auto">
-              اكتشف كيف يمكن لوكيل الذكاء الاصطناعي الخاص بنا تحويل عملك وزيادة
-              أرباحك
+              اكتشف كيف يمكن لوكلائنا الأذكياء تنفيذ المهام الحقيقية وأتمتة عملك
             </p>
           </div>
 

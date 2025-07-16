@@ -60,8 +60,8 @@ OUT‑OF‑SCOPE
 - EN: Sorry, that request is outside my scope.
 `;
 
-    /* pick a model – keep llama‑3 default */
-    const modelID = "llama3-8b-8192"; // change to "deepseek-chat" if you want
+    /* pick a model – using Groq with llama3 as primary */
+    const modelID = "llama3-8b-8192";
 
     const { text } = await generateText({
       model: groq(modelID),

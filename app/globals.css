@@ -142,3 +142,43 @@ body {
     }
   }
 }
+
+/* Simple mobile chat fixes */
+@media (max-width: 640px) {
+  /* Prevent body scroll when chat is open */
+  body.chat-open {
+    overflow: hidden;
+    position: fixed;
+    width: 100%;
+    height: 100vh;
+  }
+
+  /* Ensure mobile chat input is properly sized */
+  input[type="text"],
+  input[type="email"],
+  input[type="search"],
+  input[type="password"] {
+    font-size: 16px !important;
+  }
+}
+
+/* UI improvements */
+.btn:hover {
+  transform: translateY(-2px);
+  transition: all 0.3s ease;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+  transition: all 0.3s ease;
+}
+
+h1,
+h2,
+h3 {
+  line-height: 1.3;
+}
+
+p {
+  line-height: 1.6;
+}
