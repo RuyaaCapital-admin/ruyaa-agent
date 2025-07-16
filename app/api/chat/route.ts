@@ -1,3 +1,4 @@
+// ========== /app/api/chat/route.ts (final version, no DB KB fetch, optimized) ==========
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
 import { nanoid } from "nanoid";
@@ -153,17 +154,18 @@ export async function POST(req: NextRequest) {
         }
       } catch (error) {}
     }
-   // Retrieve KB docs (for all users, always return something smart)
-let docs = "";
-try {
-  const { data: kbRows } = await supabase
-    .from("ai_knowledge_base")
-    .select("content")
-    .limit(2);
-  docs = kbRows?.map((r: any) => r.content).join("\n---\n") || "";
-} catch {}
-
-    }
+    // === HARDCODED KB BLOCK: ONLY THIS! ===
+    let docs = `
+• مساعد دعم العملاء الذكي: يقدّم دعمًا فوريًا وفعّالاً 24/7، ويقلّل من زمن الانتظار ويزيد من رضا العملاء.
+• مساعد الإنتاجية وإدارة الأعمال: ينظّم المواعيد، يدير العمليات، ويرفع الكفاءة.
+• إدارة وسائل التواصل: ينشئ محتوى تلقائيًا، يرد على العملاء، ويراقب الاتجاهات.
+• مساعد مالي للتداول: تحليل صفقات، تحذيرات مخاطر، وتوصيات تداول فورية.
+• نظام كشف الاحتيال: يراقب العمليات المالية لحظياً ويكشف الأنشطة المشبوهة.
+• تقارير تداول ذكية: تقارير دورية عن الأداء وتحليل النشاط مع توصيات.
+• تنبيهات سوق مباشرة: إشعارات فورية بفرص التداول والأخبار الاقتصادية.
+• بوت حجز مواعيد ودعم شامل: يرد على العملاء، يحجز تلقائياً، ويربط مع الدعم البشري عند الحاجة.
+`;
+    // =============
     let history = null;
     if (user && supabase && !sid.startsWith("guest-session-")) {
       try {
@@ -181,7 +183,6 @@ try {
     if (history && history.length > 0) contextParts.push(buildHistory(history));
     const prompt = contextParts.join("\n\n");
 
-    // FIXED: v1 endpoint
     const geminiRes = await fetch(
       `https://generativelanguage.googleapis.com/v1/models/gemini-pro:generateContent?key=${process.env.GEMINI_API_KEY}`,
       {
@@ -229,3 +230,4 @@ try {
     );
   }
 }
+// =================== END ===================
