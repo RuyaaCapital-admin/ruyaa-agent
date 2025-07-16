@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
-import { OpenRouter } from 'ai/openrouter';
+import { openai as model } from '@ai-sdk/openrouter';
 import { getText, getEmbedding } from 'ai';
 import { nanoid } from 'nanoid';
 
