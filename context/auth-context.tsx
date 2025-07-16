@@ -124,18 +124,52 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   const signInWithMagicLink = async (email: string) => {
     if (!supabase) {
-      console.warn(
-        "Supabase not configured. Please set NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY",
-      );
+      const message = "Supabase not configured. Please contact support.";
+      console.warn(message);
+      toast({
+        title: "Configuration Error",
+        description: message,
+        variant: "destructive",
+      });
       return { error: new Error("Supabase not configured") as AuthError };
     }
-    const { error } = await supabase.auth.signInWithOtp({
-      email,
-      options: {
-        emailRedirectTo: `${window.location.origin}`,
-      },
-    });
-    return { error };
+
+    try {
+      const { error } = await supabase.auth.signInWithOtp({
+        email,
+        options: {
+          emailRedirectTo: `${window.location.origin}`,
+        },
+      });
+
+      if (error) {
+        console.error("Magic link error:", error);
+        toast({
+          title: "Failed to Send Magic Link",
+          description:
+            error.message ||
+            "Failed to send magic link. Please check your email address.",
+          variant: "destructive",
+        });
+      } else {
+        toast({
+          title: "Magic Link Sent",
+          description: "Check your email for the magic link to sign in.",
+          variant: "default",
+        });
+      }
+
+      return { error };
+    } catch (error) {
+      console.error("Magic link error:", error);
+      const errorMessage = "An unexpected error occurred. Please try again.";
+      toast({
+        title: "Failed to Send Magic Link",
+        description: errorMessage,
+        variant: "destructive",
+      });
+      return { error: error as AuthError };
+    }
   };
 
   const resetPassword = async (email: string) => {
