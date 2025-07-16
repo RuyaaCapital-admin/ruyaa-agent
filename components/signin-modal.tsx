@@ -126,10 +126,17 @@ export default function SignInModal({ isOpen, onClose }: SignInModalProps) {
 
   if (!isOpen) return null;
 
-  return (
-    <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-start sm:items-center justify-center p-4 pt-20 sm:pt-4 overflow-y-auto">
+  return createPortal(
+    <div className="fixed inset-0 z-50 flex items-start sm:items-center justify-center overflow-y-auto p-4 pt-20 sm:pt-4">
+      {/* Backdrop */}
       <div
-        className={`relative bg-gray-900 border border-gray-700 rounded-2xl w-full max-w-md p-6 my-4 sm:my-0 max-h-[90vh] overflow-y-auto ${isRTL ? "text-right" : "text-left"}`}
+        className="absolute inset-0 bg-black/70 backdrop-blur-sm"
+        onClick={onClose}
+      ></div>
+
+      {/* Modal Card */}
+      <div
+        className={`relative w-full max-w-md bg-[#111827] sm:rounded-2xl shadow-xl p-6 ${isRTL ? "text-right" : "text-left"}`}
       >
         {/* Close Button */}
         <button
@@ -304,6 +311,6 @@ export default function SignInModal({ isOpen, onClose }: SignInModalProps) {
           </>
         )}
       </div>
-    </div>
+    </div>,
   );
 }
