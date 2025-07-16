@@ -177,33 +177,40 @@ export async function POST(req: NextRequest) {
       }
     }
 
-    // Get session business type (only for authenticated users)
+    // Get session business type (only for authenticated users with Supabase)
     let businessType = null;
-    if (user && !sid.startsWith("guest-session-")) {
-      const { data: session } = await supabase
-        .from("conversation_sessions")
-        .select("business_type")
-        .eq("id", sid)
-        .single();
-
-      businessType = session?.business_type;
-
-      // Handle first time business type capture
-      if (!businessType) {
-        await supabase
+    if (user && supabase && !sid.startsWith("guest-session-")) {
+      try {
+        const { data: session } = await supabase
           .from("conversation_sessions")
-          .update({ business_type: userMsg.trim() })
-          .eq("id", sid);
+          .select("business_type")
+          .eq("id", sid)
+          .single();
 
-        const confirmationReply = `سجلت إنو شغلك هو "${userMsg.trim()}". هل بتحب خبرك شو فيني ساوي لإلك؟`;
-        await supabase.from("messages").insert([
-          {
-            session_id: sid,
-            role: "assistant",
-            content: confirmationReply,
-          },
-        ]);
-        return NextResponse.json({ sessionId: sid, reply: confirmationReply });
+        businessType = session?.business_type;
+
+        // Handle first time business type capture
+        if (!businessType) {
+          await supabase
+            .from("conversation_sessions")
+            .update({ business_type: userMsg.trim() })
+            .eq("id", sid);
+
+          const confirmationReply = `سجلت إنو شغلك هو "${userMsg.trim()}". هل بتحب خبرك شو فيني ساوي لإلك؟`;
+          await supabase.from("messages").insert([
+            {
+              session_id: sid,
+              role: "assistant",
+              content: confirmationReply,
+            },
+          ]);
+          return NextResponse.json({
+            sessionId: sid,
+            reply: confirmationReply,
+          });
+        }
+      } catch (error) {
+        console.log("Failed to get/set business type:", error);
       }
     }
 
