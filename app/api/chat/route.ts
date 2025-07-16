@@ -97,14 +97,22 @@ export async function POST(req: NextRequest) {
   try {
     const { messages, sessionId } = await req.json();
 
-    // Authenticate user
+    // Handle authentication - allow guest users
     const authHeader = req.headers.get("authorization") || "";
     const token = authHeader.replace(/^Bearer\s+/, "");
-    const {
-      data: { user },
-    } = await supabase.auth.getUser(token);
-    if (!user)
-      return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
+
+    let user = null;
+    if (token && token !== "guest-token") {
+      const {
+        data: { user: authUser },
+      } = await supabase.auth.getUser(token);
+      user = authUser;
+    }
+
+    // For guest users, create a temporary session ID
+    let userId = user?.id || `guest-${nanoid(10)}`;
+
+    console.log("Processing chat request for user:", userId);
 
     // Handle session
     let sid = sessionId;
