@@ -1,4 +1,3 @@
-// Rewritten for Gemini API, with Supabase knowledge base integration
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
 import { nanoid } from "nanoid";
@@ -75,7 +74,6 @@ export async function POST(req: NextRequest) {
     const body = await req.json();
     const { messages, sessionId } = body;
 
-    // Validate request
     if (!messages || !Array.isArray(messages) || messages.length === 0) {
       return NextResponse.json(
         { error: "Invalid messages array" },
@@ -83,7 +81,6 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // Handle authentication - allow guest users
     const authHeader = req.headers.get("authorization") || "";
     const token = authHeader.replace(/^Bearer\s+/, "");
     let user = null;
@@ -97,7 +94,6 @@ export async function POST(req: NextRequest) {
         console.log("Auth check failed, proceeding as guest:", error);
       }
     }
-    // For guest users, create a temporary session ID
     let userId = user?.id || `guest-${nanoid(10)}`;
     let sid = sessionId;
     if (!sid) {
@@ -116,7 +112,6 @@ export async function POST(req: NextRequest) {
         sid = `guest-session-${nanoid(10)}`;
       }
     }
-    // Save user message (authenticated)
     const userMsg = messages[messages.length - 1].content;
     if (user && supabase) {
       try {
@@ -129,7 +124,6 @@ export async function POST(req: NextRequest) {
         ]);
       } catch (error) {}
     }
-    // Get business type (authenticated)
     let businessType = null;
     if (user && supabase && !sid.startsWith("guest-session-")) {
       try {
@@ -159,7 +153,6 @@ export async function POST(req: NextRequest) {
         }
       } catch (error) {}
     }
-    // Retrieve KB docs (authenticated)
     let docs = "";
     if (user && supabase) {
       try {
@@ -170,7 +163,6 @@ export async function POST(req: NextRequest) {
         docs = kbRows?.map((r: any) => r.content).join("\n---\n") || "";
       } catch (error) {}
     }
-    // Get conversation history (authenticated)
     let history = null;
     if (user && supabase && !sid.startsWith("guest-session-")) {
       try {
@@ -182,15 +174,15 @@ export async function POST(req: NextRequest) {
         history = historyData;
       } catch (error) {}
     }
-    // Build context prompt
     const injectedPrompt = `${systemPrompt}\n\nUSER BUSINESS: ${businessType || "غير محدد"}\n`;
     const contextParts = [injectedPrompt];
     if (docs) contextParts.push(docs);
     if (history && history.length > 0) contextParts.push(buildHistory(history));
     const prompt = contextParts.join("\n\n");
-    // Build Gemini API request
+
+    // FIXED: v1 endpoint
     const geminiRes = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${process.env.GEMINI_API_KEY}`,
+      `https://generativelanguage.googleapis.com/v1/models/gemini-pro:generateContent?key=${process.env.GEMINI_API_KEY}`,
       {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -213,7 +205,6 @@ export async function POST(req: NextRequest) {
     const assistantReply =
       geminiData?.candidates?.[0]?.content?.parts?.[0]?.text ||
       "عذراً، ما قدرت أرد عليك هلأ.";
-    // Save assistant message (authenticated)
     if (user && supabase) {
       try {
         await supabase.from("messages").insert([
