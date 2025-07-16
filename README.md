@@ -18,7 +18,7 @@ This repository powers the official RuyaaCapital Smart Agent: your 24/7 professi
 
 ## How It Works
 
-1. Build and manage your project using [v0.dev](https://v0.dev/)
+
 2. Deploy your changes via the v0 interface—no manual deployment needed
 3. All updates are automatically pushed to this repository
 4. Vercel serves the latest, production-ready version at [https://agent.ruyaacapital.com/](https://agent.ruyaacapital.com/)
@@ -27,7 +27,7 @@ This repository powers the official RuyaaCapital Smart Agent: your 24/7 professi
 
 * WhatsApp: +963 940 632 191
 * Email: [admin@ruyaacapital.com](mailto:admin@ruyaacapital.com)
-* Website: [ruyaacapital.com](https://ruyaacapital.com/)
+* Website: [ruyaacapital.com](https://agent.ruyaacapital.com/)
 
 ## Branding & Customization
 
