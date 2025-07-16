@@ -6,13 +6,11 @@ import { nanoid } from 'nanoid';
 
 export const runtime = 'edge';
 
-// Initialize Supabase (server-only)
 const supabase = createClient(
   process.env.SUPABASE_URL!,
   process.env.SUPABASE_SERVICE_ROLE_KEY!
 );
 
-/* ---------- helper: compact history ---------- */
 function buildHistory(
   msgs: { role: 'user' | 'assistant'; content: string }[],
   limit = 8
@@ -23,7 +21,6 @@ function buildHistory(
     .join('\n');
 }
 
-/* ---------- system prompt ---------- */
 const systemPrompt = `
 # RuyaaCapital – Smart Assistant (v2 · Jul 2025)
 
@@ -71,22 +68,18 @@ PROFANITY
 - If the user insults, ignore the insult and continue politely with the mission.
 `.trim();
 
-/* ---------- models ---------- */
 const primaryModel = groq(process.env.GROQ_MODEL_ID!);
 const fallbackModel = groq(process.env.GROQ_FALLBACK_MODEL_ID!);
 
-/* ---------- POST /api/chat ---------- */
 export async function POST(req: NextRequest) {
   try {
     const { messages, sessionId } = await req.json();
 
-    // Authenticate via Supabase JWT
     const authHeader = req.headers.get('authorization') || '';
-    const token = authHeader.replace(/^Bearer\s+/, '');
+    const token = authHeader.replace(/^Bearer\\s+/, '');
     const { data: { user } } = await supabase.auth.getUser(token);
     if (!user) return NextResponse.json({ error: 'Not authenticated' }, { status: 401 });
 
-    // Manage conversation session
     let sid = sessionId;
     if (!sid) {
       const { data } = await supabase
@@ -97,26 +90,41 @@ export async function POST(req: NextRequest) {
       sid = data.id;
     }
 
-    // Log user message
     const userMsg = messages[messages.length - 1].content;
     await supabase.from('messages').insert([{ session_id: sid, role: 'user', content: userMsg }]);
 
-    // Retrieve KB context via embedding
+    const { data: session } = await supabase
+      .from('conversation_sessions')
+      .select('business_type')
+      .eq('id', sid)
+      .single();
+
+    let businessType = session?.business_type;
+
+    if (!businessType) {
+      await supabase
+        .from('conversation_sessions')
+        .update({ business_type: userMsg.trim() })
+        .eq('id', sid);
+
+      const confirmationReply = `سجلت إنو شغلك هو "${userMsg.trim()}". هل بتحب خبرك شو فيني ساوي لإلك؟`;
+      await supabase.from('messages').insert([{ session_id: sid, role: 'assistant', content: confirmationReply }]);
+      return NextResponse.json({ sessionId: sid, reply: confirmationReply });
+    }
+
     const embedding = await generateEmbedding({ model: process.env.EMBEDDING_MODEL_ID!, input: userMsg });
     const { data: kbRows } = await supabase.rpc('match_ai_kb', { query_embedding: embedding, match_count: 4 });
     const docs = kbRows.map((r: any) => r.content).join('\n---\n');
 
-    // Fetch recent history
     const { data: history } = await supabase
       .from('messages')
       .select('role, content')
       .eq('session_id', sid)
       .order('created_at', { ascending: true });
 
-    // Build final prompt
-    const prompt = [systemPrompt, docs, buildHistory(history)].join('\n\n');
+    const injectedPrompt = `${systemPrompt}\n\nUSER BUSINESS: ${businessType || 'غير محدد'}\n`;
+    const prompt = [injectedPrompt, docs, buildHistory(history)].join('\n\n');
 
-    // Generate assistant reply
     let text: string;
     try {
       ({ text } = await generateText({ model: primaryModel, temperature: 0.2, system: systemPrompt, prompt }));
@@ -124,7 +132,6 @@ export async function POST(req: NextRequest) {
       ({ text } = await generateText({ model: fallbackModel, temperature: 0.2, system: systemPrompt, prompt }));
     }
 
-    // Log assistant reply
     await supabase.from('messages').insert([{ session_id: sid, role: 'assistant', content: text }]);
 
     return NextResponse.json({ sessionId: sid, reply: text });
