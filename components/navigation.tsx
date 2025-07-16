@@ -16,7 +16,7 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useLanguage } from "@/context/language-context";
-import { useChatWidget } from "@/context/chat-context";
+
 import { useAuth } from "@/context/auth-context";
 import SignInModal from "@/components/signin-modal";
 import Link from "next/link";
@@ -89,7 +89,7 @@ export default function Navigation() {
     ar: {
       profile: "الملف الشخصي",
       resetPassword: "إعادة ضبط كلمة المرور",
-      signOut: "تسجيل الخروج",
+      signOut: "تسجيل ��لخروج",
     },
     en: {
       profile: "Profile",
