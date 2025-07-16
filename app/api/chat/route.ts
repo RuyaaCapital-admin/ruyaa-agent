@@ -1,8 +1,9 @@
 import { generateText } from "ai";
+import { openrouter } from "@ai-sdk/openrouter";
 import { groq } from "@ai-sdk/groq";
 import { nanoid } from "nanoid";
 
-/* ---------- helper: build compact history ---------- */
+/* ---------- helper: compact history ---------- */
 function buildHistory(
   msgs: { role: "user" | "assistant"; content: string }[],
   limit = 8,
@@ -13,14 +14,9 @@ function buildHistory(
     .join("\n");
 }
 
-/* ---------- POST /api/chat ---------- */
-export async function POST(req: Request) {
-  try {
-    const { messages } = await req.json();
-
-    /* ---------- system prompt ---------- */
-    const systemPrompt = `
-# RuyaaCapital – Smart Assistant (v2 · Jul 2025)
+/* ---------- system prompt ---------- */
+const systemPrompt = `
+# RuyaaCapital – Smart Assistant (v2 · Jul 2025)
 
 LANGUAGE
 - Detect language each turn.
@@ -29,7 +25,7 @@ LANGUAGE
 - NEVER mix the two languages within one sentence.
 
 STYLE
-- Max 2 short sentences per reply (≈ 25 words total).
+- Max 2 short sentences per reply (≈ 25 words total).
 - Confident, friendly; no filler. Apologise only if the user complains.
 - Never mention that you are an AI, a bot, or any tech detail.
 
@@ -46,7 +42,7 @@ VALUE (paraphrase freely)
 SERVICES (adapt wording)
 • Customer‑Support Agent — يرد فوراً ويحسم ٩٠٪ من الأسئلة المتكررة  
 • Social‑Media Agent — يكتب المحتوى، يرد على الرسائل، ويقدّم تقارير  
-• Business Assistant — فواتير، حجوزات، وتنبيهات بلا أخطا��  
+• Business Assistant — فواتير، حجوزات، وتنبيهات بلا أخطاء  
 • Trading Assistant — يراقب السوق وينفّذ أوامر بضبط مخاطرة  
 • Lifestyle Planner — يخطط السفر ويرتّب التذكيرات
 
@@ -64,17 +60,34 @@ OUT‑OF‑SCOPE
 
 PROFANITY
 - If the user insults, ignore the insult and continue politely with the mission.
-    `.trim();
+`.trim();
 
-    /* ---------- model ---------- */
-    const modelID = "llama3-8b-8192"; // free on Groq
+/* ---------- models ---------- */
+const primary   = openrouter("deepseek/deepseek-r1:free"); // $0 model
+const fallback  = groq("llama3-8b-8192");                  // free backup
 
-    const { text } = await generateText({
-      model: groq(modelID),
-      temperature: 0.2,
-      system: systemPrompt,
-      prompt: buildHistory(messages),
-    });
+/* ---------- POST /api/chat ---------- */
+export async function POST(req: Request) {
+  try {
+    const { messages } = await req.json();
+
+    /* ---------- try primary, fall back if needed ---------- */
+    let text: string;
+    try {
+      ({ text } = await generateText({
+        model: primary,
+        temperature: 0.2,
+        system: systemPrompt,
+        prompt: buildHistory(messages),
+      }));
+    } catch {
+      ({ text } = await generateText({
+        model: fallback,
+        temperature: 0.2,
+        system: systemPrompt,
+        prompt: buildHistory(messages),
+      }));
+    }
 
     return Response.json({
       id: nanoid(),
