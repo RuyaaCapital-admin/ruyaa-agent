@@ -221,33 +221,36 @@ export default function Navigation() {
               </Button>
 
               {/* User Dropdown */}
-              {user && isUserDropdownOpen && (
-                <div className="absolute top-full right-0 mt-2 bg-black/95 backdrop-blur-md border border-gray-700/50 rounded-lg shadow-xl p-2 min-w-[200px] z-50">
-                  <div className="flex flex-col space-y-1">
-                    <button
-                      onClick={() => setIsUserDropdownOpen(false)}
-                      className="flex items-center gap-3 text-gray-300 hover:text-white transition-colors p-3 rounded hover:bg-gray-800/50 text-left w-full"
-                    >
-                      <User className="h-4 w-4" />
-                      <span>{tAuth("profile")}</span>
-                    </button>
-                    <button
-                      onClick={handleResetPassword}
-                      className="flex items-center gap-3 text-gray-300 hover:text-yellow-400 transition-colors p-3 rounded hover:bg-gray-800/50 text-left w-full"
-                    >
-                      <RotateCcw className="h-4 w-4" />
-                      <span>{tAuth("resetPassword")}</span>
-                    </button>
-                    <button
-                      onClick={handleSignOut}
-                      className="flex items-center gap-3 text-gray-300 hover:text-red-400 transition-colors p-3 rounded hover:bg-gray-800/50 text-left w-full"
-                    >
-                      <LogOut className="h-4 w-4" />
-                      <span>{tAuth("signOut")}</span>
-                    </button>
-                  </div>
-                </div>
-              )}
+              {user &&
+                isUserDropdownOpen &&
+                createPortal(
+                  <div className="absolute right-0 mt-2 w-48 z-50 bg-black/95 backdrop-blur-md border border-gray-700/50 rounded-lg shadow-xl p-2">
+                    <div className="flex flex-col space-y-1">
+                      <button
+                        onClick={() => setIsUserDropdownOpen(false)}
+                        className="flex items-center gap-3 text-gray-300 hover:text-white transition-colors p-3 rounded hover:bg-gray-800/50 text-left w-full"
+                      >
+                        <User className="h-4 w-4" />
+                        <span>{tAuth("profile")}</span>
+                      </button>
+                      <button
+                        onClick={handleResetPassword}
+                        className="flex items-center gap-3 text-gray-300 hover:text-yellow-400 transition-colors p-3 rounded hover:bg-gray-800/50 text-left w-full"
+                      >
+                        <RotateCcw className="h-4 w-4" />
+                        <span>{tAuth("resetPassword")}</span>
+                      </button>
+                      <button
+                        onClick={handleSignOut}
+                        className="flex items-center gap-3 text-gray-300 hover:text-red-400 transition-colors p-3 rounded hover:bg-gray-800/50 text-left w-full"
+                      >
+                        <LogOut className="h-4 w-4" />
+                        <span>{tAuth("signOut")}</span>
+                      </button>
+                    </div>
+                  </div>,
+                  document.body,
+                )}
             </div>
           )}
           {/* Language Switch Button */}
