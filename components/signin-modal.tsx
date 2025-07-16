@@ -97,20 +97,13 @@ export default function SignInModal({ isOpen, onClose }: SignInModalProps) {
     setLoading("reset");
     setMessage("");
 
-    try {
-      const { error } = await resetPassword(email);
-      if (error) {
-        setMessage(t("errorOccurred"));
-      } else {
-        setMessage(t("resetEmailSent"));
-        setEmail("");
-        setShowResetForm(false);
-      }
-    } catch (error) {
-      setMessage(t("errorOccurred"));
-    } finally {
-      setLoading(null);
+    const { error } = await resetPassword(email);
+    if (!error) {
+      setEmail("");
+      setShowResetForm(false);
+      onClose(); // Close modal on success
     }
+    setLoading(null);
   };
 
   if (!isOpen) return null;
