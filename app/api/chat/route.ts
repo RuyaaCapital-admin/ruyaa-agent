@@ -1,10 +1,10 @@
+// Rewritten for Gemini API, with Supabase knowledge base integration
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
 import { nanoid } from "nanoid";
 
 export const runtime = "edge";
 
-// Create Supabase client only if environment variables are available
 const supabase =
   process.env.SUPABASE_URL && process.env.SUPABASE_SERVICE_ROLE_KEY
     ? createClient(
@@ -21,33 +21,6 @@ function buildHistory(
     .slice(-limit)
     .map((m) => `${m.role === "user" ? "User" : "Assistant"}: ${m.content}`)
     .join("\n");
-}
-
-async function generateEmbedding(text: string): Promise<number[]> {
-  try {
-    const response = await fetch("https://openrouter.ai/api/v1/embeddings", {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${process.env.OPENROUTER_API_KEY}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        model: "openai/text-embedding-3-small",
-        input: text,
-      }),
-    });
-
-    if (!response.ok) {
-      console.error("Embedding API error:", response.status);
-      return [];
-    }
-
-    const data = await response.json();
-    return data.data?.[0]?.embedding || [];
-  } catch (error) {
-    console.error("Error generating embedding:", error);
-    return [];
-  }
 }
 
 const systemPrompt = `
@@ -110,18 +83,9 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    if (!process.env.OPENROUTER_API_KEY) {
-      console.error("Missing OPENROUTER_API_KEY environment variable");
-      return NextResponse.json(
-        { error: "API configuration error" },
-        { status: 500 },
-      );
-    }
-
     // Handle authentication - allow guest users
     const authHeader = req.headers.get("authorization") || "";
     const token = authHeader.replace(/^Bearer\s+/, "");
-
     let user = null;
     if (token && token !== "guest-token" && supabase) {
       try {
@@ -133,16 +97,10 @@ export async function POST(req: NextRequest) {
         console.log("Auth check failed, proceeding as guest:", error);
       }
     }
-
     // For guest users, create a temporary session ID
     let userId = user?.id || `guest-${nanoid(10)}`;
-
-    console.log("Processing chat request for user:", userId);
-
-    // Handle session
     let sid = sessionId;
     if (!sid) {
-      // Only create database session for authenticated users with Supabase
       if (user && supabase) {
         try {
           const { data } = await supabase
@@ -152,16 +110,13 @@ export async function POST(req: NextRequest) {
             .single();
           sid = data?.id;
         } catch (error) {
-          console.log("Failed to create session, using guest session:", error);
           sid = `guest-session-${nanoid(10)}`;
         }
       } else {
-        // For guest users or when Supabase is not available, use a temporary session ID
         sid = `guest-session-${nanoid(10)}`;
       }
     }
-
-    // Save user message (only for authenticated users with Supabase)
+    // Save user message (authenticated)
     const userMsg = messages[messages.length - 1].content;
     if (user && supabase) {
       try {
@@ -172,12 +127,9 @@ export async function POST(req: NextRequest) {
             content: userMsg,
           },
         ]);
-      } catch (error) {
-        console.log("Failed to save user message:", error);
-      }
+      } catch (error) {}
     }
-
-    // Get session business type (only for authenticated users with Supabase)
+    // Get business type (authenticated)
     let businessType = null;
     if (user && supabase && !sid.startsWith("guest-session-")) {
       try {
@@ -186,16 +138,12 @@ export async function POST(req: NextRequest) {
           .select("business_type")
           .eq("id", sid)
           .single();
-
         businessType = session?.business_type;
-
-        // Handle first time business type capture
         if (!businessType) {
           await supabase
             .from("conversation_sessions")
             .update({ business_type: userMsg.trim() })
             .eq("id", sid);
-
           const confirmationReply = `سجلت إنو شغلك هو "${userMsg.trim()}". هل بتحب خبرك شو فيني ساوي لإلك؟`;
           await supabase.from("messages").insert([
             {
@@ -209,30 +157,20 @@ export async function POST(req: NextRequest) {
             reply: confirmationReply,
           });
         }
-      } catch (error) {
-        console.log("Failed to get/set business type:", error);
-      }
+      } catch (error) {}
     }
-
-    // Generate embedding for knowledge base search (only for authenticated users with Supabase)
+    // Retrieve KB docs (authenticated)
     let docs = "";
     if (user && supabase) {
-      const embedding = await generateEmbedding(userMsg);
-
-      if (embedding.length > 0) {
-        try {
-          const { data: kbRows } = await supabase.rpc("match_ai_kb", {
-            query_embedding: embedding,
-            match_count: 4,
-          });
-          docs = kbRows?.map((r: any) => r.content).join("\n---\n") || "";
-        } catch (error) {
-          console.error("Knowledge base search error:", error);
-        }
-      }
+      try {
+        const { data: kbRows } = await supabase
+          .from("knowledge_base") // Or your table name
+          .select("content")
+          .limit(4);
+        docs = kbRows?.map((r: any) => r.content).join("\n---\n") || "";
+      } catch (error) {}
     }
-
-    // Get conversation history (only for authenticated users with Supabase)
+    // Get conversation history (authenticated)
     let history = null;
     if (user && supabase && !sid.startsWith("guest-session-")) {
       try {
@@ -242,59 +180,40 @@ export async function POST(req: NextRequest) {
           .eq("session_id", sid)
           .order("created_at", { ascending: true });
         history = historyData;
-      } catch (error) {
-        console.log("Failed to get conversation history:", error);
-      }
+      } catch (error) {}
     }
-
     // Build context prompt
     const injectedPrompt = `${systemPrompt}\n\nUSER BUSINESS: ${businessType || "غير محدد"}\n`;
     const contextParts = [injectedPrompt];
     if (docs) contextParts.push(docs);
     if (history && history.length > 0) contextParts.push(buildHistory(history));
     const prompt = contextParts.join("\n\n");
-
-    // Call OpenRouter API with DeepSeek model
-    console.log("Calling OpenRouter API...");
-    const response = await fetch(
-      "https://openrouter.ai/api/v1/chat/completions",
+    // Build Gemini API request
+    const geminiRes = await fetch(
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${process.env.GEMINI_API_KEY}`,
       {
         method: "POST",
-        headers: {
-          Authorization: `Bearer ${process.env.OPENROUTER_API_KEY}`,
-          "Content-Type": "application/json",
-          "HTTP-Referer": process.env.VERCEL_URL
-            ? `https://${process.env.VERCEL_URL}`
-            : "https://ruyaa-agent.vercel.app",
-          "X-Title": "Ruyaa Smart Agent",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          model: "deepseek/deepseek-chat",
-          messages: [
-            { role: "system", content: prompt },
-            { role: "user", content: userMsg },
+          contents: [
+            { role: "user", parts: [{ text: prompt + "\nUser: " + userMsg }] },
           ],
-          temperature: 0.2,
-          max_tokens: 150,
+          generationConfig: { temperature: 0.25, maxOutputTokens: 256 },
         }),
-      },
+      }
     );
-
-    if (!response.ok) {
-      const errorText = await response.text();
-      console.error(`OpenRouter API error: ${response.status} - ${errorText}`);
+    if (!geminiRes.ok) {
+      const errorText = await geminiRes.text();
+      console.error(`Gemini API error: ${geminiRes.status} - ${errorText}`);
       throw new Error(
-        `OpenRouter API error: ${response.status} - ${errorText}`,
+        `Gemini API error: ${geminiRes.status} - ${errorText}`,
       );
     }
-
-    const json = await response.json();
-    console.log("OpenRouter response received:", json);
-
+    const geminiData = await geminiRes.json();
     const assistantReply =
-      json.choices?.[0]?.message?.content || "عذراً، ما قدرت أرد عليك هلأ.";
-
-    // Save assistant message (only for authenticated users with Supabase)
+      geminiData?.candidates?.[0]?.content?.parts?.[0]?.text ||
+      "عذراً، ما قدرت أرد عليك هلأ.";
+    // Save assistant message (authenticated)
     if (user && supabase) {
       try {
         await supabase.from("messages").insert([
@@ -304,11 +223,8 @@ export async function POST(req: NextRequest) {
             content: assistantReply,
           },
         ]);
-      } catch (error) {
-        console.log("Failed to save assistant message:", error);
-      }
+      } catch (error) {}
     }
-
     return NextResponse.json({ sessionId: sid, reply: assistantReply });
   } catch (error) {
     console.error("Chat API error:", error);
