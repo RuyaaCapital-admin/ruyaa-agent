@@ -153,15 +153,16 @@ export async function POST(req: NextRequest) {
         }
       } catch (error) {}
     }
-    let docs = "";
-    if (user && supabase) {
-      try {
-        const { data: kbRows } = await supabase
-          .from("knowledge_base") // Or your table name
-          .select("content")
-          .limit(4);
-        docs = kbRows?.map((r: any) => r.content).join("\n---\n") || "";
-      } catch (error) {}
+   // Retrieve KB docs (for all users, always return something smart)
+let docs = "";
+try {
+  const { data: kbRows } = await supabase
+    .from("ai_knowledge_base")
+    .select("content")
+    .limit(2);
+  docs = kbRows?.map((r: any) => r.content).join("\n---\n") || "";
+} catch {}
+
     }
     let history = null;
     if (user && supabase && !sid.startsWith("guest-session-")) {
