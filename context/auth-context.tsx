@@ -72,6 +72,12 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   }, [supabase]);
 
   const signInWithGoogle = async () => {
+    if (!supabase) {
+      console.warn(
+        "Supabase not configured. Please set NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY",
+      );
+      return;
+    }
     const { error } = await supabase.auth.signInWithOAuth({
       provider: "google",
       options: {
@@ -82,6 +88,12 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   };
 
   const signInWithMagicLink = async (email: string) => {
+    if (!supabase) {
+      console.warn(
+        "Supabase not configured. Please set NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY",
+      );
+      return { error: new Error("Supabase not configured") as AuthError };
+    }
     const { error } = await supabase.auth.signInWithOtp({
       email,
       options: {
@@ -92,6 +104,12 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   };
 
   const resetPassword = async (email: string) => {
+    if (!supabase) {
+      console.warn(
+        "Supabase not configured. Please set NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY",
+      );
+      return { error: new Error("Supabase not configured") as AuthError };
+    }
     const { error } = await supabase.auth.resetPasswordForEmail(email, {
       redirectTo: `${window.location.origin}/reset-password`,
     });
@@ -99,6 +117,12 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   };
 
   const signOut = async () => {
+    if (!supabase) {
+      console.warn(
+        "Supabase not configured. Please set NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY",
+      );
+      return;
+    }
     const { error } = await supabase.auth.signOut();
     if (error) throw error;
   };
