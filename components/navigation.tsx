@@ -60,23 +60,14 @@ export default function Navigation() {
   };
 
   const handleSignOut = async () => {
-    try {
-      await signOut();
-      setIsUserDropdownOpen(false);
-    } catch (error) {
-      console.error("Error signing out:", error);
-    }
+    await signOut();
+    setIsUserDropdownOpen(false);
   };
 
   const handleResetPassword = async () => {
     if (user?.email) {
-      try {
-        await resetPassword(user.email);
-        setIsUserDropdownOpen(false);
-        // Could show a success message here
-      } catch (error) {
-        console.error("Error resetting password:", error);
-      }
+      await resetPassword(user.email);
+      setIsUserDropdownOpen(false);
     }
   };
 

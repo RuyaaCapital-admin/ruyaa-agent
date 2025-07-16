@@ -9,6 +9,7 @@ import {
 } from "react";
 import { createClient } from "@supabase/supabase-js";
 import type { User, AuthError } from "@supabase/supabase-js";
+import { toast } from "@/hooks/use-toast";
 
 interface AuthContextType {
   user: User | null;
@@ -82,58 +83,181 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   const signInWithGoogle = async () => {
     if (!supabase) {
-      console.warn(
-        "Supabase not configured. Please set NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY",
-      );
+      const message = "Supabase not configured. Please contact support.";
+      console.warn(message);
+      toast({
+        title: "Configuration Error",
+        description: message,
+        variant: "destructive",
+      });
       return;
     }
-    const { error } = await supabase.auth.signInWithOAuth({
-      provider: "google",
-      options: {
-        redirectTo: `${window.location.origin}`,
-      },
-    });
-    if (error) throw error;
+
+    try {
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider: "google",
+        options: {
+          redirectTo: `${window.location.origin}`,
+        },
+      });
+
+      if (error) {
+        console.error("Google sign-in error:", error);
+        toast({
+          title: "Sign In Failed",
+          description:
+            error.message || "Failed to sign in with Google. Please try again.",
+          variant: "destructive",
+        });
+        throw error;
+      }
+    } catch (error) {
+      console.error("Google sign-in error:", error);
+      toast({
+        title: "Sign In Failed",
+        description: "An unexpected error occurred. Please try again.",
+        variant: "destructive",
+      });
+      throw error;
+    }
   };
 
   const signInWithMagicLink = async (email: string) => {
     if (!supabase) {
-      console.warn(
-        "Supabase not configured. Please set NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY",
-      );
+      const message = "Supabase not configured. Please contact support.";
+      console.warn(message);
+      toast({
+        title: "Configuration Error",
+        description: message,
+        variant: "destructive",
+      });
       return { error: new Error("Supabase not configured") as AuthError };
     }
-    const { error } = await supabase.auth.signInWithOtp({
-      email,
-      options: {
-        emailRedirectTo: `${window.location.origin}`,
-      },
-    });
-    return { error };
+
+    try {
+      const { error } = await supabase.auth.signInWithOtp({
+        email,
+        options: {
+          emailRedirectTo: `${window.location.origin}`,
+        },
+      });
+
+      if (error) {
+        console.error("Magic link error:", error);
+        toast({
+          title: "Failed to Send Magic Link",
+          description:
+            error.message ||
+            "Failed to send magic link. Please check your email address.",
+          variant: "destructive",
+        });
+      } else {
+        toast({
+          title: "Magic Link Sent",
+          description: "Check your email for the magic link to sign in.",
+          variant: "default",
+        });
+      }
+
+      return { error };
+    } catch (error) {
+      console.error("Magic link error:", error);
+      const errorMessage = "An unexpected error occurred. Please try again.";
+      toast({
+        title: "Failed to Send Magic Link",
+        description: errorMessage,
+        variant: "destructive",
+      });
+      return { error: error as AuthError };
+    }
   };
 
   const resetPassword = async (email: string) => {
     if (!supabase) {
-      console.warn(
-        "Supabase not configured. Please set NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY",
-      );
+      const message = "Supabase not configured. Please contact support.";
+      console.warn(message);
+      toast({
+        title: "Configuration Error",
+        description: message,
+        variant: "destructive",
+      });
       return { error: new Error("Supabase not configured") as AuthError };
     }
-    const { error } = await supabase.auth.resetPasswordForEmail(email, {
-      redirectTo: `${window.location.origin}/reset-password`,
-    });
-    return { error };
+
+    try {
+      const { error } = await supabase.auth.resetPasswordForEmail(email, {
+        redirectTo: `${window.location.origin}/reset-password`,
+      });
+
+      if (error) {
+        console.error("Reset password error:", error);
+        toast({
+          title: "Failed to Send Reset Link",
+          description:
+            error.message ||
+            "Failed to send password reset link. Please check your email address.",
+          variant: "destructive",
+        });
+      } else {
+        toast({
+          title: "Reset Link Sent",
+          description: "Check your email for the password reset link.",
+          variant: "default",
+        });
+      }
+
+      return { error };
+    } catch (error) {
+      console.error("Reset password error:", error);
+      const errorMessage = "An unexpected error occurred. Please try again.";
+      toast({
+        title: "Failed to Send Reset Link",
+        description: errorMessage,
+        variant: "destructive",
+      });
+      return { error: error as AuthError };
+    }
   };
 
   const signOut = async () => {
     if (!supabase) {
-      console.warn(
-        "Supabase not configured. Please set NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY",
-      );
+      const message = "Supabase not configured. Please contact support.";
+      console.warn(message);
+      toast({
+        title: "Configuration Error",
+        description: message,
+        variant: "destructive",
+      });
       return;
     }
-    const { error } = await supabase.auth.signOut();
-    if (error) throw error;
+
+    try {
+      const { error } = await supabase.auth.signOut();
+
+      if (error) {
+        console.error("Sign out error:", error);
+        toast({
+          title: "Sign Out Failed",
+          description: error.message || "Failed to sign out. Please try again.",
+          variant: "destructive",
+        });
+        throw error;
+      } else {
+        toast({
+          title: "Signed Out",
+          description: "You have been successfully signed out.",
+          variant: "default",
+        });
+      }
+    } catch (error) {
+      console.error("Sign out error:", error);
+      toast({
+        title: "Sign Out Failed",
+        description: "An unexpected error occurred. Please try again.",
+        variant: "destructive",
+      });
+      throw error;
+    }
   };
 
   const value: AuthContextType = {

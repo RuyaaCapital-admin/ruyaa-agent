@@ -5,6 +5,7 @@ import { LanguageProvider } from "@/context/language-context"; // Import Languag
 import { ChatProvider } from "@/context/chat-context";
 import { AuthProvider } from "@/context/auth-context";
 import Navigation from "@/components/navigation";
+import { Toaster } from "@/components/ui/toaster";
 
 export const metadata: Metadata = {
   title: "v0 App",
@@ -33,6 +34,7 @@ export default function RootLayout({
             <ChatProvider>
               <Navigation />
               {children}
+              <Toaster />
             </ChatProvider>
           </AuthProvider>
         </LanguageProvider>

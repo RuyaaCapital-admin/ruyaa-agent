@@ -71,31 +71,20 @@ export default function SignInModal({ isOpen, onClose }: SignInModalProps) {
     setLoading("magic");
     setMessage("");
 
-    try {
-      const { error } = await signInWithMagicLink(email);
-      if (error) {
-        setMessage(t("errorOccurred"));
-      } else {
-        setMessage(t("checkEmail"));
-        setEmail("");
-      }
-    } catch (error) {
-      setMessage(t("errorOccurred"));
-    } finally {
-      setLoading(null);
+    const { error } = await signInWithMagicLink(email);
+    if (!error) {
+      setEmail("");
+      onClose(); // Close modal on success
     }
+    setLoading(null);
   };
 
   const handleGoogleSignIn = async () => {
     setLoading("google");
     setMessage("");
 
-    try {
-      await signInWithGoogle();
-    } catch (error) {
-      setMessage(t("errorOccurred"));
-      setLoading(null);
-    }
+    await signInWithGoogle();
+    // Google auth will redirect, so we don't need to handle success here
   };
 
   const handleResetPassword = async (e: React.FormEvent) => {
@@ -108,20 +97,13 @@ export default function SignInModal({ isOpen, onClose }: SignInModalProps) {
     setLoading("reset");
     setMessage("");
 
-    try {
-      const { error } = await resetPassword(email);
-      if (error) {
-        setMessage(t("errorOccurred"));
-      } else {
-        setMessage(t("resetEmailSent"));
-        setEmail("");
-        setShowResetForm(false);
-      }
-    } catch (error) {
-      setMessage(t("errorOccurred"));
-    } finally {
-      setLoading(null);
+    const { error } = await resetPassword(email);
+    if (!error) {
+      setEmail("");
+      setShowResetForm(false);
+      onClose(); // Close modal on success
     }
+    setLoading(null);
   };
 
   if (!isOpen) return null;
