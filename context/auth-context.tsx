@@ -28,9 +28,18 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
-  // Create a placeholder client if environment variables are missing
-  const supabase =
-    supabaseUrl && supabaseKey ? createClient(supabaseUrl, supabaseKey) : null;
+  // Validate Supabase configuration
+  const isValidSupabaseConfig =
+    supabaseUrl &&
+    supabaseKey &&
+    supabaseUrl.startsWith("https://") &&
+    !supabaseUrl.includes("your_supabase_project_url_here") &&
+    !supabaseKey.includes("your_supabase_anon_key_here");
+
+  // Create client only if valid configuration is available
+  const supabase = isValidSupabaseConfig
+    ? createClient(supabaseUrl, supabaseKey)
+    : null;
 
   useEffect(() => {
     if (!supabase) {
