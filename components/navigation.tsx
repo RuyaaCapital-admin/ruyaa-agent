@@ -364,9 +364,9 @@ export default function Navigation() {
                 }}
                 className={`${
                   user
-                    ? "bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-500 hover:to-blue-600"
+                    ? "bg-gradient-to-r from-gray-800 to-gray-900 hover:from-gray-700 hover:to-gray-800 border border-gray-600"
                     : "bg-gradient-to-r from-gray-700 to-gray-800 hover:from-gray-600 hover:to-gray-700"
-                } text-white border-0 w-full flex items-center justify-center gap-2`}
+                } text-white border-0 w-full flex items-center justify-center gap-2 transition-all duration-200 shadow-lg hover:shadow-xl`}
               >
                 {user ? (
                   <>
