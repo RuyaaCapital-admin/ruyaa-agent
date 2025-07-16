@@ -207,21 +207,30 @@ export default function Navigation() {
               {isContactOpen && (
                 <div className="mt-2 ml-4 flex flex-col space-y-2">
                   <button
-                    onClick={handleWhatsApp}
+                    onClick={() => {
+                      handleWhatsApp();
+                      setIsMenuOpen(false);
+                    }}
                     className="flex items-center gap-3 text-gray-300 hover:text-green-400 transition-colors p-2 rounded hover:bg-gray-800/50"
                   >
                     <MessageCircle className="h-4 w-4" />
                     <span>WhatsApp</span>
                   </button>
                   <button
-                    onClick={handleEmail}
+                    onClick={() => {
+                      handleEmail();
+                      setIsMenuOpen(false);
+                    }}
                     className="flex items-center gap-3 text-gray-300 hover:text-blue-400 transition-colors p-2 rounded hover:bg-gray-800/50"
                   >
                     <Mail className="h-4 w-4" />
                     <span>Email</span>
                   </button>
                   <button
-                    onClick={handleCall}
+                    onClick={() => {
+                      handleCall();
+                      setIsMenuOpen(false);
+                    }}
                     className="flex items-center gap-3 text-gray-300 hover:text-red-400 transition-colors p-2 rounded hover:bg-gray-800/50"
                   >
                     <Phone className="h-4 w-4" />
