@@ -71,7 +71,7 @@ VALUE (paraphrase freely)
 • English ▸ Faster service ▸ Zero mistakes ▸ Higher revenue
 
 SERVICES (adapt wording)
-• Customer‑Support Agent — يرد فوراً ويحسم ٩��٪ من الأسئلة المتكررة  
+• Customer‑Support Agent — يرد فوراً ويحسم ٩٠٪ من الأسئلة المتكررة  
 • Social‑Media Agent — يكتب المحتوى، يرد على الرسائل، ويقدّم تقارير  
 • Business Assistant — فواتير، حجوزات، وتنبيهات بلا أخطاء  
 • Trading Assistant — يراقب السوق وينفّذ أوامر بضبط مخاطرة  
@@ -227,6 +227,7 @@ export async function POST(req: NextRequest) {
     const prompt = contextParts.join("\n\n");
 
     // Call OpenRouter API with DeepSeek model
+    console.log("Calling OpenRouter API...");
     const response = await fetch(
       "https://openrouter.ai/api/v1/chat/completions",
       {
@@ -252,10 +253,16 @@ export async function POST(req: NextRequest) {
     );
 
     if (!response.ok) {
-      throw new Error(`OpenRouter API error: ${response.status}`);
+      const errorText = await response.text();
+      console.error(`OpenRouter API error: ${response.status} - ${errorText}`);
+      throw new Error(
+        `OpenRouter API error: ${response.status} - ${errorText}`,
+      );
     }
 
     const json = await response.json();
+    console.log("OpenRouter response received:", json);
+
     const assistantReply =
       json.choices?.[0]?.message?.content || "عذراً، ما قدرت أرد عليك هلأ.";
 
