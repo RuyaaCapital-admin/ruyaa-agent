@@ -214,9 +214,9 @@ export async function POST(req: NextRequest) {
       }
     }
 
-    // Generate embedding for knowledge base search (only for authenticated users)
+    // Generate embedding for knowledge base search (only for authenticated users with Supabase)
     let docs = "";
-    if (user) {
+    if (user && supabase) {
       const embedding = await generateEmbedding(userMsg);
 
       if (embedding.length > 0) {
