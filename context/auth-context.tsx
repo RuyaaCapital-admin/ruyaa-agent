@@ -1,0 +1,157 @@
+"use client";
+
+import {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  type ReactNode,
+} from "react";
+import { createClient } from "@supabase/supabase-js";
+import type { User, AuthError } from "@supabase/supabase-js";
+
+interface AuthContextType {
+  user: User | null;
+  loading: boolean;
+  signInWithGoogle: () => Promise<void>;
+  signInWithMagicLink: (email: string) => Promise<{ error?: AuthError }>;
+  signOut: () => Promise<void>;
+  resetPassword: (email: string) => Promise<{ error?: AuthError }>;
+}
+
+const AuthContext = createContext<AuthContextType | undefined>(undefined);
+
+export const AuthProvider = ({ children }: { children: ReactNode }) => {
+  const [user, setUser] = useState<User | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+
+  // Validate Supabase configuration
+  const isValidSupabaseConfig =
+    supabaseUrl &&
+    supabaseKey &&
+    supabaseUrl.startsWith("https://") &&
+    !supabaseUrl.includes("your_supabase_project_url_here") &&
+    !supabaseKey.includes("your_supabase_anon_key_here");
+
+  // Create client only if valid configuration is available
+  const supabase = isValidSupabaseConfig
+    ? createClient(supabaseUrl, supabaseKey)
+    : null;
+
+  useEffect(() => {
+    if (!supabase) {
+      // No Supabase config available
+      setLoading(false);
+      return;
+    }
+
+    // Get initial user
+    const getUser = async () => {
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+      setUser(user);
+      setLoading(false);
+    };
+
+    getUser();
+
+    // Listen for auth changes
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange(async (event, session) => {
+      setUser(session?.user ?? null);
+      setLoading(false);
+
+      // Handle the session with cookies for SSR
+      if (event === "SIGNED_IN" || event === "TOKEN_REFRESHED") {
+        // Set a cookie for SSR
+        document.cookie = `supabase-auth-token=${session?.access_token || ""}; path=/; max-age=${60 * 60 * 24 * 7}; SameSite=Lax`;
+      } else if (event === "SIGNED_OUT") {
+        // Remove the cookie
+        document.cookie =
+          "supabase-auth-token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
+      }
+    });
+
+    return () => subscription.unsubscribe();
+  }, [supabase]);
+
+  const signInWithGoogle = async () => {
+    if (!supabase) {
+      console.warn(
+        "Supabase not configured. Please set NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY",
+      );
+      return;
+    }
+    const { error } = await supabase.auth.signInWithOAuth({
+      provider: "google",
+      options: {
+        redirectTo: `${window.location.origin}`,
+      },
+    });
+    if (error) throw error;
+  };
+
+  const signInWithMagicLink = async (email: string) => {
+    if (!supabase) {
+      console.warn(
+        "Supabase not configured. Please set NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY",
+      );
+      return { error: new Error("Supabase not configured") as AuthError };
+    }
+    const { error } = await supabase.auth.signInWithOtp({
+      email,
+      options: {
+        emailRedirectTo: `${window.location.origin}`,
+      },
+    });
+    return { error };
+  };
+
+  const resetPassword = async (email: string) => {
+    if (!supabase) {
+      console.warn(
+        "Supabase not configured. Please set NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY",
+      );
+      return { error: new Error("Supabase not configured") as AuthError };
+    }
+    const { error } = await supabase.auth.resetPasswordForEmail(email, {
+      redirectTo: `${window.location.origin}/reset-password`,
+    });
+    return { error };
+  };
+
+  const signOut = async () => {
+    if (!supabase) {
+      console.warn(
+        "Supabase not configured. Please set NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY",
+      );
+      return;
+    }
+    const { error } = await supabase.auth.signOut();
+    if (error) throw error;
+  };
+
+  const value: AuthContextType = {
+    user,
+    loading,
+    signInWithGoogle,
+    signInWithMagicLink,
+    signOut,
+    resetPassword,
+  };
+
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
+};
+
+export const useAuth = () => {
+  const context = useContext(AuthContext);
+  if (context === undefined) {
+    throw new Error("useAuth must be used within an AuthProvider");
+  }
+  return context;
+};

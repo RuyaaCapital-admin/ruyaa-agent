@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 import { LanguageProvider } from "@/context/language-context"; // Import LanguageProvider
 import { ChatProvider } from "@/context/chat-context";
+import { AuthProvider } from "@/context/auth-context";
 import Navigation from "@/components/navigation";
 
 export const metadata: Metadata = {
@@ -33,10 +34,12 @@ export default function RootLayout({
       {/* lang attribute will be set dynamically by LanguageProvider */}
       <body>
         <LanguageProvider>
-          <ChatProvider>
-            <Navigation />
-            {children}
-          </ChatProvider>
+          <AuthProvider>
+            <ChatProvider>
+              <Navigation />
+              {children}
+            </ChatProvider>
+          </AuthProvider>
         </LanguageProvider>
       </body>
     </html>
