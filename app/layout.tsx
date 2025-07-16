@@ -1,11 +1,15 @@
+// app/layout.tsx
+"use client";
+
 import type React from "react";
 import type { Metadata, Viewport } from "next";
 import "./globals.css";
-import { LanguageProvider } from "@/context/language-context"; // Import LanguageProvider
-import { ChatProvider } from "@/context/chat-context";
+import { LanguageProvider } from "@/context/language-context";
 import { AuthProvider } from "@/context/auth-context";
+import { ChatProvider } from "@/context/chat-context";
 import Navigation from "@/components/navigation";
 import { Toaster } from "@/components/ui/toaster";
+import ChatWidget from "@/components/chat-widget";
 
 export const metadata: Metadata = {
   title: "v0 App",
@@ -27,13 +31,13 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      {/* lang attribute will be set dynamically by LanguageProvider */}
       <body>
         <LanguageProvider>
           <AuthProvider>
             <ChatProvider>
               <Navigation />
               {children}
+              <ChatWidget />
               <Toaster />
             </ChatProvider>
           </AuthProvider>
