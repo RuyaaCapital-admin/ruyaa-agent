@@ -71,9 +71,9 @@ VALUE (paraphrase freely)
 • English ▸ Faster service ▸ Zero mistakes ▸ Higher revenue
 
 SERVICES (adapt wording)
-• Customer‑Support Agent — يرد فوراً ويحسم ٩٠٪ من الأسئلة المتكررة  
+• Customer‑Support Agent — يرد فوراً ويحسم ٩��٪ من الأسئلة المتكررة  
 • Social‑Media Agent — يكتب المحتوى، يرد على الرسائل، ويقدّم تقارير  
-• Business Assistant — ��واتير، حجوزات، وتنبيهات بلا أخطاء  
+• Business Assistant — فواتير، حجوزات، وتنبيهات بلا أخطاء  
 • Trading Assistant — يراقب السوق وينفّذ أوامر بضبط مخاطرة  
 • Lifestyle Planner — يخطط السفر ويرتّب التذكيرات
 
@@ -95,7 +95,24 @@ PROFANITY
 
 export async function POST(req: NextRequest) {
   try {
-    const { messages, sessionId } = await req.json();
+    const body = await req.json();
+    const { messages, sessionId } = body;
+
+    // Validate request
+    if (!messages || !Array.isArray(messages) || messages.length === 0) {
+      return NextResponse.json(
+        { error: "Invalid messages array" },
+        { status: 400 },
+      );
+    }
+
+    if (!process.env.OPENROUTER_API_KEY) {
+      console.error("Missing OPENROUTER_API_KEY environment variable");
+      return NextResponse.json(
+        { error: "API configuration error" },
+        { status: 500 },
+      );
+    }
 
     // Handle authentication - allow guest users
     const authHeader = req.headers.get("authorization") || "";
