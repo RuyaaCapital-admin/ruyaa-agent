@@ -1,23 +1,49 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { createClient } from '@supabase/supabase-js';
-import { generateEmbedding } from 'ai';
-import { nanoid } from 'nanoid';
+import { NextRequest, NextResponse } from "next/server";
+import { createClient } from "@supabase/supabase-js";
+import { nanoid } from "nanoid";
 
-export const runtime = 'edge';
+export const runtime = "edge";
 
 const supabase = createClient(
   process.env.SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!
+  process.env.SUPABASE_SERVICE_ROLE_KEY!,
 );
 
 function buildHistory(
-  msgs: { role: 'user' | 'assistant'; content: string }[],
-  limit = 8
+  msgs: { role: "user" | "assistant"; content: string }[],
+  limit = 8,
 ) {
   return msgs
     .slice(-limit)
-    .map(m => `${m.role === 'user' ? 'User' : 'Assistant'}: ${m.content}`)
-    .join('\n');
+    .map((m) => `${m.role === "user" ? "User" : "Assistant"}: ${m.content}`)
+    .join("\n");
+}
+
+async function generateEmbedding(text: string): Promise<number[]> {
+  try {
+    const response = await fetch("https://openrouter.ai/api/v1/embeddings", {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${process.env.OPENROUTER_API_KEY}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        model: "openai/text-embedding-3-small",
+        input: text,
+      }),
+    });
+
+    if (!response.ok) {
+      console.error("Embedding API error:", response.status);
+      return [];
+    }
+
+    const data = await response.json();
+    return data.data?.[0]?.embedding || [];
+  } catch (error) {
+    console.error("Error generating embedding:", error);
+    return [];
+  }
 }
 
 const systemPrompt = `
@@ -71,82 +97,144 @@ export async function POST(req: NextRequest) {
   try {
     const { messages, sessionId } = await req.json();
 
-    const authHeader = req.headers.get('authorization') || '';
-    const token = authHeader.replace(/^Bearer\s+/, '');
-    const { data: { user } } = await supabase.auth.getUser(token);
-    if (!user) return NextResponse.json({ error: 'Not authenticated' }, { status: 401 });
+    // Authenticate user
+    const authHeader = req.headers.get("authorization") || "";
+    const token = authHeader.replace(/^Bearer\s+/, "");
+    const {
+      data: { user },
+    } = await supabase.auth.getUser(token);
+    if (!user)
+      return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
 
+    // Handle session
     let sid = sessionId;
     if (!sid) {
       const { data } = await supabase
-        .from('conversation_sessions')
+        .from("conversation_sessions")
         .insert({ user_id: user.id })
-        .select('id')
+        .select("id")
         .single();
-      sid = data.id;
+      sid = data?.id;
     }
 
+    // Save user message
     const userMsg = messages[messages.length - 1].content;
-    await supabase.from('messages').insert([{ session_id: sid, role: 'user', content: userMsg }]);
+    await supabase.from("messages").insert([
+      {
+        session_id: sid,
+        role: "user",
+        content: userMsg,
+      },
+    ]);
 
+    // Get session business type
     const { data: session } = await supabase
-      .from('conversation_sessions')
-      .select('business_type')
-      .eq('id', sid)
+      .from("conversation_sessions")
+      .select("business_type")
+      .eq("id", sid)
       .single();
 
     let businessType = session?.business_type;
 
+    // Handle first time business type capture
     if (!businessType) {
       await supabase
-        .from('conversation_sessions')
+        .from("conversation_sessions")
         .update({ business_type: userMsg.trim() })
-        .eq('id', sid);
+        .eq("id", sid);
 
       const confirmationReply = `سجلت إنو شغلك هو "${userMsg.trim()}". هل بتحب خبرك شو فيني ساوي لإلك؟`;
-      await supabase.from('messages').insert([{ session_id: sid, role: 'assistant', content: confirmationReply }]);
+      await supabase.from("messages").insert([
+        {
+          session_id: sid,
+          role: "assistant",
+          content: confirmationReply,
+        },
+      ]);
       return NextResponse.json({ sessionId: sid, reply: confirmationReply });
     }
 
-    const embedding = await generateEmbedding({ model: process.env.EMBEDDING_MODEL_ID!, input: userMsg });
-    const { data: kbRows } = await supabase.rpc('match_ai_kb', { query_embedding: embedding, match_count: 4 });
-    const docs = kbRows.map((r: any) => r.content).join('\n---\n');
+    // Generate embedding for knowledge base search
+    const embedding = await generateEmbedding(userMsg);
+    let docs = "";
 
+    if (embedding.length > 0) {
+      try {
+        const { data: kbRows } = await supabase.rpc("match_ai_kb", {
+          query_embedding: embedding,
+          match_count: 4,
+        });
+        docs = kbRows?.map((r: any) => r.content).join("\n---\n") || "";
+      } catch (error) {
+        console.error("Knowledge base search error:", error);
+      }
+    }
+
+    // Get conversation history
     const { data: history } = await supabase
-      .from('messages')
-      .select('role, content')
-      .eq('session_id', sid)
-      .order('created_at', { ascending: true });
+      .from("messages")
+      .select("role, content")
+      .eq("session_id", sid)
+      .order("created_at", { ascending: true });
 
-    const injectedPrompt = `${systemPrompt}\n\nUSER BUSINESS: ${businessType || 'غير محدد'}\n`;
-    const prompt = [injectedPrompt, docs, buildHistory(history)].join('\n\n');
+    // Build context prompt
+    const injectedPrompt = `${systemPrompt}\n\nUSER BUSINESS: ${businessType || "غير محدد"}\n`;
+    const contextParts = [injectedPrompt];
+    if (docs) contextParts.push(docs);
+    if (history && history.length > 0) contextParts.push(buildHistory(history));
+    const prompt = contextParts.join("\n\n");
 
-    const res = await fetch('https://openrouter.ai/api/v1/chat/completions', {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${process.env.OPENROUTER_API_KEY}`,
-        'Content-Type': 'application/json',
-        'HTTP-Referer': 'https://ruyaa-agent.vercel.app',
-        'X-Title': 'Ruyaa Smart Agent'
+    // Call OpenRouter API with DeepSeek model
+    const response = await fetch(
+      "https://openrouter.ai/api/v1/chat/completions",
+      {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${process.env.OPENROUTER_API_KEY}`,
+          "Content-Type": "application/json",
+          "HTTP-Referer": process.env.VERCEL_URL
+            ? `https://${process.env.VERCEL_URL}`
+            : "https://ruyaa-agent.vercel.app",
+          "X-Title": "Ruyaa Smart Agent",
+        },
+        body: JSON.stringify({
+          model: "deepseek/deepseek-chat",
+          messages: [
+            { role: "system", content: prompt },
+            { role: "user", content: userMsg },
+          ],
+          temperature: 0.2,
+          max_tokens: 150,
+        }),
       },
-      body: JSON.stringify({
-        model: 'deepseek-chat',
-        messages: [
-          { role: 'system', content: systemPrompt },
-          { role: 'user', content: prompt }
-        ],
-        temperature: 0.2
-      })
-    });
+    );
 
-    const json = await res.json();
-    const text = json.choices?.[0]?.message?.content || 'Sorry, no response.';
+    if (!response.ok) {
+      throw new Error(`OpenRouter API error: ${response.status}`);
+    }
 
-    await supabase.from('messages').insert([{ session_id: sid, role: 'assistant', content: text }]);
+    const json = await response.json();
+    const assistantReply =
+      json.choices?.[0]?.message?.content || "عذراً، ما قدرت أرد عليك هلأ.";
 
-    return NextResponse.json({ sessionId: sid, reply: text });
-  } catch (err) {
-    console.error('chat api error:', err);
-    return NextResponse.json({ error: 'failed' }, { status: 500 });
+    // Save assistant message
+    await supabase.from("messages").insert([
+      {
+        session_id: sid,
+        role: "assistant",
+        content: assistantReply,
+      },
+    ]);
+
+    return NextResponse.json({ sessionId: sid, reply: assistantReply });
+  } catch (error) {
+    console.error("Chat API error:", error);
+    return NextResponse.json(
+      {
+        error: "Internal server error",
+        details: error instanceof Error ? error.message : "Unknown error",
+      },
+      { status: 500 },
+    );
   }
 }
