@@ -33,6 +33,12 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     supabaseUrl && supabaseKey ? createClient(supabaseUrl, supabaseKey) : null;
 
   useEffect(() => {
+    if (!supabase) {
+      // No Supabase config available
+      setLoading(false);
+      return;
+    }
+
     // Get initial user
     const getUser = async () => {
       const {
@@ -63,7 +69,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     });
 
     return () => subscription.unsubscribe();
-  }, [supabase.auth]);
+  }, [supabase]);
 
   const signInWithGoogle = async () => {
     const { error } = await supabase.auth.signInWithOAuth({
