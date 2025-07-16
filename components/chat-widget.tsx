@@ -21,9 +21,12 @@ function useSimpleChat(api: string, initialMessages: any[]) {
   const [isLoading, setIsLoading] = useState(false);
   const [sessionId, setSessionId] = useState<string | null>(null);
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setInput(e.target.value);
-  };
+  const handleInputChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      setInput(e.target.value);
+    },
+    [],
+  );
 
   const detectLanguage = (text: string): "ar" | "en" => {
     const arabicRegex = /[\u0600-\u06FF]/;
