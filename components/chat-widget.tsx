@@ -369,7 +369,7 @@ export default function ChatWidget() {
                 disabled={isLoading}
                 dir={lang === "ar" ? "rtl" : "ltr"}
                 className="bg-gray-800 border-gray-700 text-white placeholder:text-gray-500 focus:ring-2 focus:ring-gray-600 focus:border-transparent rounded-xl px-4 py-3 text-sm w-full h-12 min-h-[48px]"
-                style={{ fontSize: "16px" }}
+                style={{ fontSize: "16px", touchAction: "manipulation" }}
                 autoComplete="off"
                 autoCorrect="off"
                 autoCapitalize="off"
