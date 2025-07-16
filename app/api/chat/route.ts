@@ -73,7 +73,7 @@ VALUE (paraphrase freely)
 SERVICES (adapt wording)
 • Customer‑Support Agent — يرد فوراً ويحسم ٩٠٪ من الأسئلة المتكررة  
 • Social‑Media Agent — يكتب المحتوى، يرد على الرسائل، ويقدّم تقارير  
-• Business Assistant — فواتير، حجوزات، وتنبيهات بلا أخطاء  
+• Business Assistant — ��واتير، حجوزات، وتنبيهات بلا أخطاء  
 • Trading Assistant — يراقب السوق وينفّذ أوامر بضبط مخاطرة  
 • Lifestyle Planner — يخطط السفر ويرتّب التذكيرات
 
@@ -242,14 +242,16 @@ export async function POST(req: NextRequest) {
     const assistantReply =
       json.choices?.[0]?.message?.content || "عذراً، ما قدرت أرد عليك هلأ.";
 
-    // Save assistant message
-    await supabase.from("messages").insert([
-      {
-        session_id: sid,
-        role: "assistant",
-        content: assistantReply,
-      },
-    ]);
+    // Save assistant message (only for authenticated users)
+    if (user) {
+      await supabase.from("messages").insert([
+        {
+          session_id: sid,
+          role: "assistant",
+          content: assistantReply,
+        },
+      ]);
+    }
 
     return NextResponse.json({ sessionId: sid, reply: assistantReply });
   } catch (error) {
