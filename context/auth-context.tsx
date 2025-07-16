@@ -9,6 +9,7 @@ import {
 } from "react";
 import { createClient } from "@supabase/supabase-js";
 import type { User, AuthError } from "@supabase/supabase-js";
+import { toast } from "@/hooks/use-toast";
 
 interface AuthContextType {
   user: User | null;
