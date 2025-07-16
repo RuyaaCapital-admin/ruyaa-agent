@@ -166,13 +166,16 @@ function useSimpleChat(api: string, initialMessages: any[]) {
     [api, input, sessionId],
   );
 
-  return {
-    messages,
-    input,
-    handleInputChange,
-    handleSubmit,
-    isLoading,
-  };
+  return useMemo(
+    () => ({
+      messages,
+      input,
+      handleInputChange,
+      handleSubmit,
+      isLoading,
+    }),
+    [messages, input, handleInputChange, handleSubmit, isLoading],
+  );
 }
 
 export default function ChatWidget() {
