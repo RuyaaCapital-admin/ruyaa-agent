@@ -66,13 +66,8 @@ export default function Navigation() {
 
   const handleResetPassword = async () => {
     if (user?.email) {
-      try {
-        await resetPassword(user.email);
-        setIsUserDropdownOpen(false);
-        // Could show a success message here
-      } catch (error) {
-        console.error("Error resetting password:", error);
-      }
+      await resetPassword(user.email);
+      setIsUserDropdownOpen(false);
     }
   };
 
