@@ -232,15 +232,19 @@ export async function POST(req: NextRequest) {
       }
     }
 
-    // Get conversation history (only for authenticated users)
+    // Get conversation history (only for authenticated users with Supabase)
     let history = null;
-    if (user && !sid.startsWith("guest-session-")) {
-      const { data: historyData } = await supabase
-        .from("messages")
-        .select("role, content")
-        .eq("session_id", sid)
-        .order("created_at", { ascending: true });
-      history = historyData;
+    if (user && supabase && !sid.startsWith("guest-session-")) {
+      try {
+        const { data: historyData } = await supabase
+          .from("messages")
+          .select("role, content")
+          .eq("session_id", sid)
+          .order("created_at", { ascending: true });
+        history = historyData;
+      } catch (error) {
+        console.log("Failed to get conversation history:", error);
+      }
     }
 
     // Build context prompt
