@@ -7,7 +7,7 @@ import {
   useEffect,
   type ReactNode,
 } from "react";
-import { createClientComponentClient } from "@supabase/supabase-js";
+import { createClient } from "@supabase/supabase-js";
 import type { User, AuthError } from "@supabase/supabase-js";
 
 interface AuthContextType {
