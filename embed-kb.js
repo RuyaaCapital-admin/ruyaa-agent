@@ -12,7 +12,8 @@ const supabase = createClient(
 
 // Free DeepSeek embedding endpoint
 const EMBEDDING_MODEL = 'deepseek/deepseek-r1:free';
-const OPENROUTER_URL   = 'https://openrouter.ai/api/v1/embeddings';
+// Correct OpenRouter endpoint if needed; default embedding endpoint
+const OPENROUTER_URL = 'https://openrouter.ai/api/v1/embeddings';
 
 (async () => {
   const { data: rows, error } = await supabase
