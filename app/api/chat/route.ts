@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
-import OpenRouter, { generate } from '@ai-sdk/openrouter';
 import { nanoid } from 'nanoid';
 
 export const runtime = 'edge';
