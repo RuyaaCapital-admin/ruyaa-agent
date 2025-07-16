@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 import { LanguageProvider } from "@/context/language-context"; // Import LanguageProvider
 import { ChatProvider } from "@/context/chat-context";
+import { AuthProvider } from "@/context/auth-context";
 import Navigation from "@/components/navigation";
 
 export const metadata: Metadata = {
