@@ -29,7 +29,7 @@ export default function Navigation() {
   const [isSignInModalOpen, setIsSignInModalOpen] = useState(false);
   const [isUserDropdownOpen, setIsUserDropdownOpen] = useState(false);
   const { lang, setLang, t } = useLanguage();
-  const { openChat } = useChatWidget();
+
   const { user, loading, signOut, resetPassword } = useAuth();
 
   const toggleLanguage = () => {
@@ -89,7 +89,7 @@ export default function Navigation() {
     ar: {
       profile: "الملف الشخصي",
       resetPassword: "إعادة ضبط كلمة المرور",
-      signOut: "تسجيل ��لخروج",
+      signOut: "تسجيل الخروج",
     },
     en: {
       profile: "Profile",
