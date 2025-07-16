@@ -1,13 +1,12 @@
 # RuyaaCapital Smart Agent
 
-Automatically deployed and synced via Vercel | Built with v0.dev
 
 ## Overview
 
 This repository powers the official RuyaaCapital Smart Agent: your 24/7 professional business and personal assistant. All updates to the agent’s features, language, and branding are automatically deployed via Vercel. Your custom AI agent handles sales, support, scheduling, notifications, and multi-platform messaging—instantly and error-free.
 
 * **Live App:** [https://agent.ruyaacapital.com/](https://agent.ruyaacapital.com/)
-* **Build/Manage:** [v0.dev project dashboard](https://v0.dev/chat/projects/fjXArbVrIJR)
+
 
 ## What Does the RuyaaCapital Smart Agent Do?
 
