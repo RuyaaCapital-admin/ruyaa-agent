@@ -1,16 +1,18 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
-import { groq } from '@ai-sdk/groq';
+import { openai } from 'ai'; // OpenRouter loader
 import { generateText, generateEmbedding } from 'ai';
 import { nanoid } from 'nanoid';
 
 export const runtime = 'edge';
 
+// Supabase (server-only)
 const supabase = createClient(
   process.env.SUPABASE_URL!,
   process.env.SUPABASE_SERVICE_ROLE_KEY!
 );
 
+// Keep chat compact
 function buildHistory(
   msgs: { role: 'user' | 'assistant'; content: string }[],
   limit = 8
@@ -21,6 +23,7 @@ function buildHistory(
     .join('\n');
 }
 
+// System prompt with mission + tone
 const systemPrompt = `
 # RuyaaCapital – Smart Assistant (v2 · Jul 2025)
 
@@ -68,18 +71,22 @@ PROFANITY
 - If the user insults, ignore the insult and continue politely with the mission.
 `.trim();
 
-const primaryModel = groq(process.env.GROQ_MODEL_ID!);
-const fallbackModel = groq(process.env.GROQ_FALLBACK_MODEL_ID!);
+// Use models from OpenRouter via env
+const primaryModel = openai(process.env.PRIMARY_MODEL!);
+const fallbackModel = openai(process.env.FALLBACK_MODEL!);
 
+// POST /api/chat
 export async function POST(req: NextRequest) {
   try {
     const { messages, sessionId } = await req.json();
 
+    // Auth
     const authHeader = req.headers.get('authorization') || '';
-    const token = authHeader.replace(/^Bearer\\s+/, '');
+    const token = authHeader.replace(/^Bearer\s+/, '');
     const { data: { user } } = await supabase.auth.getUser(token);
     if (!user) return NextResponse.json({ error: 'Not authenticated' }, { status: 401 });
 
+    // Session init
     let sid = sessionId;
     if (!sid) {
       const { data } = await supabase
@@ -90,15 +97,16 @@ export async function POST(req: NextRequest) {
       sid = data.id;
     }
 
+    // Save user message
     const userMsg = messages[messages.length - 1].content;
     await supabase.from('messages').insert([{ session_id: sid, role: 'user', content: userMsg }]);
 
+    // Get or set business type
     const { data: session } = await supabase
       .from('conversation_sessions')
       .select('business_type')
       .eq('id', sid)
       .single();
-
     let businessType = session?.business_type;
 
     if (!businessType) {
@@ -106,25 +114,25 @@ export async function POST(req: NextRequest) {
         .from('conversation_sessions')
         .update({ business_type: userMsg.trim() })
         .eq('id', sid);
-
       const confirmationReply = `سجلت إنو شغلك هو "${userMsg.trim()}". هل بتحب خبرك شو فيني ساوي لإلك؟`;
       await supabase.from('messages').insert([{ session_id: sid, role: 'assistant', content: confirmationReply }]);
       return NextResponse.json({ sessionId: sid, reply: confirmationReply });
     }
 
+    // Knowledge base match
     const embedding = await generateEmbedding({ model: process.env.EMBEDDING_MODEL_ID!, input: userMsg });
     const { data: kbRows } = await supabase.rpc('match_ai_kb', { query_embedding: embedding, match_count: 4 });
     const docs = kbRows.map((r: any) => r.content).join('\n---\n');
 
+    // Build chat memory
     const { data: history } = await supabase
       .from('messages')
       .select('role, content')
       .eq('session_id', sid)
       .order('created_at', { ascending: true });
+    const prompt = [`${systemPrompt}\n\nUSER BUSINESS: ${businessType || 'غير محدد'}`, docs, buildHistory(history)].join('\n\n');
 
-    const injectedPrompt = `${systemPrompt}\n\nUSER BUSINESS: ${businessType || 'غير محدد'}\n`;
-    const prompt = [injectedPrompt, docs, buildHistory(history)].join('\n\n');
-
+    // Generate reply
     let text: string;
     try {
       ({ text } = await generateText({ model: primaryModel, temperature: 0.2, system: systemPrompt, prompt }));
@@ -132,9 +140,10 @@ export async function POST(req: NextRequest) {
       ({ text } = await generateText({ model: fallbackModel, temperature: 0.2, system: systemPrompt, prompt }));
     }
 
+    // Save and return reply
     await supabase.from('messages').insert([{ session_id: sid, role: 'assistant', content: text }]);
-
     return NextResponse.json({ sessionId: sid, reply: text });
+
   } catch (err) {
     console.error('chat api error:', err);
     return NextResponse.json({ error: 'failed' }, { status: 500 });
