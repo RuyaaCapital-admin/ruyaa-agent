@@ -184,6 +184,7 @@ export default function Navigation() {
             <Link
               href="/about"
               className="hover:text-gray-300 transition-colors text-gray-400"
+              onClick={() => setIsMenuOpen(false)}
             >
               {t("services")}
             </Link>
@@ -192,6 +193,7 @@ export default function Navigation() {
               target="_blank"
               rel="noopener noreferrer"
               className="hover:text-gray-300 transition-colors text-gray-400"
+              onClick={() => setIsMenuOpen(false)}
             >
               {t("about")}
             </a>
