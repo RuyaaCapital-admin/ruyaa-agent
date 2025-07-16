@@ -183,7 +183,7 @@ export default function Navigation() {
           >
             {t("about")}
           </a>
-          <div className="relative">
+          <div className="relative contact-dropdown-container">
             <button
               onClick={() => setIsContactOpen(!isContactOpen)}
               className="hover:text-gray-300 transition-colors text-gray-400"
