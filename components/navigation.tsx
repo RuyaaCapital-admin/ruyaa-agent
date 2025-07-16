@@ -60,12 +60,8 @@ export default function Navigation() {
   };
 
   const handleSignOut = async () => {
-    try {
-      await signOut();
-      setIsUserDropdownOpen(false);
-    } catch (error) {
-      console.error("Error signing out:", error);
-    }
+    await signOut();
+    setIsUserDropdownOpen(false);
   };
 
   const handleResetPassword = async () => {
