@@ -219,7 +219,7 @@ export default function Navigation() {
             )}
           </div>
           {!loading && (
-            <div className="relative">
+            <div className="relative user-dropdown-container">
               <Button
                 onClick={handleAuthButtonClick}
                 className={`${
