@@ -40,7 +40,7 @@ export default function SignInModal({ isOpen, onClose }: SignInModalProps) {
       resetEmailSent:
         "تم إرسال رابط إعادة ضبط كلمة المرور إلى بريدك الإلكتروني",
       invalidEmail: "عذراً، يرجى إدخال بريد إلكتروني صحيح",
-      errorOccurred: "حدث خطأ، يرجى المحاولة مرة أخرى",
+      errorOccurred: "حدث خطأ، يرجى ال��حاولة مرة أخرى",
     },
     en: {
       signIn: "Sign In",
@@ -71,19 +71,12 @@ export default function SignInModal({ isOpen, onClose }: SignInModalProps) {
     setLoading("magic");
     setMessage("");
 
-    try {
-      const { error } = await signInWithMagicLink(email);
-      if (error) {
-        setMessage(t("errorOccurred"));
-      } else {
-        setMessage(t("checkEmail"));
-        setEmail("");
-      }
-    } catch (error) {
-      setMessage(t("errorOccurred"));
-    } finally {
-      setLoading(null);
+    const { error } = await signInWithMagicLink(email);
+    if (!error) {
+      setEmail("");
+      onClose(); // Close modal on success
     }
+    setLoading(null);
   };
 
   const handleGoogleSignIn = async () => {
