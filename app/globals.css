@@ -159,50 +159,84 @@ body {
   }
 
   /* Ensure chat card takes proper mobile dimensions */
-  .mobile-chat-container .w-full {
+  .mobile-chat-container > div {
     border-radius: 20px 20px 0 0 !important;
+    height: 100% !important;
   }
 
-  /* Fix input footer positioning */
-  .mobile-chat-container .shrink-0:last-child {
+  /* Fix messages container to not overlap with input */
+  .mobile-chat-container .flex-1[class*="p-0"] {
+    height: calc(100% - 80px) !important;
+    min-height: 0 !important;
+    overflow: hidden !important;
+  }
+
+  /* Ensure scroll area works properly */
+  .mobile-chat-container .flex-1[class*="p-0"] > div {
+    height: 100% !important;
+  }
+
+  /* Fix input footer - make it always visible at bottom */
+  .mobile-chat-container > div > div:last-child {
     position: sticky !important;
     bottom: 0 !important;
     z-index: 10 !important;
+    background: linear-gradient(to right, rgb(17 24 39), rgb(0 0 0)) !important;
+    border-top: 1px solid rgb(31 41 55) !important;
+    min-height: 80px !important;
   }
 
-  /* Ensure messages area has proper height */
-  .mobile-chat-container .flex-1 {
-    height: calc(100% - 140px) !important;
-    min-height: 0 !important;
-  }
-
-  /* Prevent input from being hidden */
+  /* Prevent input from being hidden and fix sizing */
   .mobile-chat-container input {
     font-size: 16px !important;
     min-height: 48px !important;
+    height: 48px !important;
     touch-action: manipulation !important;
+    -webkit-appearance: none !important;
+    border-radius: 12px !important;
   }
 
   /* Fix send button sizing */
   .mobile-chat-container button[type="submit"] {
     min-width: 48px !important;
     min-height: 48px !important;
+    height: 48px !important;
+    width: 48px !important;
     flex-shrink: 0 !important;
   }
 
-  /* Ensure proper flex layout for input container */
+  /* Ensure proper flex layout for input form */
   .mobile-chat-container form {
     display: flex !important;
-    gap: 10px !important;
+    gap: 8px !important;
     align-items: center !important;
     width: 100% !important;
+    padding: 0 !important;
   }
 
-  /* Prevent background scrolling when chat is open */
-  body:has(.mobile-chat-container) {
-    overflow: hidden !important;
-    position: fixed !important;
+  /* Fix input container */
+  .mobile-chat-container .flex-1.relative {
+    min-width: 0 !important;
+    flex: 1 !important;
+  }
+
+  /* Ensure input field is always accessible */
+  .mobile-chat-container .flex-1.relative input {
     width: 100% !important;
+    background: rgb(31 41 55) !important;
+    border: 1px solid rgb(55 65 81) !important;
+    color: white !important;
+  }
+
+  .mobile-chat-container .flex-1.relative input::placeholder {
+    color: rgb(107 114 128) !important;
+  }
+
+  .mobile-chat-container .flex-1.relative input:focus {
+    ring: 2px !important;
+    ring-color: rgb(75 85 99) !important;
+    border-color: transparent !important;
+    outline: none !important;
   }
 }
 
