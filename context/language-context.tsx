@@ -26,7 +26,7 @@ const translations: Record<Language, Record<string, string>> = {
     services: "من نحن",
     about: "سجل طلبك",
     contact: "اتصل بنا",
-    get_started: "ابدأ الآن",
+    get_started: "تسجيل الدخول",
     hero_subtitle: "حلول ذكية متطورة لتحويل تجربة العملاء المالية",
     instant_processing: "معالجة فورية",
     realtime_data_analysis: "تحليل البيانات في الوقت الفعلي",
@@ -49,7 +49,7 @@ const translations: Record<Language, Record<string, string>> = {
     services: "About Us",
     about: "Register Request",
     contact: "Contact",
-    get_started: "Get Started",
+    get_started: "Sign In",
     hero_subtitle:
       "Advanced AI Solutions for Transforming Financial Customer Experience",
     instant_processing: "Instant Processing",

@@ -1,7 +1,7 @@
 "use client";
 
 import type React from "react";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useMemo, useCallback } from "react";
 import { Send, MessageSquare, X, Bot, User, Minimize2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -21,9 +21,12 @@ function useSimpleChat(api: string, initialMessages: any[]) {
   const [isLoading, setIsLoading] = useState(false);
   const [sessionId, setSessionId] = useState<string | null>(null);
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setInput(e.target.value);
-  };
+  const handleInputChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      setInput(e.target.value);
+    },
+    [],
+  );
 
   const detectLanguage = (text: string): "ar" | "en" => {
     const arabicRegex = /[\u0600-\u06FF]/;
@@ -78,95 +81,101 @@ function useSimpleChat(api: string, initialMessages: any[]) {
     return "guest-token";
   };
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    if (!input.trim()) return;
+  const handleSubmit = useCallback(
+    async (e: React.FormEvent<HTMLFormElement>) => {
+      e.preventDefault();
+      if (!input.trim()) return;
 
-    const userLang = detectLanguage(input);
+      const userLang = detectLanguage(input);
 
-    const userMessage = {
-      id: Math.random().toString(36).slice(2),
-      role: "user",
-      content: input,
-    };
-    setMessages((prev: any) => [...prev, userMessage]);
-    const currentInput = input;
-    setInput("");
-    setIsLoading(true);
+      const userMessage = {
+        id: Math.random().toString(36).slice(2),
+        role: "user",
+        content: input,
+      };
+      setMessages((prev: any) => [...prev, userMessage]);
+      const currentInput = input;
+      setInput("");
+      setIsLoading(true);
 
-    try {
-      const identityResponse = checkIdentityQuestion(currentInput, userLang);
+      try {
+        const identityResponse = checkIdentityQuestion(currentInput, userLang);
 
-      if (identityResponse) {
+        if (identityResponse) {
+          const assistantMessage = {
+            id: Math.random().toString(36).slice(2),
+            role: "assistant",
+            content: identityResponse,
+          };
+          setMessages((prev: any) => [...prev, assistantMessage]);
+          setIsLoading(false);
+          return;
+        }
+
+        const token = getAuthToken();
+
+        const res = await fetch(api, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({
+            messages: [{ role: "user", content: currentInput }],
+            sessionId: sessionId,
+          }),
+        });
+
+        if (!res.ok) {
+          throw new Error(`HTTP ${res.status}: ${res.statusText}`);
+        }
+
+        const data = await res.json();
+
+        if (data.error) {
+          throw new Error(data.error);
+        }
+
+        // Update session ID if returned
+        if (data.sessionId && !sessionId) {
+          setSessionId(data.sessionId);
+        }
+
         const assistantMessage = {
           id: Math.random().toString(36).slice(2),
           role: "assistant",
-          content: identityResponse,
+          content: data.reply || data.text || data.content || "[No response]",
         };
         setMessages((prev: any) => [...prev, assistantMessage]);
-        setIsLoading(false);
-        return;
+      } catch (error) {
+        console.error("Chat error:", error);
+        setMessages((prev: any) => [
+          ...prev,
+          {
+            id: Math.random().toString(36).slice(2),
+            role: "assistant",
+            content:
+              userLang === "ar"
+                ? "عذراً، حدث خطأ. جرب مرة أخرى."
+                : "Sorry, an error occurred. Please try again.",
+          },
+        ]);
       }
+      setIsLoading(false);
+    },
+    [api, input, sessionId],
+  );
 
-      const token = getAuthToken();
-
-      const res = await fetch(api, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({
-          messages: [{ role: "user", content: currentInput }],
-          sessionId: sessionId,
-        }),
-      });
-
-      if (!res.ok) {
-        throw new Error(`HTTP ${res.status}: ${res.statusText}`);
-      }
-
-      const data = await res.json();
-
-      if (data.error) {
-        throw new Error(data.error);
-      }
-
-      // Update session ID if returned
-      if (data.sessionId && !sessionId) {
-        setSessionId(data.sessionId);
-      }
-
-      const assistantMessage = {
-        id: Math.random().toString(36).slice(2),
-        role: "assistant",
-        content: data.reply || data.text || data.content || "[No response]",
-      };
-      setMessages((prev: any) => [...prev, assistantMessage]);
-    } catch (error) {
-      console.error("Chat error:", error);
-      setMessages((prev: any) => [
-        ...prev,
-        {
-          id: Math.random().toString(36).slice(2),
-          role: "assistant",
-          content:
-            userLang === "ar"
-              ? "عذراً، حدث خطأ. جرب مرة أخرى."
-              : "Sorry, an error occurred. Please try again.",
-        },
-      ]);
-    }
-    setIsLoading(false);
-  };
-
-  return {
-    messages,
-    input,
-    handleInputChange,
-    handleSubmit,
-    isLoading,
-  };
+  return useMemo(
+    () => ({
+      messages,
+      input,
+      handleInputChange,
+      handleSubmit,
+      isLoading,
+    }),
+    [messages, input, handleInputChange, handleSubmit, isLoading],
+  );
 }
 
 export default function ChatWidget() {
@@ -175,27 +184,36 @@ export default function ChatWidget() {
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const { lang, t } = useLanguage();
 
-  const { messages, input, handleInputChange, handleSubmit, isLoading } =
-    useSimpleChat("/api/chat", [
+  // Memoize initial messages to prevent re-initialization
+  const initialMessages = useMemo(
+    () => [
       {
         id: "welcome",
         role: "assistant",
         content: t("chat_welcome_message"),
       },
-    ]);
+    ],
+    [t],
+  );
 
-  const scrollToBottom = () => {
+  const { messages, input, handleInputChange, handleSubmit, isLoading } =
+    useSimpleChat("/api/chat", initialMessages);
+
+  const scrollToBottom = useCallback(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  };
+  }, []);
 
   useEffect(() => {
     scrollToBottom();
-  }, [messages]);
+  }, [messages, scrollToBottom]);
 
-  const handleFormSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    handleSubmit(e);
-  };
+  const handleFormSubmit = useCallback(
+    (e: React.FormEvent<HTMLFormElement>) => {
+      e.preventDefault();
+      handleSubmit(e);
+    },
+    [handleSubmit],
+  );
 
   if (!isOpen) {
     return (

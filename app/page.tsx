@@ -1,10 +1,8 @@
 "use client";
 
-"use client";
-
 import { Zap, Shield } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import ChatWidget from "@/components/chat-widget";
+
 import ContactForm from "@/components/contact-form";
 import VerticalStepper from "@/components/vertical-stepper";
 import PlatformLogos from "@/components/platform-logos";
@@ -26,8 +24,7 @@ import {
 
 export default function AIHeroPage() {
   const { lang, t } = useLanguage(); // Use the language hook
-  const { isOpen } = useChatWidget(); // Get chat open state
-  const { openChat } = useChatWidget(); // Use the chat widget hook
+  const { isOpen, openChat } = useChatWidget(); // Use the chat widget hook
 
   return (
     <div
@@ -359,7 +356,6 @@ export default function AIHeroPage() {
         </div>
       </div>
 
-      <ChatWidget />
       {/* WhatsApp Floating Button - Hide when chat is open */}
       {!isOpen && (
         <a

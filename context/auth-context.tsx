@@ -15,9 +15,9 @@ interface AuthContextType {
   user: User | null;
   loading: boolean;
   signInWithGoogle: () => Promise<void>;
-  signInWithMagicLink: (email: string) => Promise<{ error?: AuthError }>;
+  signInWithMagicLink: (email: string) => Promise<{ error: AuthError | null }>;
   signOut: () => Promise<void>;
-  resetPassword: (email: string) => Promise<{ error?: AuthError }>;
+  resetPassword: (email: string) => Promise<{ error: AuthError | null }>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -232,31 +232,23 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     }
 
     try {
+      // Immediately clear user state for fast UI feedback
+      setUser(null);
+
+      // Clear cookies immediately
+      document.cookie =
+        "supabase-auth-token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
+
+      // Then perform the actual sign out
       const { error } = await supabase.auth.signOut();
 
       if (error) {
         console.error("Sign out error:", error);
-        toast({
-          title: "Sign Out Failed",
-          description: error.message || "Failed to sign out. Please try again.",
-          variant: "destructive",
-        });
-        throw error;
-      } else {
-        toast({
-          title: "Signed Out",
-          description: "You have been successfully signed out.",
-          variant: "default",
-        });
+        // Don't show error toast as the user has already been signed out locally
       }
     } catch (error) {
       console.error("Sign out error:", error);
-      toast({
-        title: "Sign Out Failed",
-        description: "An unexpected error occurred. Please try again.",
-        variant: "destructive",
-      });
-      throw error;
+      // Don't show error toast as the user has already been signed out locally
     }
   };
 
