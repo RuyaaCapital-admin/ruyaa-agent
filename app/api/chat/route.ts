@@ -294,15 +294,19 @@ export async function POST(req: NextRequest) {
     const assistantReply =
       json.choices?.[0]?.message?.content || "عذراً، ما قدرت أرد عليك هلأ.";
 
-    // Save assistant message (only for authenticated users)
-    if (user) {
-      await supabase.from("messages").insert([
-        {
-          session_id: sid,
-          role: "assistant",
-          content: assistantReply,
-        },
-      ]);
+    // Save assistant message (only for authenticated users with Supabase)
+    if (user && supabase) {
+      try {
+        await supabase.from("messages").insert([
+          {
+            session_id: sid,
+            role: "assistant",
+            content: assistantReply,
+          },
+        ]);
+      } catch (error) {
+        console.log("Failed to save assistant message:", error);
+      }
     }
 
     return NextResponse.json({ sessionId: sid, reply: assistantReply });
