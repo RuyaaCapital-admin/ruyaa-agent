@@ -126,9 +126,9 @@ export default function SignInModal({ isOpen, onClose }: SignInModalProps) {
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
+    <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-start sm:items-center justify-center p-4 pt-20 sm:pt-4 overflow-y-auto">
       <div
-        className={`relative bg-gray-900 border border-gray-700 rounded-2xl w-full max-w-md p-6 ${isRTL ? "text-right" : "text-left"}`}
+        className={`relative bg-gray-900 border border-gray-700 rounded-2xl w-full max-w-md p-6 my-4 sm:my-0 max-h-[90vh] overflow-y-auto ${isRTL ? "text-right" : "text-left"}`}
       >
         {/* Close Button */}
         <button
