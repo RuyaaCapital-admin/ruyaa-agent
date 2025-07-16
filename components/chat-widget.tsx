@@ -1,108 +1,73 @@
-// components/chat-widget.tsx
+// Put this file in /components/ModernChatWidget.jsx (or .tsx)
+import { useState } from "react";
+import { motion } from "framer-motion";
 
-"use client";
-
-import React, { useState, useRef, useCallback } from "react";
-import { Send, X, Minimize2, Bot, User } from "lucide-react";
-import { Button } from "../components/ui/button";
-import { Input } from "../components/ui/input";
-import { Card, CardHeader, CardContent, CardFooter } from "../components/ui/card";
-import { ScrollArea } from "../components/ui/scroll-area";
-import { useLanguage } from "../context/language-context";
-import { useChatWidget } from "../context/chat-context";
-
-export default function ChatWidget() {
-  const { isOpen, setIsOpen } = useChatWidget();
-  const [isMinimized, setIsMinimized] = useState(false);
-  const [messages, setMessages] = useState<{ id: string; role: string; content: string }[]>([]);
-  const [input, setInput] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
-  const [sessionId, setSessionId] = useState<string | null>(null);
-  const messagesEndRef = useRef<HTMLDivElement>(null);
-  const { lang, t } = useLanguage();
-
-  const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  };
-
-  const handleSubmit = useCallback(async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (isLoading) return; // Guard: only one in-flight call
-    if (!input.trim()) return;
-
-    setIsLoading(true);
-    const userMessage = { id: Date.now().toString(), role: 'user', content: input };
-    setMessages(prev => [...prev, userMessage]);
-    const payload = [{ role: 'user', content: input }];
-    setInput("");
-
-    try {
-      const res = await fetch('/api/chat', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ messages: payload, sessionId }),
-      });
-      const data = await res.json();
-      const reply = data.reply || data.text || '[No response]';
-      if (data.sessionId) setSessionId(data.sessionId);
-      setMessages(prev => [...prev, { id: Date.now().toString(), role: 'assistant', content: reply }]);
-    } catch (err) {
-      console.error('Chat error:', err);
-      setMessages(prev => [...prev, { id: Date.now().toString(), role: 'assistant', content: t('error_message') }]);
-    } finally {
-      setIsLoading(false);
-      scrollToBottom();
-    }
-  }, [input, isLoading, sessionId, t]);
-
-  if (!isOpen) {
-    return (
-      <div className="fixed bottom-4 right-4 z-50">
-        <Button onClick={() => setIsOpen(true)}>Open Chat</Button>
-      </div>
-    );
-  }
-
-  if (isMinimized) {
-    return (
-      <div className="fixed bottom-4 right-4 z-50">
-        <Button onClick={() => setIsMinimized(false)}>Restore Chat</Button>
-      </div>
-    );
-  }
-
+export default function ModernChatWidget() {
+  const [open, setOpen] = useState(false);
   return (
-    <div className="fixed bottom-0 left-0 right-0 sm:bottom-6 sm:right-6 sm:max-w-md mx-auto z-50">
-      <Card>
-        <CardHeader className="flex justify-between items-center">
-          <span>{t('chat_title')}</span>
-          <div className="space-x-2">
-            <Button onClick={() => setIsMinimized(true)}><Minimize2 /></Button>
-            <Button onClick={() => setIsOpen(false)}><X /></Button>
+    <div className="fixed bottom-6 right-6 z-50 flex flex-col items-end">
+      {/* Animated R Button */}
+      {!open && (
+        <motion.button
+          onClick={() => setOpen(true)}
+          initial={{ rotate: 0 }}
+          animate={{ rotate: 360 }}
+          transition={{ repeat: Infinity, duration: 4, ease: "linear" }}
+          className="w-14 h-14 bg-black border border-neutral-700 shadow-2xl flex items-center justify-center rounded-full hover:bg-neutral-900 hover:scale-110 transition"
+        >
+          <motion.span
+            className="text-3xl font-extrabold text-blue-400 select-none"
+            animate={{ rotate: [0, 360] }}
+            transition={{ repeat: Infinity, duration: 2, ease: "linear" }}
+          >
+            R
+          </motion.span>
+        </motion.button>
+      )}
+      {/* Chat Panel */}
+      {open && (
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: 30 }}
+          className="w-[94vw] max-w-sm bg-black/90 border border-neutral-800 rounded-2xl shadow-2xl p-0 flex flex-col overflow-hidden"
+        >
+          {/* Header */}
+          <div className="flex items-center justify-between px-4 py-3 border-b border-neutral-800 bg-neutral-950">
+            <div className="flex items-center gap-2">
+              <span className="text-xl font-extrabold text-blue-400">Ruyaa AI</span>
+            </div>
+            <button
+              onClick={() => setOpen(false)}
+              className="w-7 h-7 flex items-center justify-center rounded-full bg-neutral-800 hover:bg-neutral-700"
+              aria-label="Close Chat"
+            >
+              <span className="text-lg font-bold text-white">×</span>
+            </button>
           </div>
-        </CardHeader>
-        <CardContent className="h-60 overflow-y-auto">
-          <ScrollArea>
-            {messages.map(m => (
-              <div key={m.id} className={m.role === 'user' ? 'text-right' : 'text-left'}>
-                <strong>{m.role}:</strong> {m.content}
-              </div>
-            ))}
-            <div ref={messagesEndRef} />
-          </ScrollArea>
-        </CardContent>
-        <CardFooter className="flex">
-          <form onSubmit={handleSubmit} className="flex flex-1 space-x-2">
-            <Input
-              value={input}
-              onChange={e => setInput(e.target.value)}
-              disabled={isLoading}
-              placeholder={t('type_message')}
+          {/* Chat Messages Area (placeholder) */}
+          <div className="flex-1 min-h-[300px] max-h-[66vh] overflow-y-auto p-4 bg-gradient-to-b from-neutral-900 via-neutral-950 to-black/90">
+            {/* Messages go here */}
+            <div className="text-neutral-400 text-sm">Start your conversation…</div>
+          </div>
+          {/* Input Area */}
+          <form className="flex items-center gap-2 border-t border-neutral-800 bg-neutral-950 p-3">
+            <input
+              className="flex-1 rounded-xl bg-neutral-900 px-4 py-2 text-white placeholder-neutral-500 outline-none"
+              placeholder="Type your message…"
+              autoComplete="off"
+              disabled
             />
-            <Button type="submit" disabled={isLoading || !input.trim()}><Send /></Button>
+            <button
+              type="submit"
+              className="bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl px-4 py-2 disabled:opacity-40 shadow"
+              disabled
+            >
+              Send
+            </button>
           </form>
-        </CardFooter>
-      </Card>
+        </motion.div>
+      )}
     </div>
   );
 }
