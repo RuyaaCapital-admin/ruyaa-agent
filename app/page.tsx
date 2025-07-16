@@ -1,7 +1,5 @@
 "use client";
 
-"use client";
-
 import { Zap, Shield } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import ChatWidget from "@/components/chat-widget";
