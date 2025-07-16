@@ -1,5 +1,5 @@
 import type React from "react";
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import "./globals.css";
 import { LanguageProvider } from "@/context/language-context"; // Import LanguageProvider
 import { ChatProvider } from "@/context/chat-context";
@@ -10,12 +10,13 @@ export const metadata: Metadata = {
   title: "v0 App",
   description: "Created with v0",
   generator: "v0.dev",
-  viewport: {
-    width: "device-width",
-    initialScale: 1,
-    maximumScale: 1,
-    userScalable: false,
-  },
+};
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
 };
 
 export default function RootLayout({
