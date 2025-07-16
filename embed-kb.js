@@ -1,21 +1,18 @@
 /**
  * embed-kb.js – one-time script to fill the `embedding` column
- * Uses your OpenRouter API key to embed missing knowledge base entries.
+ * Uses your OpenRouter API key to embed missing knowledge base entries via the OpenRouter SDK.
  */
 const { createClient } = require('@supabase/supabase-js');
-const OpenAI = require('openai');
+const { openrouter } = require('@openrouter/ai-sdk-provider');
 
-// Initialize Supabase client (server-side with service role key)
+// Initialize Supabase client (server-only with service role key)
 const supabase = createClient(
   process.env.SUPABASE_URL,
   process.env.SUPABASE_SERVICE_ROLE_KEY
 );
 
-// Initialize OpenAI client pointing to OpenRouter
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,        // your sk-or-... key
-  baseURL: 'https://openrouter.ai/api/v1',   // OpenRouter endpoint
-});
+// Initialize OpenRouter client for embeddings
+const router = openrouter(process.env.OPENROUTER_API_KEY);
 
 (async () => {
   // Fetch rows missing embeddings
@@ -29,12 +26,12 @@ const openai = new OpenAI({
     process.exit(1);
   }
 
-  // Embed each row
+  // Embed each row using OpenRouter
   for (const row of rows) {
     try {
-      const resp = await openai.embeddings.create({
-        model: 'openai/text-embedding-ada-002',
-        input: row.content,
+      const resp = await router.embeddings.create({
+        model: process.env.EMBEDDING_MODEL_ID,  // e.g. 'openai/text-embedding-3-small'
+        input: row.content
       });
       const embedding = resp.data[0].embedding;
 
@@ -43,11 +40,8 @@ const openai = new OpenAI({
         .update({ embedding })
         .eq('id', row.id);
 
-      if (updateError) {
-        console.error(`Failed to update ${row.id}:`, updateError);
-      } else {
-        console.log(`embedded row ${row.id}`);
-      }
+      if (updateError) console.error(`Failed to update ${row.id}:`, updateError);
+      else console.log(`embedded row ${row.id}`);
     } catch (err) {
       console.error(`Error embedding ${row.id}:`, err);
     }
