@@ -181,27 +181,36 @@ export default function ChatWidget() {
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const { lang, t } = useLanguage();
 
-  const { messages, input, handleInputChange, handleSubmit, isLoading } =
-    useSimpleChat("/api/chat", [
+  // Memoize initial messages to prevent re-initialization
+  const initialMessages = useMemo(
+    () => [
       {
         id: "welcome",
         role: "assistant",
         content: t("chat_welcome_message"),
       },
-    ]);
+    ],
+    [t],
+  );
 
-  const scrollToBottom = () => {
+  const { messages, input, handleInputChange, handleSubmit, isLoading } =
+    useSimpleChat("/api/chat", initialMessages);
+
+  const scrollToBottom = useCallback(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  };
+  }, []);
 
   useEffect(() => {
     scrollToBottom();
-  }, [messages]);
+  }, [messages, scrollToBottom]);
 
-  const handleFormSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    handleSubmit(e);
-  };
+  const handleFormSubmit = useCallback(
+    (e: React.FormEvent<HTMLFormElement>) => {
+      e.preventDefault();
+      handleSubmit(e);
+    },
+    [handleSubmit],
+  );
 
   if (!isOpen) {
     return (
