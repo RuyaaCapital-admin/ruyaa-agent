@@ -50,7 +50,7 @@ CLARIFY (use only when needed)
 - EN: "Which service matters to you most?"
 
 WELCOME (first assistant message only)
-- AR: «أهلاً! كيف فيني ساعدك الي��م؟»
+- AR: «أهلاً! كيف فيني ساعدك اليوم؟»
 - EN: "Welcome! How can I help you today?"
 
 OUT‑OF‑SCOPE
@@ -62,8 +62,8 @@ PROFANITY
 `.trim();
 
 /* ---------- models ---------- */
-const primary = openrouter("deepseek/deepseek-r1:free"); // $0 model
-const fallback = groq("llama3-8b-8192"); // free backup
+const primary = groq("llama3-8b-8192"); // primary model
+const fallback = groq("llama3-70b-8192"); // fallback model
 
 /* ---------- POST /api/chat ---------- */
 export async function POST(req: Request) {
