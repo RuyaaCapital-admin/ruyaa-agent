@@ -1,14 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
-import { generateText } from 'ai';
-import { openrouter } from '@openrouter/ai-sdk-provider';
 import { groq } from '@ai-sdk/groq';
-import { generateEmbedding } from 'ai';
+import { generateText, generateEmbedding } from 'ai';
 import { nanoid } from 'nanoid';
 
 export const runtime = 'edge';
 
-// Initialize Supabase client with service role key
+// Initialize Supabase (server-only)
 const supabase = createClient(
   process.env.SUPABASE_URL!,
   process.env.SUPABASE_SERVICE_ROLE_KEY!
@@ -47,14 +45,14 @@ MISSION
 4. Ask ONE brief clarifying question if the request is vague.
 
 VALUE (paraphrase freely)
-• Arabic ▸ سرعة الخدمة ▸ بدون أخطاء ▸ زيادة المبيعات
+• Arabic ▸ سرعة الخدمة ▸ بدون أخطاء ▸ زيادة المبيعات  
 • English ▸ Faster service ▸ Zero mistakes ▸ Higher revenue
 
 SERVICES (adapt wording)
-• Customer‑Support Agent — يرد فوراً ويحسم ٩٠٪ من الأسئلة المتكررة
-• Social‑Media Agent — يكتب المحتوى، يرد على الرسائل، ويقدّم تقارير
-• Business Assistant — فواتير، حجوزات، وتنبيهات بلا أخطاء
-• Trading Assistant — يراقب السوق وينفّذ أوامر بضبط مخاطرة
+• Customer‑Support Agent — يرد فوراً ويحسم ٩٠٪ من الأسئلة المتكررة  
+• Social‑Media Agent — يكتب المحتوى، يرد على الرسائل، ويقدّم تقارير  
+• Business Assistant — فواتير، حجوزات، وتنبيهات بلا أخطاء  
+• Trading Assistant — يراقب السوق وينفّذ أوامر بضبط مخاطرة  
 • Lifestyle Planner — يخطط السفر ويرتّب التذكيرات
 
 CLARIFY (use only when needed)
@@ -74,47 +72,38 @@ PROFANITY
 `.trim();
 
 /* ---------- models ---------- */
-const primary = openrouter(process.env.OPENROUTER_API_KEY!)("deepseek/deepseek-r1:free");
-const fallback = groq(process.env.GROQ_FALLBACK_MODEL_ID!);
+const primaryModel = groq(process.env.GROQ_MODEL_ID!);
+const fallbackModel = groq(process.env.GROQ_FALLBACK_MODEL_ID!);
 
 /* ---------- POST /api/chat ---------- */
 export async function POST(req: NextRequest) {
   try {
-    // Parse body
     const { messages, sessionId } = await req.json();
 
-    // Authenticate user via Supabase JWT
+    // Authenticate via Supabase JWT
     const authHeader = req.headers.get('authorization') || '';
     const token = authHeader.replace(/^Bearer\s+/, '');
-    const { data: userData } = await supabase.auth.getUser(token);
-    const user = userData.user;
-    if (!user) {
-      return NextResponse.json({ error: 'Not authenticated' }, { status: 401 });
-    }
+    const { data: { user } } = await supabase.auth.getUser(token);
+    if (!user) return NextResponse.json({ error: 'Not authenticated' }, { status: 401 });
 
     // Manage conversation session
     let sid = sessionId;
     if (!sid) {
-      const { data: sessionData } = await supabase
+      const { data } = await supabase
         .from('conversation_sessions')
         .insert({ user_id: user.id })
         .select('id')
         .single();
-      sid = sessionData.id;
+      sid = data.id;
     }
 
     // Log user message
     const userMsg = messages[messages.length - 1].content;
-    await supabase.from('messages').insert([
-      { session_id: sid, role: 'user', content: userMsg }
-    ]);
+    await supabase.from('messages').insert([{ session_id: sid, role: 'user', content: userMsg }]);
 
-    // Retrieve knowledge base context
+    // Retrieve KB context via embedding
     const embedding = await generateEmbedding({ model: process.env.EMBEDDING_MODEL_ID!, input: userMsg });
-    const { data: kbRows } = await supabase.rpc('match_ai_kb', {
-      query_embedding: embedding,
-      match_count: 4
-    });
+    const { data: kbRows } = await supabase.rpc('match_ai_kb', { query_embedding: embedding, match_count: 4 });
     const docs = kbRows.map((r: any) => r.content).join('\n---\n');
 
     // Fetch recent history
@@ -124,23 +113,20 @@ export async function POST(req: NextRequest) {
       .eq('session_id', sid)
       .order('created_at', { ascending: true });
 
-    // Build prompt: system + KB + history
+    // Build final prompt
     const prompt = [systemPrompt, docs, buildHistory(history)].join('\n\n');
 
-    // Generate assistant response
+    // Generate assistant reply
     let text: string;
     try {
-      ({ text } = await generateText({ model: primary, temperature: 0.2, system: systemPrompt, prompt }));
+      ({ text } = await generateText({ model: primaryModel, temperature: 0.2, system: systemPrompt, prompt }));
     } catch {
-      ({ text } = await generateText({ model: fallback, temperature: 0.2, system: systemPrompt, prompt }));
+      ({ text } = await generateText({ model: fallbackModel, temperature: 0.2, system: systemPrompt, prompt }));
     }
 
     // Log assistant reply
-    await supabase.from('messages').insert([
-      { session_id: sid, role: 'assistant', content: text }
-    ]);
+    await supabase.from('messages').insert([{ session_id: sid, role: 'assistant', content: text }]);
 
-    // Return
     return NextResponse.json({ sessionId: sid, reply: text });
   } catch (err) {
     console.error('chat api error:', err);
