@@ -40,7 +40,7 @@ export default function SignInModal({ isOpen, onClose }: SignInModalProps) {
       resetEmailSent:
         "تم إرسال رابط إعادة ضبط كلمة المرور إلى بريدك الإلكتروني",
       invalidEmail: "عذراً، يرجى إدخال بريد إلكتروني صحيح",
-      errorOccurred: "حدث خطأ، يرجى ال��حاولة مرة أخرى",
+      errorOccurred: "حدث خطأ، يرجى المحاولة مرة أخرى",
     },
     en: {
       signIn: "Sign In",
@@ -83,12 +83,8 @@ export default function SignInModal({ isOpen, onClose }: SignInModalProps) {
     setLoading("google");
     setMessage("");
 
-    try {
-      await signInWithGoogle();
-    } catch (error) {
-      setMessage(t("errorOccurred"));
-      setLoading(null);
-    }
+    await signInWithGoogle();
+    // Google auth will redirect, so we don't need to handle success here
   };
 
   const handleResetPassword = async (e: React.FormEvent) => {
