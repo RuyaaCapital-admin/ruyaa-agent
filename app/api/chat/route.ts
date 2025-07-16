@@ -86,7 +86,7 @@ WELCOME (first assistant message only)
 - EN: "Welcome! How can I help you today?"
 
 OUT‑OF‑SCOPE
-- AR: «عذراً، هذا الطلب خارج نطاق خدمتي.»
+- AR: «عذراً، هذا الطلب خارج نطاق خدمت��.»
 - EN: "Sorry, that request is outside my scope."
 
 PROFANITY
@@ -131,41 +131,46 @@ export async function POST(req: NextRequest) {
       }
     }
 
-    // Save user message
+    // Save user message (only for authenticated users)
     const userMsg = messages[messages.length - 1].content;
-    await supabase.from("messages").insert([
-      {
-        session_id: sid,
-        role: "user",
-        content: userMsg,
-      },
-    ]);
-
-    // Get session business type
-    const { data: session } = await supabase
-      .from("conversation_sessions")
-      .select("business_type")
-      .eq("id", sid)
-      .single();
-
-    let businessType = session?.business_type;
-
-    // Handle first time business type capture
-    if (!businessType) {
-      await supabase
-        .from("conversation_sessions")
-        .update({ business_type: userMsg.trim() })
-        .eq("id", sid);
-
-      const confirmationReply = `سجلت إنو شغلك هو "${userMsg.trim()}". هل بتحب خبرك شو فيني ساوي لإلك؟`;
+    if (user) {
       await supabase.from("messages").insert([
         {
           session_id: sid,
-          role: "assistant",
-          content: confirmationReply,
+          role: "user",
+          content: userMsg,
         },
       ]);
-      return NextResponse.json({ sessionId: sid, reply: confirmationReply });
+    }
+
+    // Get session business type (only for authenticated users)
+    let businessType = null;
+    if (user && !sid.startsWith("guest-session-")) {
+      const { data: session } = await supabase
+        .from("conversation_sessions")
+        .select("business_type")
+        .eq("id", sid)
+        .single();
+
+      businessType = session?.business_type;
+
+      // Handle first time business type capture
+      if (!businessType) {
+        await supabase
+          .from("conversation_sessions")
+          .update({ business_type: userMsg.trim() })
+          .eq("id", sid);
+
+        const confirmationReply = `سجلت إنو شغلك هو "${userMsg.trim()}". هل بتحب خبرك شو فيني ساوي لإلك؟`;
+        await supabase.from("messages").insert([
+          {
+            session_id: sid,
+            role: "assistant",
+            content: confirmationReply,
+          },
+        ]);
+        return NextResponse.json({ sessionId: sid, reply: confirmationReply });
+      }
     }
 
     // Generate embedding for knowledge base search
