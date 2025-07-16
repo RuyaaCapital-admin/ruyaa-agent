@@ -4,10 +4,14 @@ import { nanoid } from "nanoid";
 
 export const runtime = "edge";
 
-const supabase = createClient(
-  process.env.SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!,
-);
+// Create Supabase client only if environment variables are available
+const supabase =
+  process.env.SUPABASE_URL && process.env.SUPABASE_SERVICE_ROLE_KEY
+    ? createClient(
+        process.env.SUPABASE_URL,
+        process.env.SUPABASE_SERVICE_ROLE_KEY,
+      )
+    : null;
 
 function buildHistory(
   msgs: { role: "user" | "assistant"; content: string }[],
