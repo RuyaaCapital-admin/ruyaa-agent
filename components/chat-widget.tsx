@@ -179,17 +179,29 @@ export default function ChatWidget() {
   // Handle body scroll prevention on mobile
   useEffect(() => {
     if (typeof window !== "undefined") {
-      const isMobile = window.innerWidth < 640;
+      const isMobile = window.innerWidth <= 768;
       if (isOpen && !isMinimized && isMobile) {
         document.body.classList.add("chat-open");
+        document.body.style.overflow = "hidden";
+        document.body.style.position = "fixed";
+        document.body.style.width = "100%";
+        document.body.style.height = "100%";
       } else {
         document.body.classList.remove("chat-open");
+        document.body.style.overflow = "";
+        document.body.style.position = "";
+        document.body.style.width = "";
+        document.body.style.height = "";
       }
     }
 
     return () => {
       if (typeof window !== "undefined") {
         document.body.classList.remove("chat-open");
+        document.body.style.overflow = "";
+        document.body.style.position = "";
+        document.body.style.width = "";
+        document.body.style.height = "";
       }
     };
   }, [isOpen, isMinimized]);
