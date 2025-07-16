@@ -63,8 +63,8 @@ PROFANITY
 `.trim();
 
 /* ---------- models ---------- */
-const primary = groq("llama3-8b-8192"); // primary model
-const fallback = groq("llama3-70b-8192"); // fallback model
+const primary = openrouter("deepseek/deepseek-r1:free"); // $0 model
+const fallback = groq("llama3-8b-8192"); // free backup
 
 /* ---------- POST /api/chat ---------- */
 export async function POST(req: Request) {
