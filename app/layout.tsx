@@ -34,6 +34,7 @@ export default function RootLayout({
             <ChatProvider>
               <Navigation />
               {children}
+              <Toaster />
             </ChatProvider>
           </AuthProvider>
         </LanguageProvider>
