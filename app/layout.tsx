@@ -34,10 +34,12 @@ export default function RootLayout({
       {/* lang attribute will be set dynamically by LanguageProvider */}
       <body>
         <LanguageProvider>
-          <ChatProvider>
-            <Navigation />
-            {children}
-          </ChatProvider>
+          <AuthProvider>
+            <ChatProvider>
+              <Navigation />
+              {children}
+            </ChatProvider>
+          </AuthProvider>
         </LanguageProvider>
       </body>
     </html>
