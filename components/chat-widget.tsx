@@ -356,7 +356,7 @@ export default function ChatWidget() {
         </CardContent>
 
         {/* Input */}
-        <CardFooter className="p-3 sm:p-4 bg-gradient-to-r from-gray-900 to-black border-t border-gray-800 shrink-0 pb-safe">
+        <CardFooter className="p-3 sm:p-4 bg-gradient-to-r from-gray-900 to-black border-t border-gray-800 shrink-0 pb-safe sticky bottom-0 z-10">
           <form
             onSubmit={handleFormSubmit}
             className="flex w-full space-x-2 sm:space-x-3"
