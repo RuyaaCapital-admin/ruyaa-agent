@@ -1,4 +1,5 @@
 import { generateText } from "ai";
+import { openrouter } from "@openrouter/ai-sdk-provider";
 import { groq } from "@ai-sdk/groq";
 import { nanoid } from "nanoid";
 
