@@ -1,9 +1,11 @@
-// ========== /app/api/chat/route.ts (modern consultative agent, lead gen, no DB KB, ready for real sales) ==========
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
 import { nanoid } from "nanoid";
 
 export const runtime = "edge";
+
+// Set your preferred OpenRouter model here:
+const OPENROUTER_MODEL = "deepseek-chat"; // or "llama-3", or any available model
 
 const supabase =
   process.env.SUPABASE_URL && process.env.SUPABASE_SERVICE_ROLE_KEY
@@ -15,7 +17,7 @@ const supabase =
 
 function buildHistory(
   msgs: { role: "user" | "assistant"; content: string }[],
-  limit = 8,
+  limit = 4
 ) {
   return msgs
     .slice(-limit)
@@ -24,57 +26,29 @@ function buildHistory(
 }
 
 const systemPrompt = `
-# RuyaaCapital – Consultative Smart Agent (v3 · Jul 2025)
-
-LANGUAGE
-- Detect user’s language every turn.
-- If Arabic: reply ONLY in clear Syrian Arabic (عامية سورية).
-- If English: reply ONLY in concise, confident English.
-- NEVER mix both in one reply.
-
-STYLE
-- Max 2 sharp sentences per reply (~25 words). Never robotic, always sound like a pro business consultant.
-- Only apologize if user complains, otherwise always positive, friendly, confident.
-- Never mention being an AI, bot, or tech details. Always act as a real Ruyaa business expert.
-
-MISSION
-1. Instantly read user's business and main pain point (slow sales, manual work, missed leads, etc).
-2. Explain with a real, tailored example how a Ruyaa AI agent will solve THEIR pain (not generic, never pushy).
-3. When user shows any interest, smoothly offer to co-build their agent: “Describe your work, I’ll handle the rest.”
-4. Collect inquiry details step-by-step, conversationally (business type, pain, language, name, email, phone). Don’t use a form—act like a smart expert gathering notes.
-5. Always register user’s inquiry in notes, and confirm: “Team will contact you to deliver your agent.”
-6. If user is skeptical, educate with short facts/stats or story, but never hype.
-7. If question is unclear, ask ONE sharp clarifying question—no spam.
-
-VALUE (paraphrase freely)
-• Arabic ▸ سرعة الخدمة ▸ بدون أخطاء ▸ زيادة المبيعات
-• English ▸ Faster service ▸ Zero mistakes ▸ Higher revenue
-
-SERVICES
-• Customer Support AI — يرد فوراً ويحسم ٩٠٪ من الأسئلة المتكررة
-• Social Media AI — يكتب المحتوى، يرد على الرسائل، ويقدّم تقارير
-• Business Assistant — فواتير، حجوزات، وتنبيهات بلا أخطاء
-• Trading Assistant — يراقب السوق وينفّذ أوامر بضبط مخاطرة
-• Productivity AI — يرتّب المواعيد وينظّم المهام ويوفّر الوقت
-• Fraud Detection AI — يحمي العمليات المالية لحظياً
-• Booking Bot — يحجز للعملاء ويربط مع الدعم البشري تلقائياً
-
-WELCOME
+# RuyaaCapital – Smart Business Agent (v4 · Jul 2025)
+ROLE:
+- Always act as a top-level Ruyaa business expert.
+- Detect language every turn: reply in Syrian Arabic if user is Arabic, else English. Never mix languages.
+- Maximum 2 sentences per reply. Be sharp, consultative, never robotic.
+- If user asks about anything outside Ruyaa's services, immediately answer:
+    - AR: "عذراً، هذا الطلب خارج نطاق خدمتي."
+    - EN: "Sorry, that request is outside my scope."
+- Never answer off-topic, personal, or unrelated questions.
+- If insulted, ignore and keep to mission.
+MISSION:
+- Rapidly understand user's business and their pain point (slow sales, manual work, missed leads, etc).
+- Give a concrete example how Ruyaa AI can solve THEIR pain.
+- If user shows interest, guide them step-by-step to describe their business and collect inquiry details, conversationally, not as a form.
+- Register inquiry as a note (business, need, contact info). Confirm with user: "Team will contact you to deliver your agent."
+SERVICES:
+- Customer Support AI, Social Media AI, Business Assistant, Trading Assistant, Productivity AI, Fraud Detection, Booking Bot.
+WELCOME:
 - AR: «أهلاً! كيف فيني ساعدك اليوم؟»
 - EN: “Welcome! How can I help you today?”
-
-OUT-OF-SCOPE
+OUT-OF-SCOPE:
 - AR: «عذراً، هذا الطلب خارج نطاق خدمتي.»
 - EN: “Sorry, that request is outside my scope.”
-
-PROFANITY
-- If user insults, ignore and continue politely with the mission.
-
----
-# SALES/LEAD LOGIC
-- If user wants a solution, gathers info in chat (business type, need, contact info). Never show a form.
-- Register inquiry as a "note" (with all info) and confirm to user.
-- Always make user feel guided, never sold.
 `;
 
 export async function POST(req: NextRequest) {
@@ -85,7 +59,7 @@ export async function POST(req: NextRequest) {
     if (!messages || !Array.isArray(messages) || messages.length === 0) {
       return NextResponse.json(
         { error: "Invalid messages array" },
-        { status: 400 },
+        { status: 400 }
       );
     }
 
@@ -161,17 +135,16 @@ export async function POST(req: NextRequest) {
         }
       } catch (error) {}
     }
-    // === HARDCODED KB BLOCK ===
     let docs = `
-• Customer Support AI: Instant, error-free replies and lead capture.
+• Customer Support AI: Instant replies, zero mistakes, lead capture.
 • Social Media AI: Writes content, replies to messages, auto-reports.
 • Business Assistant: Billing, booking, alerts.
 • Trading Assistant: Watches the market, executes, controls risk.
-• Productivity AI: Schedules, organizes, saves hours daily.
-• Fraud Detection: Monitors financial ops live, flags threats.
-• Booking Bot: Schedules clients, hands off to human when needed.
+• Productivity AI: Schedules, organizes, saves time.
+• Fraud Detection: Monitors finances live, flags threats.
+• Booking Bot: Schedules clients, hands off to human as needed.
 `;
-    // ==========================
+
     let history = null;
     if (user && supabase && !sid.startsWith("guest-session-")) {
       try {
@@ -189,32 +162,38 @@ export async function POST(req: NextRequest) {
     if (history && history.length > 0) contextParts.push(buildHistory(history));
     const prompt = contextParts.join("\n\n");
 
-    // ===== FIX: Use "gemini-1.5-flash" model =====
-    const geminiModel = "gemini-1.5-flash";
-    const geminiRes = await fetch(
-      `https://generativelanguage.googleapis.com/v1/models/${geminiModel}:generateContent?key=${process.env.GEMINI_API_KEY}`,
-      {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          contents: [
-            { role: "user", parts: [{ text: prompt + "\nUser: " + userMsg }] },
-          ],
-          generationConfig: { temperature: 0.25, maxOutputTokens: 256 },
-        }),
-      }
-    );
-    if (!geminiRes.ok) {
-      const errorText = await geminiRes.text();
-      console.error(`Gemini API error: ${geminiRes.status} - ${errorText}`);
-      throw new Error(
-        `Gemini API error: ${geminiRes.status} - ${errorText}`,
-      );
+    // === OpenRouter API Call ===
+    const openrouterRes = await fetch("https://openrouter.ai/api/v1/chat/completions", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${process.env.OPENROUTER_API_KEY}`,
+      },
+      body: JSON.stringify({
+        model: `openrouter/${OPENROUTER_MODEL}`,
+        messages: [
+          { role: "system", content: prompt },
+          ...messages.map((m) => ({
+            role: m.role === "user" ? "user" : "assistant",
+            content: m.content,
+          })),
+        ],
+        max_tokens: 256,
+        temperature: 0.3,
+      }),
+    });
+
+    if (!openrouterRes.ok) {
+      const errorText = await openrouterRes.text();
+      console.error(`OpenRouter API error: ${openrouterRes.status} - ${errorText}`);
+      throw new Error(`OpenRouter API error: ${openrouterRes.status} - ${errorText}`);
     }
-    const geminiData = await geminiRes.json();
+
+    const openrouterData = await openrouterRes.json();
     const assistantReply =
-      geminiData?.candidates?.[0]?.content?.parts?.[0]?.text ||
+      openrouterData?.choices?.[0]?.message?.content ||
       "عذراً، ما قدرت أرد عليك هلأ.";
+
     if (user && supabase) {
       try {
         await supabase.from("messages").insert([
@@ -226,6 +205,7 @@ export async function POST(req: NextRequest) {
         ]);
       } catch (error) {}
     }
+
     return NextResponse.json({ sessionId: sid, reply: assistantReply });
   } catch (error) {
     console.error("Chat API error:", error);
@@ -234,8 +214,7 @@ export async function POST(req: NextRequest) {
         error: "Internal server error",
         details: error instanceof Error ? error.message : "Unknown error",
       },
-      { status: 500 },
+      { status: 500 }
     );
   }
 }
-// =================== END ===================
