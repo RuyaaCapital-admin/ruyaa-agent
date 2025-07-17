@@ -1,10 +1,10 @@
+// ========== /app/api/chat/route.ts (modern consultative agent, lead gen, no DB KB, ready for real sales) ==========
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
 import { nanoid } from "nanoid";
 
 export const runtime = "edge";
 
-// Create Supabase client only if environment variables are available
 const supabase =
   process.env.SUPABASE_URL && process.env.SUPABASE_SERVICE_ROLE_KEY
     ? createClient(
@@ -23,86 +23,65 @@ function buildHistory(
     .join("\n");
 }
 
-async function generateEmbedding(text: string): Promise<number[]> {
-  try {
-    const response = await fetch("https://openrouter.ai/api/v1/embeddings", {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${process.env.OPENROUTER_API_KEY}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        model: "openai/text-embedding-3-small",
-        input: text,
-      }),
-    });
-
-    if (!response.ok) {
-      console.error("Embedding API error:", response.status);
-      return [];
-    }
-
-    const data = await response.json();
-    return data.data?.[0]?.embedding || [];
-  } catch (error) {
-    console.error("Error generating embedding:", error);
-    return [];
-  }
-}
-
 const systemPrompt = `
-# RuyaaCapital – Smart Assistant (v2 · Jul 2025)
+# RuyaaCapital – Consultative Smart Agent (v3 · Jul 2025)
 
 LANGUAGE
-- Detect language each turn.
-- If the user writes Arabic ➜ reply ONLY in clear Syrian Arabic (عامية سورية).
-- Else ➜ reply ONLY in concise English.
-- NEVER mix the two languages within one sentence.
+- Detect user’s language every turn.
+- If Arabic: reply ONLY in clear Syrian Arabic (عامية سورية).
+- If English: reply ONLY in concise, confident English.
+- NEVER mix both in one reply.
 
 STYLE
-- Max 2 short sentences per reply (≈ 25 words total).
-- Confident, friendly; no filler. Apologise only if the user complains.
-- Never mention that you are an AI, a bot, or any tech detail.
+- Max 2 sharp sentences per reply (~25 words). Never robotic, always sound like a pro business consultant.
+- Only apologize if user complains, otherwise always positive, friendly, confident.
+- Never mention being an AI, bot, or tech details. Always act as a real Ruyaa business expert.
 
 MISSION
-1. Explain how Ruyaa's AI agent helps: faster replies, zero mistakes, higher revenue.
-2. Tailor examples to the user's business (e.g. mobile shop → عروض ورسائل تلقائية).
-3. Show next step: request their own agent via WhatsApp / Facebook / Instagram.
-4. Ask ONE brief clarifying question if the request is vague.
+1. Instantly read user's business and main pain point (slow sales, manual work, missed leads, etc).
+2. Explain with a real, tailored example how a Ruyaa AI agent will solve THEIR pain (not generic, never pushy).
+3. When user shows any interest, smoothly offer to co-build their agent: “Describe your work, I’ll handle the rest.”
+4. Collect inquiry details step-by-step, conversationally (business type, pain, language, name, email, phone). Don’t use a form—act like a smart expert gathering notes.
+5. Always register user’s inquiry in notes, and confirm: “Team will contact you to deliver your agent.”
+6. If user is skeptical, educate with short facts/stats or story, but never hype.
+7. If question is unclear, ask ONE sharp clarifying question—no spam.
 
 VALUE (paraphrase freely)
-• Arabic ▸ سرعة الخدمة ▸ بدون أخطاء ▸ زيادة المبيعات  
+• Arabic ▸ سرعة الخدمة ▸ بدون أخطاء ▸ زيادة المبيعات
 • English ▸ Faster service ▸ Zero mistakes ▸ Higher revenue
 
-SERVICES (adapt wording)
-• Customer‑Support Agent — يرد فوراً ويحسم ٩٠٪ من الأسئلة المتكررة  
-• Social‑Media Agent — يكتب المحتوى، يرد على الرسائل، ويقدّم تقارير  
-• Business Assistant — فواتير، حجوزات، وتنبيهات بلا أخطاء  
-• Trading Assistant — يراقب السوق وينفّذ أوامر بضبط مخاطرة  
-• Lifestyle Planner — يخطط السفر ويرتّب التذكيرات
+SERVICES
+• Customer Support AI — يرد فوراً ويحسم ٩٠٪ من الأسئلة المتكررة
+• Social Media AI — يكتب المحتوى، يرد على الرسائل، ويقدّم تقارير
+• Business Assistant — فواتير، حجوزات، وتنبيهات بلا أخطاء
+• Trading Assistant — يراقب السوق وينفّذ أوامر بضبط مخاطرة
+• Productivity AI — يرتّب المواعيد وينظّم المهام ويوفّر الوقت
+• Fraud Detection AI — يحمي العمليات المالية لحظياً
+• Booking Bot — يحجز للعملاء ويربط مع الدعم البشري تلقائياً
 
-CLARIFY (use only when needed)
-- AR: «شو الخدمة يلي بتهمك أكتر؟»
-- EN: "Which service matters to you most?"
-
-WELCOME (first assistant message only)
+WELCOME
 - AR: «أهلاً! كيف فيني ساعدك اليوم؟»
-- EN: "Welcome! How can I help you today?"
+- EN: “Welcome! How can I help you today?”
 
-OUT‑OF‑SCOPE
+OUT-OF-SCOPE
 - AR: «عذراً، هذا الطلب خارج نطاق خدمتي.»
-- EN: "Sorry, that request is outside my scope."
+- EN: “Sorry, that request is outside my scope.”
 
 PROFANITY
-- If the user insults, ignore the insult and continue politely with the mission.
-`.trim();
+- If user insults, ignore and continue politely with the mission.
+
+---
+# SALES/LEAD LOGIC
+- If user wants a solution, gathers info in chat (business type, need, contact info). Never show a form.
+- Register inquiry as a "note" (with all info) and confirm to user.
+- Always make user feel guided, never sold.
+`;
 
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
     const { messages, sessionId } = body;
 
-    // Validate request
     if (!messages || !Array.isArray(messages) || messages.length === 0) {
       return NextResponse.json(
         { error: "Invalid messages array" },
@@ -110,18 +89,8 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    if (!process.env.OPENROUTER_API_KEY) {
-      console.error("Missing OPENROUTER_API_KEY environment variable");
-      return NextResponse.json(
-        { error: "API configuration error" },
-        { status: 500 },
-      );
-    }
-
-    // Handle authentication - allow guest users
     const authHeader = req.headers.get("authorization") || "";
     const token = authHeader.replace(/^Bearer\s+/, "");
-
     let user = null;
     if (token && token !== "guest-token" && supabase) {
       try {
@@ -133,16 +102,9 @@ export async function POST(req: NextRequest) {
         console.log("Auth check failed, proceeding as guest:", error);
       }
     }
-
-    // For guest users, create a temporary session ID
     let userId = user?.id || `guest-${nanoid(10)}`;
-
-    console.log("Processing chat request for user:", userId);
-
-    // Handle session
     let sid = sessionId;
     if (!sid) {
-      // Only create database session for authenticated users with Supabase
       if (user && supabase) {
         try {
           const { data } = await supabase
@@ -152,16 +114,12 @@ export async function POST(req: NextRequest) {
             .single();
           sid = data?.id;
         } catch (error) {
-          console.log("Failed to create session, using guest session:", error);
           sid = `guest-session-${nanoid(10)}`;
         }
       } else {
-        // For guest users or when Supabase is not available, use a temporary session ID
         sid = `guest-session-${nanoid(10)}`;
       }
     }
-
-    // Save user message (only for authenticated users with Supabase)
     const userMsg = messages[messages.length - 1].content;
     if (user && supabase) {
       try {
@@ -172,12 +130,8 @@ export async function POST(req: NextRequest) {
             content: userMsg,
           },
         ]);
-      } catch (error) {
-        console.log("Failed to save user message:", error);
-      }
+      } catch (error) {}
     }
-
-    // Get session business type (only for authenticated users with Supabase)
     let businessType = null;
     if (user && supabase && !sid.startsWith("guest-session-")) {
       try {
@@ -186,16 +140,12 @@ export async function POST(req: NextRequest) {
           .select("business_type")
           .eq("id", sid)
           .single();
-
         businessType = session?.business_type;
-
-        // Handle first time business type capture
         if (!businessType) {
           await supabase
             .from("conversation_sessions")
             .update({ business_type: userMsg.trim() })
             .eq("id", sid);
-
           const confirmationReply = `سجلت إنو شغلك هو "${userMsg.trim()}". هل بتحب خبرك شو فيني ساوي لإلك؟`;
           await supabase.from("messages").insert([
             {
@@ -209,30 +159,19 @@ export async function POST(req: NextRequest) {
             reply: confirmationReply,
           });
         }
-      } catch (error) {
-        console.log("Failed to get/set business type:", error);
-      }
+      } catch (error) {}
     }
-
-    // Generate embedding for knowledge base search (only for authenticated users with Supabase)
-    let docs = "";
-    if (user && supabase) {
-      const embedding = await generateEmbedding(userMsg);
-
-      if (embedding.length > 0) {
-        try {
-          const { data: kbRows } = await supabase.rpc("match_ai_kb", {
-            query_embedding: embedding,
-            match_count: 4,
-          });
-          docs = kbRows?.map((r: any) => r.content).join("\n---\n") || "";
-        } catch (error) {
-          console.error("Knowledge base search error:", error);
-        }
-      }
-    }
-
-    // Get conversation history (only for authenticated users with Supabase)
+    // === HARDCODED KB BLOCK ===
+    let docs = `
+• Customer Support AI: Instant, error-free replies and lead capture.
+• Social Media AI: Writes content, replies to messages, auto-reports.
+• Business Assistant: Billing, booking, alerts.
+• Trading Assistant: Watches the market, executes, controls risk.
+• Productivity AI: Schedules, organizes, saves hours daily.
+• Fraud Detection: Monitors financial ops live, flags threats.
+• Booking Bot: Schedules clients, hands off to human when needed.
+`;
+    // ==========================
     let history = null;
     if (user && supabase && !sid.startsWith("guest-session-")) {
       try {
@@ -242,59 +181,38 @@ export async function POST(req: NextRequest) {
           .eq("session_id", sid)
           .order("created_at", { ascending: true });
         history = historyData;
-      } catch (error) {
-        console.log("Failed to get conversation history:", error);
-      }
+      } catch (error) {}
     }
-
-    // Build context prompt
     const injectedPrompt = `${systemPrompt}\n\nUSER BUSINESS: ${businessType || "غير محدد"}\n`;
     const contextParts = [injectedPrompt];
     if (docs) contextParts.push(docs);
     if (history && history.length > 0) contextParts.push(buildHistory(history));
     const prompt = contextParts.join("\n\n");
 
-    // Call OpenRouter API with DeepSeek model
-    console.log("Calling OpenRouter API...");
-    const response = await fetch(
-      "https://openrouter.ai/api/v1/chat/completions",
+    const geminiRes = await fetch(
+      `https://generativelanguage.googleapis.com/v1/models/gemini-pro:generateContent?key=${process.env.GEMINI_API_KEY}`,
       {
         method: "POST",
-        headers: {
-          Authorization: `Bearer ${process.env.OPENROUTER_API_KEY}`,
-          "Content-Type": "application/json",
-          "HTTP-Referer": process.env.VERCEL_URL
-            ? `https://${process.env.VERCEL_URL}`
-            : "https://ruyaa-agent.vercel.app",
-          "X-Title": "Ruyaa Smart Agent",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          model: "deepseek/deepseek-chat",
-          messages: [
-            { role: "system", content: prompt },
-            { role: "user", content: userMsg },
+          contents: [
+            { role: "user", parts: [{ text: prompt + "\nUser: " + userMsg }] },
           ],
-          temperature: 0.2,
-          max_tokens: 150,
+          generationConfig: { temperature: 0.25, maxOutputTokens: 256 },
         }),
-      },
+      }
     );
-
-    if (!response.ok) {
-      const errorText = await response.text();
-      console.error(`OpenRouter API error: ${response.status} - ${errorText}`);
+    if (!geminiRes.ok) {
+      const errorText = await geminiRes.text();
+      console.error(`Gemini API error: ${geminiRes.status} - ${errorText}`);
       throw new Error(
-        `OpenRouter API error: ${response.status} - ${errorText}`,
+        `Gemini API error: ${geminiRes.status} - ${errorText}`,
       );
     }
-
-    const json = await response.json();
-    console.log("OpenRouter response received:", json);
-
+    const geminiData = await geminiRes.json();
     const assistantReply =
-      json.choices?.[0]?.message?.content || "عذراً، ما قدرت أرد عليك هلأ.";
-
-    // Save assistant message (only for authenticated users with Supabase)
+      geminiData?.candidates?.[0]?.content?.parts?.[0]?.text ||
+      "عذراً، ما قدرت أرد عليك هلأ.";
     if (user && supabase) {
       try {
         await supabase.from("messages").insert([
@@ -304,11 +222,8 @@ export async function POST(req: NextRequest) {
             content: assistantReply,
           },
         ]);
-      } catch (error) {
-        console.log("Failed to save assistant message:", error);
-      }
+      } catch (error) {}
     }
-
     return NextResponse.json({ sessionId: sid, reply: assistantReply });
   } catch (error) {
     console.error("Chat API error:", error);
@@ -321,3 +236,4 @@ export async function POST(req: NextRequest) {
     );
   }
 }
+// =================== END ===================
