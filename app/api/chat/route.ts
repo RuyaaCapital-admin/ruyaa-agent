@@ -4,8 +4,8 @@ import { nanoid } from "nanoid";
 
 export const runtime = "edge";
 
-// Set your preferred OpenRouter model here:
-const OPENROUTER_MODEL = "deepseek-chat"; // or "llama-3", or any available model
+// Set your OpenRouter model here. Use exactly as listed at https://openrouter.ai/docs#models
+const OPENROUTER_MODEL = "deepseek-chat"; // or "llama-3-70b-8192", "mistral-large", etc.
 
 const supabase =
   process.env.SUPABASE_URL && process.env.SUPABASE_SERVICE_ROLE_KEY
@@ -170,7 +170,7 @@ export async function POST(req: NextRequest) {
         Authorization: `Bearer ${process.env.OPENROUTER_API_KEY}`,
       },
       body: JSON.stringify({
-        model: `openrouter/${OPENROUTER_MODEL}`,
+        model: OPENROUTER_MODEL, // *** NO PREFIX ***
         messages: [
           { role: "system", content: prompt },
           ...messages.map((m) => ({
