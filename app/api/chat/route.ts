@@ -189,8 +189,10 @@ export async function POST(req: NextRequest) {
     if (history && history.length > 0) contextParts.push(buildHistory(history));
     const prompt = contextParts.join("\n\n");
 
+    // ===== FIX: Use "gemini-1.5-flash" model =====
+    const geminiModel = "gemini-1.5-flash";
     const geminiRes = await fetch(
-      `https://generativelanguage.googleapis.com/v1/models/gemini-pro:generateContent?key=${process.env.GEMINI_API_KEY}`,
+      `https://generativelanguage.googleapis.com/v1/models/${geminiModel}:generateContent?key=${process.env.GEMINI_API_KEY}`,
       {
         method: "POST",
         headers: { "Content-Type": "application/json" },
