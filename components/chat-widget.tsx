@@ -1,4 +1,5 @@
-// Drop this as /components/RuyaaModernChatWidget.tsx
+"use client";
+
 import { useState, useRef, useEffect } from "react";
 import { motion } from "framer-motion";
 
@@ -29,9 +30,15 @@ export default function RuyaaModernChatWidget() {
         body: JSON.stringify({ messages: [...messages, newMsg] }),
       });
       const data = await res.json();
-      setMessages((msgs) => [...msgs, { role: "assistant", content: data.reply || "..." }]);
+      setMessages((msgs) => [
+        ...msgs,
+        { role: "assistant", content: data.reply || "..." },
+      ]);
     } catch (e) {
-      setMessages((msgs) => [...msgs, { role: "assistant", content: "Error: Could not reply." }]);
+      setMessages((msgs) => [
+        ...msgs,
+        { role: "assistant", content: "Error: Could not reply." },
+      ]);
     }
     setLoading(false);
   };
@@ -67,20 +74,36 @@ export default function RuyaaModernChatWidget() {
           {/* Header */}
           <div className="flex items-center justify-between px-4 py-3 border-b border-blue-800 bg-gradient-to-r from-neutral-950 via-black to-blue-950">
             <div className="flex items-center gap-2">
-              <span className="text-xl font-extrabold text-blue-400 tracking-wide drop-shadow-sm">Ruyaa Agent</span>
+              <span className="text-xl font-extrabold text-blue-400 tracking-wide drop-shadow-sm">
+                Ruyaa Agent
+              </span>
             </div>
             <button
               onClick={() => setOpen(false)}
               className="w-8 h-8 flex items-center justify-center rounded-full bg-neutral-800 hover:bg-blue-700 shadow border border-blue-900 focus:outline-none"
               aria-label="Close Chat"
             >
-              <svg width="18" height="18" viewBox="0 0 20 20" fill="none"><path d="M6 6l8 8M6 14L14 6" stroke="#fff" strokeWidth="2" strokeLinecap="round"/></svg>
+              <svg
+                width="18"
+                height="18"
+                viewBox="0 0 20 20"
+                fill="none"
+              >
+                <path
+                  d="M6 6l8 8M6 14L14 6"
+                  stroke="#fff"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                />
+              </svg>
             </button>
           </div>
           {/* Chat Messages */}
           <div className="flex-1 min-h-[300px] max-h-[62vh] overflow-y-auto p-3 bg-gradient-to-b from-neutral-950 via-black to-neutral-900">
             {messages.length === 0 && (
-              <div className="text-neutral-400 text-center text-sm pt-12">ابدأ الدردشة مع وكيل رؤيا الذكي…</div>
+              <div className="text-neutral-400 text-center text-sm pt-12">
+                ابدأ الدردشة مع وكيل رؤيا الذكي…
+              </div>
             )}
             {messages.map((msg, i) => (
               <div
@@ -114,7 +137,15 @@ export default function RuyaaModernChatWidget() {
               className="bg-gradient-to-tr from-blue-800 to-blue-500 hover:from-blue-900 hover:to-blue-700 text-white font-bold rounded-xl px-4 py-2 shadow-lg focus:outline-none focus:ring focus:ring-blue-400/30 disabled:opacity-60 disabled:cursor-not-allowed"
               disabled={loading || !input.trim()}
             >
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path d="M4 12l16-4-4 16-4-7-7-4z"/></svg>
+              <svg
+                className="w-5 h-5"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                viewBox="0 0 24 24"
+              >
+                <path d="M4 12l16-4-4 16-4-7-7-4z" />
+              </svg>
             </button>
           </form>
         </motion.div>
